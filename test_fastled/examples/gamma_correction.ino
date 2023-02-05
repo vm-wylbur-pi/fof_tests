@@ -13,10 +13,17 @@
 //***************************************************************
 
 #include "FastLED.h"
+/*
 #define LED_TYPE APA102
 #define DATA_PIN 23
 #define CLOCK_PIN 18
 #define COLOR_ORDER GRB
+*/
+
+#define LED_TYPE WS2812B
+#define DATA_PIN 19
+#define COLOR_ORDER RGB
+
 #define BRIGHTNESS 128  // Of course master brightness effects the look too
 #define NUM_LEDS 32
 CRGB leds[NUM_LEDS];
@@ -37,8 +44,9 @@ void setup() {
   Serial.begin(9600);
   delay(3000);  // Startup delay
 
-  // FastLED.addLeds<LED_TYPE, DATA_PIN, CLOCK_PIN, COLOR_ORDER>(leds, NUM_LEDS);
-  FastLED.addLeds<LED_TYPE, DATA_PIN, CLOCK_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
+  FastLED.addLeds<NEOPIXEL, 6>(leds, NUM_LEDS);
+
+  // FastLED.addLeds<LED_TYPE, DATA_PIN, CLOCK_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
 
   FastLED.setBrightness(BRIGHTNESS);
   Serial.println("Setup done.\n\n");
@@ -56,6 +64,7 @@ void loop() {
       delta = 1;
       hue = hue + random8(50,129);
     }
+	Serial.print("hue="); Serial.println(hue);
 
     // no gamma correction
     fill_rainbow_hsv(&leds[0], 8, hue, sat, brightness, hueStep);
