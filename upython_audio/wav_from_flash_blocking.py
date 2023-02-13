@@ -14,7 +14,7 @@
 #   -- confirm neither audio nor LEDs glitch
 
 
-import os
+import dotstar
 import network
 import micropython
 from machine import I2S, Pin, Timer
@@ -26,7 +26,7 @@ I2S_ID = 0
 BUFFER_LENGTH_IN_BYTES = 5000
 
 # ======= AUDIO CONFIGURATION =======
-WAV_FILE = "pbtones.wav"
+WAV_FILE = "pb-rising.wav"
 WAV_SAMPLE_SIZE_IN_BITS = 16
 FORMAT = I2S.MONO
 SAMPLE_RATE_IN_HZ = 8000
@@ -52,13 +52,25 @@ led_timer = Timer(1)
 wav_samples = bytearray(1000)
 wav_samples_mv = memoryview(wav_samples)
 
+# should be VSPI
+spi = SPI(2, baudrate=20000000,
+          sck=Pin(18), mosi=Pin(23), miso=Pin(13))  # note: miso is unused
+dots = dotstar.DotStar(spi, 20, brightness=1, auto_write=True)
+
+print("SPI info")
+print(spi)
+
+# MAIN LOOP
+brightness = 0
+up = True
+brange = [0, 0.04, 0.08, 0.12, 0.16, 0.20, .24, 0.28, 0.32, 0.36]
+
 
 def toggle_led(t):
     led.value(not led.value())
 
 
 def do_connect():
-    import network
     wlan = network.WLAN(network.STA_IF)
     wlan.active(True)
     if not wlan.isconnected():
@@ -75,7 +87,7 @@ def run():
     led_timer.init(mode=Timer.PERIODIC, period=1000, callback=toggle_led)
     print(micropython.mem_info())
 
-    do_connect()
+    # do_connect()
 
     print("opening wav file")
     wav = open(WAV_FILE, "rb")
@@ -91,6 +103,14 @@ def run():
             _ = wav.seek(44)
         else:
             _ = audio_out.write(wav_samples_mv[:num_read])
+
+        brightness += 1
+        if brightness >= len(brange):
+            brightness = 0
+        print(brange[brightness])
+        for dot in range(len(dots)):
+            dots[dot] = (0, 255, 0, brange[brightness])
+        dots.show()
 
     # cleanup
     wav.close()

@@ -1,0 +1,2 @@
+import wav_from_flash_blocking
+wav_from_flash_blocking.run()
