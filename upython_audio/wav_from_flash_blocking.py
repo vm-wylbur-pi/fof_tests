@@ -12,6 +12,7 @@
 #   -- get packet over wifi, do something
 #   -- blink Dotstars in some way
 #   -- confirm neither audio nor LEDs glitch
+#   -- make everything non-blocking :(
 
 
 import dotstar

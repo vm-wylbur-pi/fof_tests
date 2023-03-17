@@ -17,9 +17,9 @@
 
 #include <FastLED.h>
 
-#define NUM_LEDS 8
+#define NUM_LEDS 48
 #define LED_TYPE APA102
-#define DATA_PIN 23
+#define DATA_PIN 13
 #define CLOCK_PIN 18
 #define COLOR_ORDER GRB
 #define max_bright 128
@@ -31,8 +31,8 @@ uint8_t delta;
 extern const uint8_t gamma8[];
 
 void setup() {
-  // LEDS.addLeds<WS2812, LED_DT, GRB>(leds, NUM_LEDS);  // Use this for WS2812
-  FastLED.addLeds<LED_TYPE, DATA_PIN, CLOCK_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
+  LEDS.addLeds<WS2812, DATA_PIN, GRB>(leds, NUM_LEDS);  // Use this for WS2812
+  // FastLED.addLeds<LED_TYPE, DATA_PIN, CLOCK_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
   FastLED.setBrightness(max_bright);
   fill_solid(leds, NUM_LEDS, CHSV(hue, 255, max_bright));
 } // setup()

@@ -10,7 +10,7 @@
 #
 import time
 import random
-import dotstar as dotstar
+import micropython_dotstar as dotstar
 from machine import Pin, SPI
 from utime import ticks_us, ticks_diff
 
@@ -33,6 +33,7 @@ def fb2bb(fb):
 
 
 def bb2fb(bb):
+    # brightness to a float brightness; slow.
     if bb < 1:
         bb = bb * 100
     return bb * 0.03125
