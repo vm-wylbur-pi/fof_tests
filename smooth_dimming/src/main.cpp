@@ -13,69 +13,79 @@
 
 // puck is 41, flower+leaves is about 100
 #define NUM_LEDS 100
-
-
 CRGB leds[NUM_LEDS];
 
+// CONSTANTS
+////////////////////////////////////////////////////////////////
+// Where to start the color ramp.
+// 255 shows the full brightness range of the LEDs, but nothing interesting for the
+// smooth dimming problem happens above 128. You might need this to be higher if
+// you're in a bright room.
+const uint8_t MAX_BRIGHTNESS = 200;
+// Dimming is unstable if this is not 1; bigger values are for debugging spatial dithering
+const uint8_t BRIGHTNESS_STEP_SIZE = 1;
+// Time from max brightness to black.  Set higher to notice more stutter.
+const uint16_t DIMMING_TIME_MILLIS = 2000;
+const int BRIGHTNESS_STEPS = MAX_BRIGHTNESS / BRIGHTNESS_STEP_SIZE;
+const float MILLIS_PER_BRIGHTNESS_STEP = DIMMING_TIME_MILLIS / BRIGHTNESS_STEPS;
+// Based on observed maximum frame rate with different numbers of LEDs
+// 2 for puck (41 LEDs), 3 for flower+leaves (100 LEDs)
+const int MILLIS_PER_FRAME = 3;
+const int MAX_SPATIAL_DITHER_STEPS = static_cast<int>(MILLIS_PER_BRIGHTNESS_STEP / MILLIS_PER_FRAME);
+// You can't have more spatial dither steps than you have LEDs.  This only matters
+// at very long dimming times, when you spend a long time at each brightness step.
+const int SPATIAL_DITHER_STEPS = min(MAX_SPATIAL_DITHER_STEPS, NUM_LEDS);
+// Lower limit Limit on each RGB component  when it is in a color mix with other components.
+// Lower than 2 gives noticeable color shift for some hues at low vals, due to discretization
+// of components causes a shift in component ratios.
+// 1 is an acceptable compromise between a little color shift and a lower min val, to get
+// a smoother transition to black.
+// Setting to 0 shows the worst color shift
+const uint8_t MIN_RGB = 1;
+// Temporal dithering duty cycle, as a fraction of 255.
+// lower than 8 can lead to flashing artifacts when going in/out of val==0
+const uint8_t MIN_TEMPORAL_DITHERING_BRIGHTNESS = 8;
+
+// State variables referenced from inside loop()
+/////////////////////////////////////////////////////
+// Main state variable for dimming.  "abstract" brightness.
+// hsv.v and FastLED.setBrightness() are functions of this.
+// Ranges from zero to MAX_BRIGHTNESS
+uint8_t gBrightness = 0;
+// Spatial dithering state variable. Ranges from 1 to MAX_SPATIAL_DITHER_STEPS (incremented on first use)
+uint8_t gSpatialStep = 0;
+// HSV corresponding to the current gBrightness
 uint8_t gSat = 255;
 uint8_t gHue = 0;
 uint8_t gVal = 0;
-uint8_t gMinColorStableVal = 0;  // smallest allowable value for current hue
-
-uint8_t gBrightness = 0;
-// Dimming is unstable if this is not 1; bigger values are for debugging spatial dithering
-const uint8_t BRIGHTNESS_STEP_SIZE = 1;
-uint8_t gDeltaBrightness = BRIGHTNESS_STEP_SIZE;
-
-// main computed RGB based on master brightness + HSV ramp
+// RGB corresponding to gSat,gHue,gVal
 CRGB gRGB;
-
-const uint8_t MAX_BRIGHTNESS = 200;
-// Time from max brightness to black
-const uint16_t FADE_TIME_MILLIS = 2000;
-
-// Based on observed maximum frame rate with different numbers of LEDs
-// 2 for puck (41 LEDs), 3 for flower+leaves (100 LEDs)
-const int MILLIS_PER_FRAME = 3;  
-const int BRIGHTNESS_STEPS = MAX_BRIGHTNESS / BRIGHTNESS_STEP_SIZE;
-const float MILLIS_PER_BRIGHTNESS_STEP = FADE_TIME_MILLIS / BRIGHTNESS_STEPS;
-// Run the max possible spatial dithering.
-const int MAX_SPATIAL_DITHER_STEPS = static_cast<int>(MILLIS_PER_BRIGHTNESS_STEP / MILLIS_PER_FRAME);
-const int SPATIAL_DITHER_STEPS = min(MAX_SPATIAL_DITHER_STEPS, NUM_LEDS);
-// For Spatial dithering
-uint8_t gSpatialStep = 0;
-// reset at each Spatial dither cycle
+// The value of gRGB before the most recent change in gBrightness.
+// Spatial dithering chooses between gRGB and gRGB_prev for each LED.
 CRGB gRGB_prev;
 
-// For timing the main loop
-uint32_t gMicrosAtLastLoop = 0;
-const uint16_t NUM_LOOP_TIMES = 1000;
-uint32_t gloopTimes[NUM_LOOP_TIMES];
-uint16_t gLoopTimerIndex = 0;
-//   0   1   2    3  
-
-// Lower than 2 gives noticeable color shift for some hues at low vals
-// Setting to 0 shows worst color shift
-const uint8_t MIN_RGB = 1;
-// lower than 8 can lead to flashing when going in/out of val==0
-const uint8_t MIN_DITHERING_BRIGHTNESS = 8;
-
-
-
-// For longer string formatting
-const uint8_t gPrintBuffSize = 100;
-char gPrintBuff[gPrintBuffSize];
-
+// Smallest HSV.v value to use at the current Hue+Sat.  Any smaller would cause
+// collor shift, so if the brightness ramp calls for a lower value, we instead
+// drop straight to black.
+uint8_t gMinColorStableVal = 0;
+// For storing pre-computed results of minColorStableValForHueSat
 uint8_t cachedColorStableMinVals[256];
 
+// How much to change brightness on each step.
+// The time taken for each of these steps depends on DIMMING_TIME_MILLIS and MAX_BRIGHTNESS
+uint8_t gDeltaBrightness = BRIGHTNESS_STEP_SIZE;
 
-// Run once per hue, doesn't need to be fast.
+// Run during initialization, doesn't need to be fast.
 uint8_t minColorStableValForHueSat(uint8_t hue, uint8_t sat) {
   uint8_t val = 255;
   CRGB rgb = CHSV(hue, sat, val);
+  // If a given component is not involved in this hue (e.g. There's no red
+  // in cyan), then we don't have to care when it gets too small.
   bool no_r = rgb.r == 0;
   bool no_g = rgb.g == 0;
   bool no_b = rgb.b == 0;
+  // Check all values, decreasing from the max, until we get one that is
+  // not acceptable.
   while (   (rgb.r >= MIN_RGB || no_r) 
          && (rgb.g >= MIN_RGB || no_g)
          && (rgb.b >= MIN_RGB || no_b)
@@ -84,121 +94,96 @@ uint8_t minColorStableValForHueSat(uint8_t hue, uint8_t sat) {
     val--;
     rgb = CHSV(hue, sat, val);
   }
-  return val;
-}
-
-void printHSVtoRGBRamp(uint8_t hue, uint8_t sat) {
-  CHSV hsv = CHSV(hue, sat, 0);
-  CRGB rgb;
-  for (uint16_t val=0; val<=255; val++) {
-    hsv.v = val;
-    rgb = hsv;
-    snprintf(gPrintBuff, gPrintBuffSize, "%3u,%3u,%3u,%3u,%3u,%3u",
-            hsv.h, hsv.s, hsv.v, rgb.r, rgb.g, rgb.b);
-    Serial.println(gPrintBuff);
+  // If we fell through the loop because val got to zero, then that's fine
+  // This is for hues that only use one component (e.g. hue=0 pure saturated red) or 
+  // hues that have equal amounts of all involved components (e.g. white or cyan).
+  if (val==0) {
+    return 0;
+  } else {
+    // We failed one of the component >MIN_RGB conditions.  The current value of val
+    // is the one that failed, so the previous value is the minimal good one.
+    return val+1;
   }
 }
 
 void setup() {
-  // 3-wire
+  // 3-wire LED strand
   FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
-  // 4-wire
+  // 4-wire LED strand
   //FastLED.addLeds<LED_TYPE, DATA_PIN, CLOCK_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
 
+  // No FPS limit
   FastLED.setMaxRefreshRate(0);
 
+  // Pre-compute a lookup table for how dim you can make each hue
+  // before you start to notice color shifting.
   for (int hue=0; hue<=255; hue++) {
-    for (uint8_t sat : {0, 128, 255}) {
-      
-    }
     cachedColorStableMinVals[hue] = minColorStableValForHueSat(hue, gSat);
   }
 
   Serial.begin(38400);
-  Serial.print("setup() running on core ");
-  Serial.println(xPortGetCoreID());
-
-  gMicrosAtLastLoop = micros();
-
-  // Serial.println("Printing in 5 seconds...");
-  // delay(5000);
-  // for (uint16_t hue=0; hue<=255; hue+=32) {
-  //   for (uint16_t sat : {128, 255} ) {
-  //     printHSVtoRGBRamp(hue, sat);
-  //   }
-  //   delay(10000);
-  // }
 }
 
 void loop() {
-  int nowMicros = micros();
-  int loopMicros = nowMicros - gMicrosAtLastLoop;
-  gloopTimes[gLoopTimerIndex] = loopMicros;
-  gLoopTimerIndex = (gLoopTimerIndex + 1) % NUM_LOOP_TIMES;
-  gMicrosAtLastLoop = nowMicros;
-
-  if (gLoopTimerIndex == 0) {
-    uint32_t sum = 0;
-    for (int i=0; i<NUM_LOOP_TIMES; i++) {
-      sum += gloopTimes[i];
-    }
-    int avgLoopTime = sum / NUM_LOOP_TIMES;
-    Serial.print("avg loop() time: "); Serial.println(avgLoopTime);
-  }
-
-  EVERY_N_MILLISECONDS(static_cast<int>(MILLIS_PER_FRAME))
+  EVERY_N_MILLISECONDS(MILLIS_PER_FRAME)
   {
-
-    // STATE UPDATES
+    // This is the inner loop, running once for each frame. For each
+    // value of gBrightness, this runs SPATIAL_DITHER_STEPS times.
+    // The first value of gSpatialStep for each gBrightness is 1.
     gSpatialStep = (gSpatialStep + 1) % SPATIAL_DITHER_STEPS;
 
     if (gSpatialStep == 0) {
-      // This block runs once for every main brightness step
+      // This block runs once for every main brightness step (the "outer" loop)
       // This is where the master brightness is updated and
       // the corresponding temporal dithering and RGB is computed.
 
       // Update the master brightness.
       gBrightness += gDeltaBrightness;
-      // Compute the corresponding RGB
 
-      // Top of the brighten-dim pulse
-      if (gBrightness >= MAX_BRIGHTNESS)
-      {
+      // Top of the brighten-dim pulse, switch from brightening to dimming
+      if (gBrightness >= MAX_BRIGHTNESS) {
         gBrightness = MAX_BRIGHTNESS;
         gDeltaBrightness = -BRIGHTNESS_STEP_SIZE;
       }
 
-      if (gBrightness == 0)
-      {
+      if (gBrightness == 0) {
+        // Special handling upon reaching zero brightness (black), zero
+        // everything to cover any linger spatial dithering.
         fill_solid(leds, NUM_LEDS, CRGB(0,0,0));
-        // Pause, then cycle to the next hue
+
+        // Pause at black, then cycle to the next hue
         FastLED.delay(1000);
+        // Increment enough to get through a variety of hues in not too much time
+        // Not having this be a power of 2 means you get different hues after
+        // rolling over.
         gHue += 20;
-        gMinColorStableVal = cachedColorStableMinVals[gHue];
-        // For some skew hues, this is too bright
-        gMinColorStableVal = min(gMinColorStableVal, static_cast<uint8_t>(30));
-        //gMinColorStableVal = 0;
+        // After the pause we need to brighten again.
         gDeltaBrightness = BRIGHTNESS_STEP_SIZE;
+
+        // Look up the minimum color-stable value for the new hue. This will
+        // be the floor val for the dim.
+        gMinColorStableVal = cachedColorStableMinVals[gHue];
+
+        // For some hues with high RGB skew (high ratios of R:G, R:B, or G:B), the
+        // min val is too high, and gives a noticeable jump from medium brightness
+        // all the way to black. This is a limit on that effect that tolerates a bit
+        // of color shift for the sake of avoiding that jump.
+        gMinColorStableVal = min(gMinColorStableVal, static_cast<uint8_t>(30));
+
+        // Uncomment if you want to see the color shift
+        //gMinColorStableVal = 0;
+
+        // Reset inner loop counter; we may have finished getting to black
+        // partway through a spatial dither progression.
         gSpatialStep = 0;
-
-        // Serial.print("Hue: ");
-        // Serial.print(gHue);
-        // Serial.print("  min val is ");
-        // Serial.println(gMinColorStableVal);
-
-        // int brightness_steps = MAX_BRIGHTNESS / BRIGHTNESS_STEP_SIZE;
-        // int steps_with_spatial_dithering = brightness_steps * SPATIAL_DITHER_STEPS;
-        // int millis_per_inner_loop = FADE_TIME_MILLIS / steps_with_spatial_dithering;
-        // int loop_fps = 1000 / millis_per_inner_loop;
-        // Serial.print("Inner loop FPS: ");  Serial.println(loop_fps);
       }
 
-      // Dithering brightness tracks linearly with abstract brightness,
+      // Temporal dithering brightness tracks linearly with abstract brightness,
       // but clamp it because values that are too small have too short
       // of a duty cycle even at the highest frame rate the strip can handle
       uint8_t ditheringBrightness = gBrightness;
-      if (ditheringBrightness < MIN_DITHERING_BRIGHTNESS) {
-        ditheringBrightness = MIN_DITHERING_BRIGHTNESS;
+      if (ditheringBrightness < MIN_TEMPORAL_DITHERING_BRIGHTNESS) {
+        ditheringBrightness = MIN_TEMPORAL_DITHERING_BRIGHTNESS;
       }
       FastLED.setBrightness(ditheringBrightness);
 
@@ -210,14 +195,16 @@ void loop() {
         // of V to correspond to one step of RGB at the lowest brightness.
         val = gBrightness;
       } else {
-        val = 0;  // bottom out to off, so we don't linger at the floor
+        // Avoid low but non-zero values which cause color shifts.
+        val = 0;
       }
 
       CHSV hsv = CHSV(gHue, gSat, val);
       gRGB_prev = gRGB;
-      gRGB = hsv;
-    }
+      gRGB = hsv;  // implicit hsv->rgb conversion
+    } // end of per-brightness-level code
 
+    // Spatial dithering fill
     for (int i=0; i<NUM_LEDS; i++) {
       if (i % SPATIAL_DITHER_STEPS <= gSpatialStep ) {
         leds[i] = gRGB;
@@ -225,132 +212,16 @@ void loop() {
         leds[i] = gRGB_prev;
       }
     }
-    //fill_solid(leds, NUM_LEDS, rgb);
-    
-
-    //Serial.print(val); Serial.print(","); Serial.println(ditheringBrightness);
-
-    // if (gDeltaBrightness = -1) {
-    //   snprintf(gPrintBuff, gPrintBuffSize, "HSV: %3u,%3u,%3u    RGB: %3u,%3u,%3u   temporal dither: %3u",
-    //           hsv.h, hsv.s, hsv.v, rgb.r, rgb.g, rgb.b, ditheringBrightness);
-    //   Serial.println(gPrintBuff);
-    // }
-  }
+  } // end of per-frame code
 
   EVERY_N_MILLISECONDS(10000) {
     Serial.print("FPS: ");
     Serial.println(FastLED.getFPS());
-    // Serial.print("millis per frame: ");
-    // Serial.print(MILLIS_PER_FRAME);
-    // Serial.print("  as int: ");
-    // Serial.println(static_cast<int>(MILLIS_PER_FRAME));
     Serial.print("Spatial dither steps: "); Serial.println(SPATIAL_DITHER_STEPS);
   }
 
-  // The call to show() must be outside any EVERY_N_MILLISECONDS block,
-  // so that dithering can run at max FPS
+  // The call to show() must be at the top level of loop(),
+  // outside any EVERY_N_MILLISECONDS block, so that temproal
+  // dithering can run at max FPS
   FastLED.show();
 }
-
-// EVERY_N_MILLISECONDS(20) {
-//   if (gVal == 255)
-//     gDeltaVal = -1;
-//   if (gVal <= 1)
-//     gDeltaVal = 1;
-//   gVal += gDeltaVal;
-
-//   CHSV hsv = CHSV(HUE_GREEN, 255, gVal);
-//   CRGB rgb;
-//   hsv2rgb_rainbow(hsv, rgb);
-
-//   fill_solid(leds, NUM_LEDS, hsv);
-//   //fill_solid(leds, NUM_LEDS, CRGB(0, 0, gVal));
-
-//   // What's going on with the conversion?
-//   char print_buf[100];
-//   snprintf(print_buf, 100, "HSV: %3u,%3u,%3u    RGB: %3u,%3u,%3u   FastLED Brightness: %3u",
-//            hsv.h, hsv.s, hsv.v, rgb.r, rgb.g, rgb.b, FastLED.getBrightness());
-//   Serial.println(print_buf);
-// FastLED.show();
-// }
-
-// Simple linear dimming using temporal dithering only.
-// CHSV hsv = CHSV(HUE_GREEN, 255, 255);
-// fill_solid(leds, NUM_LEDS, hsv);
-// EVERY_N_MILLISECONDS(50)
-// {
-//   if (gBrightness == 255)
-//     gDeltaBrightness = -1;
-//   if (gBrightness == 0)
-//     gDeltaBrightness = 1;
-//   gBrightness += gDeltaBrightness;
-//   FastLED.setBrightness(gBrightness);
-//   FastLED.show();
-// }
-// EVERY_N_MILLISECONDS(500)
-// {
-//   Serial.print("Brightness: "); Serial.println(gBrightness);
-// }
-
-// Checking linearity of setBrightness
-// EVERY_N_MILLISECONDS(1000)
-// {
-//   uint8_t val = brightness_combos[combo_index][0];
-//   uint8_t bri = brightness_combos[combo_index][1];
-//   combo_index = (combo_index + 1) % COMBO_ROWS;
-
-//   fill_solid(leds, NUM_LEDS, CHSV(HUE_GREEN, 255, val));
-//   FastLED.setBrightness(bri);
-
-//   Serial.print("Value: ");
-//   Serial.print(val);
-//   Serial.print("  green: ");
-//   CRGB rgb = CHSV(HUE_GREEN, 255, val);
-//   Serial.print(rgb.g);
-//   Serial.print("  Brightness: ");
-//   Serial.println(bri);
-//   Serial.print("FPS: "); Serial.println(FastLED.getFPS());
-// }
-
-// uint8_t bStep = 64;
-// uint8_t valCopy = gVal;
-// // The higher the current value, the smaller the dithering step.
-// while (valCopy >>= 1) {
-//   // For high values, it will take many bit shifts to take the val to zero.
-//   // that means the brightness (dithering) step will be small. It will be zero
-//   // for values in the top half of the range.
-//   // For ver small values, bStep will be huge.
-//   bStep >>= 1;
-// }
-// if (bStep > gBrightness) {
-//   gBrightness = 1;
-// } else {
-//   gBrightness -= bStep;
-// }
-// Serial.print("Val: "); Serial.print(gVal);
-// Serial.print("  bStep: "); Serial.print(bStep);
-// Serial.print("  B: "); Serial.println(gBrightness);
-
-// sixteen-bit brightness.
-// uint16_t g16B = 0;
-// bool brightening = true;
-
-// // Test values for
-// const uint8_t COMBO_ROWS = 14;
-// uint8_t combo_index = 0;
-// uint8_t brightness_combos[COMBO_ROWS][2] = {
-//     // val, bri
-//     {8, 255},
-//     {8, 200},
-//     {8, 128},
-//     {8, 64},
-//     {8, 32},
-//     {8, 16},
-//     {8, 8},
-//     {20, 255},
-//     {20, 200},
-//     {20, 128},
-//     {20, 64},
-//     {20, 32},
-//     {20, 16},
-//     {20, 8}};
