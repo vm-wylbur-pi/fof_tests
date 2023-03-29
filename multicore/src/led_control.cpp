@@ -2,13 +2,6 @@
 
 #include <FastLED.h>
 
-//// 4-wire LEDs
-// #define NUM_LEDS 60
-// #define LED_TYPE APA102
-// #define DATA_PIN 23
-// #define CLOCK_PIN 18
-// #define COLOR_ORDER GRB
-
 // 3-wire LEDs
 #define DATA_PIN 15 // This is 13 on the board with the audio peripheral
 
@@ -20,23 +13,50 @@ namespace led_control {
     CRGB gLEDs[NUM_LEDS];
     uint8_t gHue = 0;
     uint8_t gVal = 150;
+    uint8_t gB; // drives gVal and setBrightness.
+    uint8_t gDeltaB;
 
     void setupFastLED() {
         FastLED.addLeds<NEOPIXEL, DATA_PIN>(gLEDs, NUM_LEDS);
-    }
-
-    void mainLoop() {
-        gHue += 1;
-        fill_solid(gLEDs, NUM_LEDS, CHSV(gHue, 255, gVal));
-        FastLED.show();
-        //FastLED.delay(2);
 
         // This turns on temporal dithering, which can only work
         // if FastLED.show() is called as often as possible.
         FastLED.setBrightness(100);
+    }
 
-        // EVERY_N_MILLISECONDS(500) {
-        //     gVal = (gVal == 20 ? 250 : 20);
-        // }
+    
+    void mainLoop() {
+        /// Vary gVal & dithering brightness within a low-medium range.
+        // The purpose is to have the flower in a continuous smooth
+        // brightness oscillation that depends on temporal dithering. Any
+        // interruption in LED contol throughput should be visible as
+        // pulse freezing or stuttering.
+        EVERY_N_MILLISECONDS(10) {
+            if (gB < 32) {
+                gB = 31;
+                gDeltaB = 1;
+            } else if (gB > 128) {
+                gB = 129;
+                gDeltaB = -1;
+            }
+            gB += gDeltaB;
+            gVal = gB;
+            FastLED.setBrightness(gB);
+            fill_solid(gLEDs, NUM_LEDS, CHSV(gHue, 255, gVal));
+        }
+
+        // This is essential. Calling FastLED.show as often as possible
+        // is what makes temporal dithering work.
+        FastLED.show();
+    }
+
+    namespace commands {
+        void setHue(uint8_t new_hue) {
+            gHue = new_hue;
+            // Fill and push right away, don't wait for the next update
+            // of the pulsing loop, to minimize latency.
+            fill_solid(gLEDs, NUM_LEDS, CHSV(gHue, 255, gVal));
+            FastLED.show();
+        }
     }
 }

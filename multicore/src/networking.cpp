@@ -1,24 +1,39 @@
-#include <networking.h>
+#include "networking.h"
+#include "comms.h"  // For dispatching Server commands
+
 #include <ArduinoOTA.h>
 #include <WiFi.h>
 // #include <ESPmDNS.h>
 // #include <WiFiUdp.h>
 // #include <WiFiServer.h>
+#include <MQTT.h>
+#include <Arduino.h> // For String type.
 
 namespace networking {
 
-    const char *ssid = "Mariposa";
-    const char *password = "InselKlingner2020";
+    // Network state objects.
+    WiFiClient wifi_transport;
+    MQTTClient mqtt_client;
+    
+    const char* WIFI_SSID = "Mariposa";
+    const char* WIFI_PASSWORD = "InselKlingner2020";
+
+    // This should be configured in the router so that it doesn't change.
+    const IPAddress MQTT_BROKER_IP = IPAddress(192, 168, 1, 72);
+    const char* MQTT_CLIENT_NAME = "flower";
 
     void setupWiFi() {
         WiFi.mode(WIFI_STA);
-        WiFi.begin(ssid, password);
-        while (WiFi.waitForConnectResult() != WL_CONNECTED)
-        {
+        WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+        while (WiFi.waitForConnectResult() != WL_CONNECTED) {
             Serial.println("Connection Failed! Rebooting...");
             delay(5000);
             ESP.restart();
         }
+
+        Serial.println("WiFi Ready");
+        Serial.print("IP address: ");
+        Serial.println(WiFi.localIP());
     };
 
     void setupOTA() {
@@ -70,6 +85,34 @@ namespace networking {
 
     void checkForOTAUpdate() {
         ArduinoOTA.handle();
+    }
+
+    void setupMQTT() {
+        mqtt_client.begin(MQTT_BROKER_IP, wifi_transport);
+        mqtt_client.onMessage(comms::handleMessageFromControlServer);
+
+        Serial.print("\nconnecting to MQTT broker...");
+        // connect() is where we can supply username/password if we want.
+        while (!mqtt_client.connect(MQTT_CLIENT_NAME))
+        {
+            Serial.print(".");
+            delay(1000);
+        }
+        Serial.println("\nconnected!");
+
+        // Main communication channel into the flower
+        mqtt_client.subscribe("/flower-control/#");
+    }
+
+    bool publishMQTTMessage(const String& topic, const String& payload) {
+        //Serial.println("about to publish: " + payload);
+        return mqtt_client.publish(topic, payload);
+    }
+
+    void mqttSendReceive() {
+        // send and receive any pending MQTT packets. If new data is received
+        // this will lead to handleMQTTMessage being called
+        mqtt_client.loop();
     }
 
 }  // namespace networking;
