@@ -8,31 +8,57 @@
 #include <WiFi.h>
 #include <FastLED.h>
 
+namespace {
+    // We must wait until Wifi is initialized before fetching the
+    // MAC address. This is ensured by only calling getFlowerID
+    // from the comms package, all of which is only called after
+    // networking::setupWiFi.
+    String *flowerID = nullptr;
+    const String* getFlowerID() {
+        if (flowerID == nullptr) {
+            // The last 3 octets of the MAC Address, colon-delimeted
+            // e.g.  AF:03:1F
+            flowerID = new String(WiFi.macAddress().substring(9));
+        }
+        return flowerID;
+    }
+}
+
+
 namespace comms
 {
-
     void sendDebugMessage(String& msg) {
-        networking::publishMQTTMessage("/flower_debug", msg);
+        String topic = "flower-debug" + *getFlowerID();
+        networking::publishMQTTMessage(topic, msg);
     }
 
     void sendHeartbeat() {
         // TODO: make this parseable (JSON or similar) so server can handle automatically
         String msg = "Flower heartbeat\n";
+        msg.concat("  Flower ID: ");
+        msg.concat(*getFlowerID());
+        msg.concat("\n");
+
         // I tried using the String + operator here and got weird behavior.
         msg.concat("  IP: ");
         msg.concat(WiFi.localIP().toString());
         msg.concat("\n");
 
+        msg.concat("  WiFi Signal Strength: ");
+        msg.concat(WiFi.RSSI());
+        msg.concat(" dBm\n");
+
         msg.concat("  FastLED FPS: ");
         msg.concat(FastLED.getFPS());
         msg.concat("\n");
 
-        networking::publishMQTTMessage("/flower_heartbeats", msg);
+        String topic = "flower-heartbeats/" + *getFlowerID();
+        networking::publishMQTTMessage(topic, msg);
     }
 
     void handleMessageFromControlServer(String &topic, String &payload)
     {
-        if (topic == "/flower-control/leds/set_hue")
+        if (topic == "flower-control/leds/set_hue")
         {
             uint8_t new_hue = payload.toInt();  // Sets to zero on unconvertible string
             led_control::commands::setHue(new_hue);
