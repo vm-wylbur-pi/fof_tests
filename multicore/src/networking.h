@@ -21,8 +21,8 @@ namespace networking {
   // Should be called from the main app loop(), or a task's forever-loop
   void mqttSendReceive();
 
-  // Publish a MQTT message to the broker.  Returns true on success.
-  bool publishMQTTMessage(const String& topic, const String& payload);
+  // Publish a MQTT message to the broker.
+  void publishMQTTMessage(const String& topic, const String& payload);
 }
 
 #endif // NETWORKING_H

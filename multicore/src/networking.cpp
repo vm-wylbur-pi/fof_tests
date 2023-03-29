@@ -11,12 +11,16 @@
 
 namespace networking {
 
+    const char *WIFI_SSID = "Mariposa";
+    const char *WIFI_PASSWORD = "InselKlingner2020";
+
+    // Will set the buffer size for sending and receiving.  Messages
+    // exceeding this limit will fail to send.
+    const uint16_t MAX_MQTT_MESSAGE_BYTES = 512;
+
     // Network state objects.
     WiFiClient wifi_transport;
-    MQTTClient mqtt_client;
-    
-    const char* WIFI_SSID = "Mariposa";
-    const char* WIFI_PASSWORD = "InselKlingner2020";
+    MQTTClient mqtt_client(MAX_MQTT_MESSAGE_BYTES);
 
     // This should be configured in the router so that it doesn't change.
     const IPAddress MQTT_BROKER_IP = IPAddress(192, 168, 1, 72);
@@ -104,9 +108,11 @@ namespace networking {
         mqtt_client.subscribe("/flower-control/#");
     }
 
-    bool publishMQTTMessage(const String& topic, const String& payload) {
-        //Serial.println("about to publish: " + payload);
-        return mqtt_client.publish(topic, payload);
+    void publishMQTTMessage(const String& topic, const String& payload) {
+        bool success = mqtt_client.publish(topic, payload);
+        if (!success) {
+            Serial.println("Failed to publish MQTT message in " + topic);
+        }
     }
 
     void mqttSendReceive() {
