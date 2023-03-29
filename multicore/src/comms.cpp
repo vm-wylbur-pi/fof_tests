@@ -13,12 +13,11 @@ namespace {
     // MAC address. This is ensured by only calling getFlowerID
     // from the comms package, all of which is only called after
     // networking::setupWiFi.
-    String *flowerID = nullptr;
-    const String* getFlowerID() {
-        if (flowerID == nullptr) {
-            // The last 3 octets of the MAC Address, colon-delimeted
-            // e.g.  AF:03:1F
-            flowerID = new String(WiFi.macAddress().substring(9));
+    String flowerID = "";
+    String getFlowerID() {
+        if (flowerID == "") {
+            // The last 3 octets of the MAC Address, colon-delimeted, e.g. AF:03:1F
+            flowerID = WiFi.macAddress().substring(9);
         }
         return flowerID;
     }
@@ -28,15 +27,16 @@ namespace {
 namespace comms
 {
     void sendDebugMessage(String& msg) {
-        String topic = "flower-debug" + *getFlowerID();
+        String topic = "flower-debug/" + getFlowerID();
         networking::publishMQTTMessage(topic, msg);
     }
 
     void sendHeartbeat() {
         // TODO: make this parseable (JSON or similar) so server can handle automatically
         String msg = "Flower heartbeat\n";
+        
         msg.concat("  Flower ID: ");
-        msg.concat(*getFlowerID());
+        msg.concat(getFlowerID());
         msg.concat("\n");
 
         // I tried using the String + operator here and got weird behavior.
@@ -52,7 +52,7 @@ namespace comms
         msg.concat(FastLED.getFPS());
         msg.concat("\n");
 
-        String topic = "flower-heartbeats/" + *getFlowerID();
+        String topic = "flower-heartbeats/" + getFlowerID();
         networking::publishMQTTMessage(topic, msg);
     }
 
