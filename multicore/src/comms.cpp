@@ -38,24 +38,11 @@ namespace comms
         // TODO: make this parseable (JSON or similar) so server can handle automatically
         String msg = "Flower heartbeat\n";
         
-        msg.concat("  Flower ID: ");
-        msg.concat(getFlowerID());
-        msg.concat("\n");
-
-        msg.concat("  Uptime: " + uptime.Formatted() + "\n");
-
-        // I tried using the String + operator here and got weird behavior.
-        msg.concat("  IP: ");
-        msg.concat(WiFi.localIP().toString());
-        msg.concat("\n");
-
-        msg.concat("  WiFi Signal Strength: ");
-        msg.concat(WiFi.RSSI());
-        msg.concat(" dBm\n");
-
-        msg.concat("  FastLED FPS: ");
-        msg.concat(FastLED.getFPS());
-        msg.concat("\n");
+        msg += "  Flower ID: " + getFlowerID() + "\n";
+        msg += "  Uptime: " + uptime.Formatted() + "\n";
+        msg += "  IP: " + WiFi.localIP().toString() + "\n";
+        msg += "  WiFi Signal Strength: " + String(WiFi.RSSI()) + " dBm\n";
+        msg += "  FastLED FPS: " + String(FastLED.getFPS()) + "\n";
 
         String topic = "flower-heartbeats/" + getFlowerID();
         networking::publishMQTTMessage(topic, msg);
