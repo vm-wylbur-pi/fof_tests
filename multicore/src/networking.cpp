@@ -1,13 +1,13 @@
 #include "networking.h"
 #include "comms.h"  // For dispatching Server commands
 
+#include <Arduino.h> // For String type.
 #include <ArduinoOTA.h>
 #include <WiFi.h>
 // #include <ESPmDNS.h>
 // #include <WiFiUdp.h>
 // #include <WiFiServer.h>
 #include <MQTT.h>
-#include <Arduino.h> // For String type.
 
 namespace networking {
 
@@ -19,12 +19,11 @@ namespace networking {
     const uint16_t MAX_MQTT_MESSAGE_BYTES = 512;
 
     // Network state objects.
-    WiFiClient wifi_transport;
+    WiFiClient wifi_client;
     MQTTClient mqtt_client(MAX_MQTT_MESSAGE_BYTES);
 
     // This should be configured in the router so that it doesn't change.
     const IPAddress MQTT_BROKER_IP = IPAddress(192, 168, 1, 72);
-    const char* MQTT_CLIENT_NAME = "flower";
 
     void setupWiFi() {
         WiFi.mode(WIFI_STA);
@@ -92,15 +91,16 @@ namespace networking {
     }
 
     void setupMQTT() {
-        mqtt_client.begin(MQTT_BROKER_IP, wifi_transport);
+        mqtt_client.begin(MQTT_BROKER_IP, wifi_client);
         mqtt_client.onMessage(comms::handleMessageFromControlServer);
         connectToMQTTBroker();
     }
 
     void connectToMQTTBroker() {
         Serial.print("\nconnecting to MQTT broker...");
+        String client_name = "flower-" + comms::flowerID();
         // connect() is where we can supply username/password if we want.
-        while (!mqtt_client.connect(MQTT_CLIENT_NAME)) {
+        while (!mqtt_client.connect(client_name.c_str())) {
             Serial.print(".");
             delay(1000);
         }
