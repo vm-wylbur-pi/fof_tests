@@ -22,7 +22,7 @@ namespace comms
   // to monitor these.  To avoid deadlock, this only sends messages at QoS == 0.
   // (To avoid deadlock, publish() should generally not be called from a message
   // handler. See  https://registry.platformio.org/libraries/256dpi/MQTT
-  void sendDebugMessage(String &msg);
+  void sendDebugMessage(const String& msg);
 
   // This is central dispatch function for all communication and commands
   // received from the control server. It is registered as the main MQTT

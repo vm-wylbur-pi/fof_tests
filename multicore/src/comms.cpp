@@ -33,7 +33,7 @@ namespace comms
         }
     }
 
-    void sendDebugMessage(String &msg) {
+    void sendDebugMessage(const String& msg) {
         String topic = "flower-debug/" + flowerID();
         networking::publishMQTTMessage(topic, msg);
     }
