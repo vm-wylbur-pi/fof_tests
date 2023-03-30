@@ -1,6 +1,7 @@
 #include "comms.h"
 #include "networking.h"
 #include "led_control.h"
+#include "uptime.h"
 
 #include <Arduino.h>  // For String type
 
@@ -21,6 +22,8 @@ namespace {
         }
         return flowerID;
     }
+
+    Uptime uptime;
 }
 
 
@@ -38,6 +41,8 @@ namespace comms
         msg.concat("  Flower ID: ");
         msg.concat(getFlowerID());
         msg.concat("\n");
+
+        msg.concat("  Uptime: " + uptime.Formatted() + "\n");
 
         // I tried using the String + operator here and got weird behavior.
         msg.concat("  IP: ");
