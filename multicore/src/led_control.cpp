@@ -2,8 +2,10 @@
 
 #include <FastLED.h>
 
-// 3-wire LEDs
-#define DATA_PIN 15 // This is 13 on the board with the audio peripheral
+// First developmen board
+// #define DATA_PIN 15
+// Development board with the audio interface
+#define DATA_PIN 13
 
 // puck is 41, flower+leaves is about 100
 #define NUM_LEDS 100
