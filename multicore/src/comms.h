@@ -10,17 +10,19 @@
 // All comms in this file run on top of MQTT.
 namespace comms
 {
-  // Publish a general-purpose debug message.  We can set up various ways
-  // to monitor these.
-  void sendDebugMessage(String& msg);
-
-  // Publish a heartbeat message.  This will include flower identification
-  // info and status.
-  void sendHeartbeat();
-
-  void setupComms();
-
+  // To be called from a top-level task forever-loop.  Handles MQTT
+  // connection maintenance, send/receive flushes of queued MQTT 
+  // messages, and heartbeats.
   void mainLoop();
+
+  // Unique identifier for this flower, last 3 octets of the MAC address.
+  String flowerID();
+
+  // Publish a general-purpose debug message.  We can set up various ways
+  // to monitor these.  To avoid deadlock, this only sends messages at QoS == 0.
+  // (To avoid deadlock, publish() should generally not be called from a message
+  // handler. See  https://registry.platformio.org/libraries/256dpi/MQTT
+  void sendDebugMessage(String &msg);
 
   // This is central dispatch function for all communication and commands
   // received from the control server. It is registered as the main MQTT
