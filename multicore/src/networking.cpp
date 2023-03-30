@@ -121,4 +121,18 @@ namespace networking {
         mqtt_client.loop();
     }
 
+    String signalStrength() {
+        int16_t strength = WiFi.RSSI();
+        String descrip;
+        if      (strength > -30) {descrip = "Unbelievable";}
+        else if (strength > -50) {descrip = "Excellent";}
+        else if (strength > -60) {descrip = "Good";}
+        else if (strength > -67) {descrip = "OK";}
+        else if (strength > -70) {descrip = "Bad";}
+        else if (strength > -80) {descrip = "Very Bad";}
+        else if (strength > -90) {descrip = "Awful";}
+        else                     {descrip = "Unusuable";}
+        return String(strength) + " dBm (" + descrip + ")";
+    }
+
 }  // namespace networking;

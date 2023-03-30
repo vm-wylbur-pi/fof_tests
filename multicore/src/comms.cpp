@@ -41,7 +41,7 @@ namespace comms
         msg += "  Flower ID: " + getFlowerID() + "\n";
         msg += "  Uptime: " + uptime.Formatted() + "\n";
         msg += "  IP: " + WiFi.localIP().toString() + "\n";
-        msg += "  WiFi Signal Strength: " + String(WiFi.RSSI()) + " dBm\n";
+        msg += "  WiFi Signal Strength: " + networking::signalStrength() + "\n";
         msg += "  FastLED FPS: " + String(FastLED.getFPS()) + "\n";
 
         String topic = "flower-heartbeats/" + getFlowerID();

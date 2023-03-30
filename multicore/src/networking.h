@@ -23,6 +23,9 @@ namespace networking {
 
   // Publish a MQTT message to the broker.
   void publishMQTTMessage(const String& topic, const String& payload);
+
+  // Formatted description of WiFi signal strength
+  String signalStrength();
 }
 
 #endif // NETWORKING_H
