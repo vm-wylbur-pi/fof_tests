@@ -40,9 +40,9 @@ String Uptime::Formatted() {
         return String(seconds/60) + " min";
     } else if (seconds < 60*60*24) {
         return String(seconds / (60*60)) + " hours " +
-               String(seconds % 60) + " min";
+               String(seconds % (60*60) / 60) + " min";
     } else {
         return String(seconds / (60*60*24)) + "days " +
-               String(seconds % (60*60)) + " hours";
+               String(seconds % (60*60*24) / (60*60)) + " hours";
     }
 }
