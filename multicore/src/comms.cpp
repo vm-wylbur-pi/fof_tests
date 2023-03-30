@@ -9,6 +9,8 @@
 #include <WiFi.h>
 #include <FastLED.h>
 
+#define HEARTBEAT_PERIOD_MILLIS 5000
+
 namespace {
     // We must wait until Wifi is initialized before fetching the
     // MAC address. This is ensured by only calling getFlowerID
@@ -29,9 +31,32 @@ namespace {
 
 namespace comms
 {
+    uint32_t lastHeartbeatMillis = 0;
+
     void sendDebugMessage(String& msg) {
         String topic = "flower-debug/" + getFlowerID();
         networking::publishMQTTMessage(topic, msg);
+    }
+
+    void setupComms() {};
+
+    void mainLoop() {
+        if (!networking::isMQTTConnected()) {
+            networking::connectToMQTTBroker();
+        }
+
+        // Send/received any MQTT messages, and respond to received messages
+        // by altering state or issuing LED control calls. If messages are
+        // received, the main callback in comms.cc will dispatch.
+        networking::mqttSendReceive();
+
+        uint32_t currentMillis = millis();
+        if (currentMillis - lastHeartbeatMillis > HEARTBEAT_PERIOD_MILLIS)
+        {
+            Serial.println("sending heartbeat.");
+            comms::sendHeartbeat();
+            lastHeartbeatMillis = currentMillis;
+        }
     }
 
     void sendHeartbeat() {

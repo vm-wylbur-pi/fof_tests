@@ -18,6 +18,10 @@ namespace comms
   // info and status.
   void sendHeartbeat();
 
+  void setupComms();
+
+  void mainLoop();
+
   // This is central dispatch function for all communication and commands
   // received from the control server. It is registered as the main MQTT
   // callback in networking::setupMQTT.

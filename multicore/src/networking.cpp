@@ -94,11 +94,13 @@ namespace networking {
     void setupMQTT() {
         mqtt_client.begin(MQTT_BROKER_IP, wifi_transport);
         mqtt_client.onMessage(comms::handleMessageFromControlServer);
+        connectToMQTTBroker();
+    }
 
+    void connectToMQTTBroker() {
         Serial.print("\nconnecting to MQTT broker...");
         // connect() is where we can supply username/password if we want.
-        while (!mqtt_client.connect(MQTT_CLIENT_NAME))
-        {
+        while (!mqtt_client.connect(MQTT_CLIENT_NAME)) {
             Serial.print(".");
             delay(1000);
         }
@@ -106,6 +108,10 @@ namespace networking {
 
         // Main communication channel into the flower
         mqtt_client.subscribe("flower-control/#");
+    }
+
+    bool isMQTTConnected() {
+        return mqtt_client.connected();
     }
 
     void publishMQTTMessage(const String& topic, const String& payload) {

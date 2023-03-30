@@ -17,6 +17,8 @@ namespace networking {
 
   // Should be called from the main app setup(), after setupWifi
   void setupMQTT();
+  void connectToMQTTBroker();
+  bool isMQTTConnected();
 
   // Should be called from the main app loop(), or a task's forever-loop
   void mqttSendReceive();
