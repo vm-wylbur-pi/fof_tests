@@ -105,7 +105,7 @@ namespace networking {
         Serial.println("\nconnected!");
 
         // Main communication channel into the flower
-        mqtt_client.subscribe("/flower-control/#");
+        mqtt_client.subscribe("flower-control/#");
     }
 
     void publishMQTTMessage(const String& topic, const String& payload) {
