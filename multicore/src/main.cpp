@@ -2,6 +2,7 @@
 #include "comms.h"
 #include "networking.h"
 #include "led_control.h"
+#include "storage.h"
 
 // When I tried this the other way around (LEDs isolated on core 1),
 // The LEDs stalled every 5-10 seconds. I think there might be some
@@ -53,6 +54,7 @@ void setup()
   networking::setupWiFi();
   networking::setupOTA();
   networking::setupMQTT();
+  storage::setupSDCard();
 
   startTask(TaskLED, "LED Control", CORE_FOR_LED_CONTROL);
   startTask(TaskOTA, "OTA", CORE_FOR_EVERTHING_ELSE);
