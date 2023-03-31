@@ -71,7 +71,7 @@ namespace storage
         // the old SD.h library to the current SDFS.h version.
         File file = root.openNextFile();
         while (file) {
-            if (!file.isDirectory()) {
+            if (!file.isDirectory() && !String(file.name()).startsWith(".")) {
                 if (numFiles < maxFilenamesToReturn) {
                     fileNames[numFiles] = file.name();
                 }
