@@ -2,7 +2,9 @@
 #include "comms.h"
 #include "networking.h"
 #include "storage.h"
-#include "Arduino.h"
+#include "sound.h"
+
+#include <Arduino.h>
 
 // For access to global state needed for heartbeat message.
 #include <Wifi.h>
@@ -26,6 +28,7 @@ String Heartbeat::_makeHeartbeatMessage() {
     msg += "  IP: " + WiFi.localIP().toString() + "\n";
     msg += "  WiFi Signal Strength: " + networking::signalStrength() + "\n";
     msg += "  SD Card: " + storage::formatStorageUsage() + "\n";
+    msg += "  Audio volume: " + sound::formattedVolume() + "\n";
     msg += "  FastLED FPS: " + String(FastLED.getFPS()) + "\n";
     return msg;
 }

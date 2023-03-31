@@ -2,6 +2,7 @@
 #include "heartbeat.h"
 #include "led_control.h"
 #include "networking.h"
+#include "sound.h"
 
 #include <Arduino.h>  // For String type
 #include <WiFi.h> // For macAddress used in flowerID
@@ -42,6 +43,19 @@ namespace comms
         if (topic == "flower-control/leds/set_hue") {
             uint8_t new_hue = payload.toInt();  // Sets to zero on unconvertible string
             led_control::commands::setHue(new_hue);
+            return;
+        }
+        if (topic == "flower-control/audio/setVolume") {
+            uint8_t newVolume = payload.toInt();
+            sound::commands::setVolume(newVolume);
+            return;
+        }
+        if (topic == "flower-control/audio/playSoundFile") {
+            sound::commands::playSoundFile(payload);
+            return;
+        }
+        if (topic == "flower-control/audio/stopSoundFile"){
+            sound::commands::stopSoundFile();
             return;
         }
         // Other topics are ignored.
