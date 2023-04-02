@@ -49,7 +49,7 @@ namespace time_sync
 
     String getFormattedNTPTime() {
         if (ntpClient.isTimeSet()) {
-            return ntpClient.getFormattedTime();
+            return ntpClient.getFormattedTime() + "." + String((int)ntpClient.get_millis());
         } else {
             return "NTP has not synced.";
         }
@@ -75,7 +75,7 @@ namespace time_sync
         // since then is small enough that when we multiply it by 1000, it won't
         // overflow an unsigned long (32 bits, max representable offset is about 50 days)
         unsigned long whole_seconds = ntpClient.getEpochTime() - eventReferenceTimeSec;
-        unsigned long millis = (int) (ntpClient.get_millis() * 1000);
+        unsigned long millis = (int) ntpClient.get_millis();
         return whole_seconds * 1000 + millis;
     }
 
