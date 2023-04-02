@@ -22,9 +22,6 @@ namespace networking {
     WiFiClient wifi_client;
     MQTTClient mqtt_client(MAX_MQTT_MESSAGE_BYTES);
 
-    // This should be configured in the router so that it doesn't change.
-    const IPAddress MQTT_BROKER_IP = IPAddress(192, 168, 1, 72);
-
     void setupWiFi() {
         WiFi.mode(WIFI_STA);
         WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
@@ -91,7 +88,7 @@ namespace networking {
     }
 
     void setupMQTT() {
-        mqtt_client.begin(MQTT_BROKER_IP, wifi_client);
+        mqtt_client.begin(CONTROLLER_IP_ADDRESS, wifi_client);
         mqtt_client.onMessage(comms::handleMessageFromControlServer);
         connectToMQTTBroker();
     }

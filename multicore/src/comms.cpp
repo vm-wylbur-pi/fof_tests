@@ -3,6 +3,7 @@
 #include "led_control.h"
 #include "networking.h"
 #include "sound.h"
+#include "time_sync.h"
 
 #include <Arduino.h>  // For String type
 #include <WiFi.h> // For macAddress used in flowerID
@@ -40,6 +41,12 @@ namespace comms
     }
 
     void handleMessageFromControlServer(String &topic, String &payload) {
+        // Reference time for flower events, in seconds since unix epoch.
+        if (topic == "flower-control/time/setEventReference") {
+            unsigned long newReferenceTime = payload.toInt();
+            time_sync::commands::setEventReferenceTime(newReferenceTime);
+            return;
+        }
         if (topic == "flower-control/leds/set_hue") {
             uint8_t new_hue = payload.toInt();  // Sets to zero on unconvertible string
             led_control::commands::setHue(new_hue);

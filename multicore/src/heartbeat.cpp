@@ -3,6 +3,7 @@
 #include "networking.h"
 #include "storage.h"
 #include "sound.h"
+#include "time_sync.h"
 
 #include <Arduino.h>
 
@@ -29,6 +30,8 @@ String Heartbeat::_makeHeartbeatMessage() {
     msg += "  WiFi Signal Strength: " + networking::signalStrength() + "\n";
     msg += "  SD Card: " + storage::formatStorageUsage() + "\n";
     msg += "  Audio volume: " + sound::formattedVolume() + "\n";
+    msg += "  NTP-set time: " + time_sync::getFormattedNTPTime() + "\n";
+    msg += "  Event clock: " + String(time_sync::eventMillis()) + " ms\n";
     msg += "  FastLED FPS: " + String(FastLED.getFPS()) + "\n";
     return msg;
 }

@@ -4,6 +4,13 @@
 #include <Arduino.h>  // For String type.
 
 namespace networking {
+  // This is used to configure:
+  //   - the MQTT client
+  //   - the NTP client
+  // It must be running servers for both of these services. We should use the
+  // router config to ensure that it always has this IP address.
+  const IPAddress CONTROLLER_IP_ADDRESS = IPAddress(192, 168, 1, 72);
+
   // Should be called from the main app setup().  Should be called before
   // any other networking:: functions.
   void setupWiFi();
