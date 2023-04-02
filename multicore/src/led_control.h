@@ -12,15 +12,15 @@ namespace led_control
     // a separate task's forever loop. Either way, that loop should
     // have no delay() or other time-consuming blocking calls.
     void mainLoop();
-
-    // Respond to an led control command from the server. This is
-    // called from the networking task.
     
     // These functions are generally called from the networking thread
     // after a server command is received. Dispatch is in comms.cpp
     namespace commands {
         // Set all LEDs to the given hue.
         void setHue(uint8_t new_hue);
+
+        // Turn all the LEDs on whole seconds, ten times.
+        void flashWhiteFiveTimesSynced(unsigned long firstFlashTime);
     }
 }
 

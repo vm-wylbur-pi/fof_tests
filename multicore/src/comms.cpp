@@ -47,6 +47,11 @@ namespace comms
             time_sync::commands::setEventReferenceTime(newReferenceTime);
             return;
         }
+        if (topic == "flower-control/leds/flashWhiteFiveTimesSynced"){
+            unsigned long firstFlashTime = payload.toInt();
+            led_control::commands::flashWhiteFiveTimesSynced(firstFlashTime);
+            return;
+        }
         if (topic == "flower-control/leds/set_hue") {
             uint8_t new_hue = payload.toInt();  // Sets to zero on unconvertible string
             led_control::commands::setHue(new_hue);
