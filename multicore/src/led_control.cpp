@@ -2,10 +2,8 @@
 
 #include <FastLED.h>
 
-// First developmen board
-// #define DATA_PIN 15
-// Development board with the audio interface
-#define DATA_PIN 13
+// IO pin to which the LED data line is soldered.
+#define DATA_PIN 15
 
 // puck is 41, flower+leaves is about 100
 #define NUM_LEDS 100
