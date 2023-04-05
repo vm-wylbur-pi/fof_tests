@@ -63,23 +63,19 @@ namespace led_control {
 
         unsigned long controlTime = time_sync::eventMillis();
         bool inFlash = false;
+        int flashNum = 0;
         for (int i=0; i<5; i++) {
             if (controlTime > flashTimes[i] && controlTime < flashTimes[i] + flashDurationMillis) {
-                inFlash = true;                
+                inFlash = true;
+                flashNum = i;              
             }
         }
         if (inFlash)
         {
-            // Event timer has rolled over to the next whole secend since the
-            // last time we've looped.
-            // comms::sendDebugMessage("Flashing!");
-            // It's the moment to flash!  Fill with white for one frame,
-            // no temporal dithering.
-            // colorBeforeFlashing = gLEDs[0];
-            fill_solid(gLEDs, NUM_LEDS, CRGB(100, 100, 100));
-            FastLED.setBrightness(255);
-            // justFlashed = true;
-            // numFlashesRemaining--;
+            fill_solid(gLEDs, NUM_LEDS, CRGB(64, 64, 64));
+            FastLED.setBrightness(128);
+            gHue = 40*(flashNum+1);  // neat color shift between flashes.
+            gB = 31;
         }
 
         // This is essential. Calling FastLED.show as often as possible
@@ -99,13 +95,6 @@ namespace led_control {
         void flashWhiteFiveTimesSynced(unsigned long firstFlashTime) {
             // override command so I don't have to figure out what's in the 
             // immedate future during testing.
-            String debugMsg = "Setting up flash sequence. ";
-            unsigned long controlTime = time_sync::eventMillis();
-            debugMsg += " controlTime=" + String(controlTime);
-            debugMsg += " rounded=" + String(controlTime / 1000);
-            debugMsg += " futuresec=" + String(controlTime / 1000 + 2);
-            debugMsg += " future=" + String((controlTime / 1000 + 2) * 1000);
-            comms::sendDebugMessage(debugMsg);
             firstFlashTime = (time_sync::eventMillis() / 1000 + 2) * 1000;
             for (int i=0; i<5; i++) {
                 flashTimes[i] = firstFlashTime + (i * 1000);
