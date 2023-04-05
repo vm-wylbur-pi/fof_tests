@@ -41,6 +41,13 @@ namespace comms
     }
 
     void handleMessageFromControlServer(String &topic, String &payload) {
+        // # Set a reference time
+        // EVT_REFERENCE_TIME=$(date +%s)
+        // /usr/local/bin/mosquitto_pub --id testclient --topic flower-control/time/setEventReference --message ${EVT_REFERENCE_TIME}  --retain
+        // # Tell the flower to execute a flash command 4 seconds in the future.
+        // COMMAND_TIME=$(echo "( $(date +%s) - ${EVT_REFERENCE_TIME} + 4) * 1000" | bc)
+        // usr/local/bin/mosquitto_pub --id testclient --topic flower-control/leds/flashWhiteFiveTimesSynced --message "${COMMAND_TIME}"
+
         // Reference time for flower events, in seconds since unix epoch.
         if (topic == "flower-control/time/setEventReference") {
             unsigned long newReferenceTime = payload.toInt();
