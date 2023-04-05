@@ -93,9 +93,6 @@ namespace led_control {
         }
 
         void flashWhiteFiveTimesSynced(unsigned long firstFlashTime) {
-            // override command so I don't have to figure out what's in the 
-            // immedate future during testing.
-            firstFlashTime = (time_sync::controlMillis() / 1000 + 2) * 1000;
             for (int i=0; i<5; i++) {
                 flashTimes[i] = firstFlashTime + (i * 1000);
             }
