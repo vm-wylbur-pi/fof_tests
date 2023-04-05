@@ -61,7 +61,7 @@ namespace led_control {
             fill_solid(gLEDs, NUM_LEDS, CHSV(gHue, 255, gVal));
         }
 
-        unsigned long controlTime = time_sync::eventMillis();
+        unsigned long controlTime = time_sync::controlMillis();
         bool inFlash = false;
         int flashNum = 0;
         for (int i=0; i<5; i++) {
@@ -95,7 +95,7 @@ namespace led_control {
         void flashWhiteFiveTimesSynced(unsigned long firstFlashTime) {
             // override command so I don't have to figure out what's in the 
             // immedate future during testing.
-            firstFlashTime = (time_sync::eventMillis() / 1000 + 2) * 1000;
+            firstFlashTime = (time_sync::controlMillis() / 1000 + 2) * 1000;
             for (int i=0; i<5; i++) {
                 flashTimes[i] = firstFlashTime + (i * 1000);
             }

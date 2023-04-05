@@ -31,7 +31,7 @@ String Heartbeat::_makeHeartbeatMessage() {
     msg += "  SD Card: " + storage::formatStorageUsage() + "\n";
     msg += "  Audio volume: " + sound::formattedVolume() + "\n";
     msg += "  NTP-set time: " + time_sync::getFormattedNTPTime() + "\n";
-    msg += "  Event clock: " + String(time_sync::eventMillis()) + " ms\n";
+    msg += "  controlMillis: " + String(time_sync::controlMillis()) + " ms\n";
     msg += "  FastLED FPS: " + String(FastLED.getFPS()) + "\n";
     return msg;
 }

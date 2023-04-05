@@ -24,7 +24,7 @@ namespace time_sync
     // can be specified using a single simple-data-type value. Giving times
     // since the unix epoch with millisecond precision requires at least two
     // values.
-    unsigned long eventMillis();
+    unsigned long controlMillis();
 
     namespace commands {
         // Sets the "event reference time", relative to which eventMillis

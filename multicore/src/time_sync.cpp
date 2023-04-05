@@ -56,7 +56,7 @@ namespace time_sync
     }
 
     // Number of milliseconds since the event reference time.
-    unsigned long eventMillis()
+    unsigned long controlMillis()
     {
         // This is initialized to zero above, so if it's still zero, that means
         // We've never set a reference time, and 
