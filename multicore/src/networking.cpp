@@ -104,7 +104,10 @@ namespace networking {
         Serial.println("\nconnected!");
 
         // Main communication channel into the flower
-        mqtt_client.subscribe("flower-control/#");
+        // Control commands directed at all flowers.
+        mqtt_client.subscribe("flower-control/all/#");
+        // Control commands directed at just this flower.
+        mqtt_client.subscribe("flower-control/" + comms::flowerID() + "/#");
     }
 
     bool isMQTTConnected() {

@@ -28,6 +28,9 @@ namespace comms
   // received from the control server. It is registered as the main MQTT
   // callback in networking::setupMQTT.
   void handleMessageFromControlServer(String& topic, String& payload);
+
+  // Called by handleMessageFromControlServer to dispatch flower control commands.
+  void dispatchFlowerControlCommand(String &command, String &parameters);
 }  // namespace comms
 
 #endif // COMMS_H

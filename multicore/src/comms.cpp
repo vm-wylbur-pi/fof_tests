@@ -41,6 +41,20 @@ namespace comms
     }
 
     void handleMessageFromControlServer(String &topic, String &payload) {
+        if (topic.startsWith("flower-control")) {
+            // Assume that the message is intended for this flower based on
+            // the MQTT subscriptions that are set up for "flower-control/all/#"
+            // and "flower-control/<this flower's ID>/#"
+            uint16_t firstSlash = topic.indexOf("/");
+            uint16_t secondSlash = topic.indexOf("/", firstSlash+1);
+            String commandName = topic.substring(secondSlash + 1);
+            dispatchFlowerControlCommand(commandName, payload);
+        }
+        Serial.println("Unhandled MQTT Message: " + topic + " - " + payload);
+        sendDebugMessage("Unhandled MQTT Message: " + topic + " - " + payload);
+    }
+
+    void dispatchFlowerControlCommand(String &command, String &parameters) {
         // # Set a reference time
         // EVT_REFERENCE_TIME=$(date +%s)
         // /usr/local/bin/mosquitto_pub --id testclient --topic flower-control/time/setEventReference --message ${EVT_REFERENCE_TIME}  --retain
@@ -48,42 +62,42 @@ namespace comms
         // COMMAND_TIME=$(echo "( $(date +%s) - ${EVT_REFERENCE_TIME} + 4) * 1000" | bc)
         // usr/local/bin/mosquitto_pub --id testclient --topic flower-control/leds/flashWhiteFiveTimesSynced --message "${COMMAND_TIME}"
 
-        if (topic == "flower-control/reboot") {
+        if (command == "reboot") {
             ESP.restart();
         }
 
         // Reference time for flower events, in seconds since unix epoch.
-        if (topic == "flower-control/time/setEventReference") {
-            unsigned long newReferenceTime = payload.toInt();
+        if (command == "time/setEventReference") {
+            unsigned long newReferenceTime = parameters.toInt();
             time_sync::commands::setEventReferenceTime(newReferenceTime);
             return;
         }
-        if (topic == "flower-control/leds/flashWhiteFiveTimesSynced"){
-            unsigned long firstFlashTime = payload.toInt();
+        if (command == "leds/flashWhiteFiveTimesSynced"){
+            unsigned long firstFlashTime = parameters.toInt();
             led_control::commands::flashWhiteFiveTimesSynced(firstFlashTime);
             return;
         }
-        if (topic == "flower-control/leds/set_hue") {
-            uint8_t new_hue = payload.toInt();  // Sets to zero on unconvertible string
+        if (command == "leds/set_hue") {
+            uint8_t new_hue = parameters.toInt();  // Sets to zero on unconvertible string
             led_control::commands::setHue(new_hue);
             return;
         }
-        if (topic == "flower-control/audio/setVolume") {
-            uint8_t newVolume = payload.toInt();
+        if (command == "audio/setVolume") {
+            uint8_t newVolume = parameters.toInt();
             sound::commands::setVolume(newVolume);
             return;
         }
-        if (topic == "flower-control/audio/playSoundFile") {
-            sound::commands::playSoundFile(payload);
+        if (command == "audio/playSoundFile") {
+            sound::commands::playSoundFile(parameters);
             return;
         }
-        if (topic == "flower-control/audio/stopSoundFile"){
+        if (command == "audio/stopSoundFile"){
             sound::commands::stopSoundFile();
             return;
         }
-        // Other topics are ignored.
-        Serial.println("Unhandled MQTT Message: " + topic + " - " + payload);
-        sendDebugMessage("Unhandled MQTT Message: " + topic + " - " + payload);
+        // Other commands are ignored.
+        Serial.println("Unhandled MQTT Message: " + command + " - " + parameters);
+        sendDebugMessage("Unhandled MQTT Message: " + command + " - " + parameters);
     }
 }
 
