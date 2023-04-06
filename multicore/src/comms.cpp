@@ -48,6 +48,10 @@ namespace comms
         // COMMAND_TIME=$(echo "( $(date +%s) - ${EVT_REFERENCE_TIME} + 4) * 1000" | bc)
         // usr/local/bin/mosquitto_pub --id testclient --topic flower-control/leds/flashWhiteFiveTimesSynced --message "${COMMAND_TIME}"
 
+        if (topic == "flower-control/reboot") {
+            ESP.restart();
+        }
+
         // Reference time for flower events, in seconds since unix epoch.
         if (topic == "flower-control/time/setEventReference") {
             unsigned long newReferenceTime = payload.toInt();
