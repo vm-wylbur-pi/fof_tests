@@ -37,14 +37,6 @@ namespace led_control {
     unsigned long flashDurationMillis = 50;
 
     void mainLoop() {
-        // if (justFlashed)
-        // {
-        //     // I want the white flash to last for a single frame, with
-        //     // no temporal dithering.
-        //     fill_solid(gLEDs, NUM_LEDS, colorBeforeFlashing);
-        //     FastLED.setBrightness(gB);
-        // }
-
         /// Vary gVal & dithering brightness within a low-medium range.
         // The purpose is to have the flower in a continuous smooth
         // brightness oscillation that depends on temporal dithering. Any
