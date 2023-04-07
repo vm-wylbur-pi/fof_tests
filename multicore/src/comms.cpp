@@ -4,6 +4,7 @@
 #include "networking.h"
 #include "sound.h"
 #include "time_sync.h"
+#include "music_sync.h"
 
 #include <Arduino.h>  // For String type
 #include <WiFi.h> // For macAddress used in flowerID
@@ -23,6 +24,10 @@ namespace comms
         // by altering state or issuing LED control calls. If messages are
         // received, the main callback in comms.cc will dispatch.
         networking::mqttSendReceive();
+
+        // I may need to move this to the LED main loop, if beats come late
+        // or are skipped because of network traffic.
+        music_sync::checkForBeatAndRunCallbacks();
     }
 
     String flowerID() {
@@ -49,15 +54,16 @@ namespace comms
             uint16_t secondSlash = topic.indexOf("/", firstSlash+1);
             String commandName = topic.substring(secondSlash + 1);
             dispatchFlowerControlCommand(commandName, payload);
+        } else {
+            Serial.println("Unhandled MQTT Message: " + topic + " - " + payload);
+            sendDebugMessage("Unhandled MQTT Message: " + topic + " - " + payload);
         }
-        Serial.println("Unhandled MQTT Message: " + topic + " - " + payload);
-        sendDebugMessage("Unhandled MQTT Message: " + topic + " - " + payload);
     }
 
     void dispatchFlowerControlCommand(String &command, String &parameters) {
         // # Set a reference time
         // EVT_REFERENCE_TIME=$(date +%s)
-        // /usr/local/bin/mosquitto_pub --id testclient --topic flower-control/time/setEventReference --message ${EVT_REFERENCE_TIME}  --retain
+        // /usr/local/bin/mosquitto_pub --id testclient --topic flower-control/all/time/setEventReference --message ${EVT_REFERENCE_TIME}  --retain
         // # Tell the flower to execute a flash command 4 seconds in the future.
         // COMMAND_TIME=$(echo "( $(date +%s) - ${EVT_REFERENCE_TIME} + 4) * 1000" | bc)
         // usr/local/bin/mosquitto_pub --id testclient --topic flower-control/leds/flashWhiteFiveTimesSynced --message "${COMMAND_TIME}"
@@ -72,9 +78,13 @@ namespace comms
             time_sync::commands::setEventReferenceTime(newReferenceTime);
             return;
         }
-        if (command == "leds/flashWhiteFiveTimesSynced"){
-            unsigned long firstFlashTime = parameters.toInt();
-            led_control::commands::flashWhiteFiveTimesSynced(firstFlashTime);
+        if (command == "time/setBPM"){
+            uint16_t newBPM = parameters.toInt();
+            music_sync::commands::setBPM(newBPM);
+            return;
+        }
+        if (command == "leds/toggleBeatFlashing"){
+            led_control::commands::toggleBeatFlashing();
             return;
         }
         if (command == "leds/set_hue") {
