@@ -65,8 +65,8 @@ void setup()
 
   // Disabled while I'm testing on all three boards, including boards that
   // don't have the audio hardware.
-  //storage::setupSDCard();
-  //sound::setupAudio();
+  storage::setupSDCard();
+  sound::setupAudio();
 
 
   // We want to give this a non-contended shot at the CPU, so we run
@@ -78,7 +78,7 @@ void setup()
   startTask(TaskLED, "LED Control", CORE_FOR_LED_CONTROL);
   startTask(TaskOTA, "OTA", CORE_FOR_EVERTHING_ELSE);
   startTask(TaskComms, "Control Server Comms", CORE_FOR_EVERTHING_ELSE);
-  //startTask(TaskAudio, "Audio", CORE_FOR_EVERTHING_ELSE);
+  startTask(TaskAudio, "Audio", CORE_FOR_EVERTHING_ELSE);
 }
 
 void loop()
