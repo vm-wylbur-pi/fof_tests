@@ -21,15 +21,14 @@ namespace music_sync
     void checkForBeatAndRunCallbacks() {
         unsigned long controlTimer = time_sync::controlMillis();
         if (controlTimer >= nextBeat) {
-            // If we want a callback structure, we can use this code. For now,
-            // I'm going to keep it very simple, with a single hard-coded
-            // call to the LED control object, so that this runs faster.
+            // We may need to replace with with a simple list of functions
+            // but if this runs faste enough, it's cleaner.
             for (auto callback : beatCallbacks) {
                 // TODO: It's possible to pass info like beat number, or
                 // start-of-bar or start-of-phrase booleans here, if we want.
                 callback(nextBeat);
             }
-            // Update accounting for the time needed to run the callbacks,
+            // Update, accounting for the time needed to run the callbacks,
             // and the case where more than one beat has passed (also true for
             // the very first beat).
             nextBeat = controlTimer + millisPerBeat - (controlTimer % millisPerBeat);
