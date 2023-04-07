@@ -104,7 +104,10 @@ namespace sound
         }
 
         void playSoundFile(const String &filename) {
-            audio.connecttoFS(SD, filename.c_str());
+            bool success = audio.connecttoFS(SD, filename.c_str());
+            if (!success) {
+                comms::sendDebugMessage("Error playing file: " + filename);
+            }
         }
 
         void stopSoundFile() {
