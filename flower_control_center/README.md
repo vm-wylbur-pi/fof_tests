@@ -8,7 +8,8 @@ Both of these libraries are copied directly into the `flower_conrol_center/lib/`
 
 The two most prominent choices were [MQTT.js](https://github.com/mqttjs/MQTT.js) and the [Paho Javascript Client](https://www.eclipse.org/paho/index.php?page=clients/js/index.php). I chose Paho, because it's much lighter weight, a single stand-alone javascript file that would be easy to just copy into our `lib/` directory. MQCC.js has a dependency on Node.
 
-- [Documentation](https://www.eclipse.org/paho/index.php?page=clients/js/index.php)
+- [Getting Started](https://www.eclipse.org/paho/index.php?page=clients/js/index.php)
+- [API Docs](https://www.eclipse.org/paho/files/jsdoc/index.html)
 
 ### Javascript utility
 
