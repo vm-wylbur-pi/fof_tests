@@ -32,7 +32,7 @@ class Heartbeat {
     static headerRow() {
         return $("<tr>")
             .append("<th>Flower ID</th>")
-            .append("<th>Heartbeat age<th>")
+            .append("<th>Heartbeat age</th>")
             .append("<th>Uptime</th>")
             .append("<th>IP</th>")
             .append("<th>WiFi Signal Strength</th>")
@@ -46,7 +46,7 @@ class Heartbeat {
     toRow () {
         return $("<tr>")
             .append("<td>" + this.flower_id + "</td>")
-            .append('<td heartbeat_timestamp="' + this.creation_timestamp + '">0</td>')
+            .append('<td heartbeat_timestamp="' + this.creation_timestamp + '">:00</td>')
             .append("<td>" + this.uptime + "</td>")
             .append("<td>" + this.IP + "</td>")
             .append("<td>" + this.wifi_signal + "</td>")
@@ -98,21 +98,27 @@ function insertOrUpdateFlowerRow(heartbeat) {
     }
 }
 
+function formatHeartbeatAge(age_milliseconds) {
+    // Convert to a readable timer, using a Date object to represent time since the epoch
+    let age_timer = new Date();
+    age_timer.setTime(age_milliseconds);
+    if (age_timer.getUTCHours > 0) {
+        return "> 1 hour";
+    }
+    let minutes = age_timer.getUTCMinutes().toString().padStart(2, "0");
+    let seconds = age_timer.getUTCSeconds().toString().padStart(2, "0");
+    if (minutes == "00") {
+        minutes = ""; 
+    }
+    return `${minutes}:${seconds}`
+}
+
 function updateFreshnessColumn() {
     current_timestamp = Date.now();
     $('#flower-table td[heartbeat_timestamp]').each(function(i, elem) {
         // age is milliseconds since the heartbeat was created
-        let age = current_timestamp - $( this ).attr("heartbeat_timestamp");
-        // Convert to a readable timer, using a Date object to represent time since the epoch
-        let age_timer = new Date();
-        age_timer.setTime(age);
-        let minutes = age_timer.getUTCMinutes().toString().padStart(2, "0");
-        let seconds = age_timer.getUTCSeconds().toString().padStart(2, "0");
-        if (minutes == "00") {
-            minutes = ""; 
-        }
-        $( this ).text(`${minutes}:${seconds}`);
-
+        let age_millis = current_timestamp - $( this ).attr("heartbeat_timestamp");
+        $( this ).text(formatHeartbeatAge(age_millis));
     });
 }
 
