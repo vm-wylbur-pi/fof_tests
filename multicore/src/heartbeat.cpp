@@ -22,9 +22,10 @@ void Heartbeat::BeatIfItsTime() {
 }
 
 String Heartbeat::_makeHeartbeatMessage() {
-    // TODO: make this parseable (JSON or similar) so server can handle automatically
-    String msg = "Flower heartbeat\n";
-    msg += "  Flower ID: " + comms::flowerID() + "\n";
+    // Makes a JSON heartbeat message that will be interpreted by the flower control center
+    // See flower_control_center/main.js:Heartbeat.toRow for the expected field names
+    String msg = "{";
+    msg += "  flower_id: " + comms::flowerID() + "\n";
     msg += "  Uptime: " + _uptime.Formatted() + "\n";
     msg += "  IP: " + WiFi.localIP().toString() + "\n";
     msg += "  WiFi Signal Strength: " + networking::signalStrength() + "\n";
@@ -33,6 +34,7 @@ String Heartbeat::_makeHeartbeatMessage() {
     msg += "  NTP-set time: " + time_sync::getFormattedNTPTime() + "\n";
     msg += "  controlMillis: " + String(time_sync::controlMillis()) + " ms\n";
     msg += "  FastLED FPS: " + String(FastLED.getFPS()) + "\n";
+    msg += "}";
     return msg;
 }
 

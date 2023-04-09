@@ -1,6 +1,8 @@
 const MQTT_BROKER_IP = "192.168.1.72";
 const MQTT_BROKER_PORT = 9001;
 
+const HEARTBEAT_FRESHNESS_UPDATE_PERIOD = 1000; // milliseconds
+
 // The singlenot Pah.MQTT.Client object.
 var mqtt;
 
@@ -99,8 +101,18 @@ function insertOrUpdateFlowerRow(heartbeat) {
 function updateFreshnessColumn() {
     current_timestamp = Date.now();
     $('#flower-table td[heartbeat_timestamp]').each(function(i, elem) {
+        // age is milliseconds since the heartbeat was created
         let age = current_timestamp - $( this ).attr("heartbeat_timestamp");
-        $( this ).text(age);
+        // Convert to a readable timer, using a Date object to represent time since the epoch
+        let age_timer = new Date();
+        age_timer.setTime(age);
+        let minutes = age_timer.getUTCMinutes().toString().padStart(2, "0");
+        let seconds = age_timer.getUTCSeconds().toString().padStart(2, "0");
+        if (minutes == "00") {
+            minutes = ""; 
+        }
+        $( this ).text(`${minutes}:${seconds}`);
+
     });
 }
 
@@ -113,5 +125,6 @@ $( document ).ready(function() {
     insertOrUpdateFlowerRow(heartbeat);
     heartbeat = new Heartbeat(flower_2_json)
     insertOrUpdateFlowerRow(heartbeat);
-    updateFreshnessColumn();
+
+    setInterval(updateFreshnessColumn, HEARTBEAT_FRESHNESS_UPDATE_PERIOD);
 });
