@@ -1,6 +1,7 @@
 #include "sound.h"
 
 #include "comms.h"
+#include "music_sync.h"
 
 // https://github.com/schreibfaul1/ESP32-audioI2S/blob/master/src/Audio.h
 #include <Audio.h>
@@ -46,6 +47,10 @@ namespace sound
         audio.setVolume(audio.maxVolume() / 2);
 
         comms::sendDebugMessage("Audio initialized");
+
+        // TEMP: register the beat handler as a callback. If this slows down
+        // FPS too much, I should hard-code it in the music sync poller instead.
+        music_sync::onBeat(&beatHappened);
     }
 
     void mainLoop() {
@@ -90,6 +95,10 @@ namespace sound
 
     String formattedVolume() {
         return String(audio.getVolume()) + "/" + String(audio.maxVolume());
+    }
+
+    void beatHappened(unsigned long beatControlTime) {
+        commands::playSoundFile("mono-kick-full-one-shot_110bpm_C.wav");
     }
 
     // These functions are generally called from the networking thread

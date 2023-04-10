@@ -18,6 +18,9 @@ namespace sound
     // Return a string showing the current and max volume, e.g. "6/21"
     String formattedVolume();
 
+    // Called from the music sync time polling loop once for each beat.
+    void beatHappened(unsigned long beatControlTime);
+
     namespace commands {
         void setVolume(uint8_t newVolume);
         // filename must be a file in the SD card root directory.
