@@ -11,7 +11,27 @@
     <script src="main.js"></script>
 </head>
 <body>
-    
+<h1>Flower Control Center</h1>
+<div id="command-form">
+    <table>
+        <tr>
+            <td>Which flower:</td>
+            <td><input name="flower" /> ('<span id="all">all</span>', or click ID below to fill in flower ID)</td>
+        </tr>
+        <tr>
+            <td>Command:</td>
+            <td><select name="command" id="command-dropDown">
+                <option value="">choose a command...</option>
+            </select></td>
+        </tr>
+        <tr>
+            <td>Parameters:</td>
+            <td><input name="parameters" /> (Depends on command, see comms.cpp for details.</td>
+        </tr>
+    </table>
+    <button id="send-command">Send Command</button>
+</div>
+
 <table id="flower-table">
 </table>
 

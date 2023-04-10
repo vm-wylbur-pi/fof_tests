@@ -90,12 +90,17 @@ const flower_2_json = `
 function insertOrUpdateFlowerRow(heartbeat) {
     let row = $("#flower-table").find("#" + heartbeat.id);
     if (row.length == 0) {
-        console.log("Adding new flower");
+        console.log("Adding new flower: " + heartbeat.flower_id);
         $("#flower-table").append(heartbeat.toRow());
     } else {
-        console.log("updating flower");
+        console.log("updating flower " + heartbeat.flower_id);
         row.replaceWith(heartbeat.toRow());
     }
+
+    // Click handler for populating command form
+    $( "#"+heartbeat.id ).children().first().click(function (event) {
+        $( 'input[name="flower"]' ).val(heartbeat.flower_id);
+    })
 }
 
 function formatHeartbeatAge(age_milliseconds) {
@@ -122,11 +127,49 @@ function updateFreshnessColumn() {
     });
 }
 
+function populateCommandChoices() {
+    // From multicore/src/comms.cpp
+    const commands = [
+        "reboot",
+        "time/setEventReference",
+        "time/setBPM",
+        "leds/toggleBeatFlashing",
+        "leds/set_hue",
+        "audio/setVolume",
+        "audio/playSoundFile",
+        "audio/stopSoundFile"
+    ]
+    commands.forEach((command) => {
+        $('#command-dropDown').append(`<option value="${command}">${command}</option>`)
+    })
+}
+
+// TODO: this isn't working yet.
+
+
 $( document ).ready(function() {
     //connectToMQTT();
+
+    populateCommandChoices();
     
+    $( "span#all" ).on("click", function( event ) {
+        $( 'input[name="flower"]' ).val("all");
+    });
+
+    $( "#send-command" ).click(function( event ) {
+        let targetFlower = $('input[name="flower"]').val();
+        let command = $('input[name="command"]').val();
+        let payload = $('input[name="parameters"]').val();
+        message = new Paho.MQTT.Message(payload);
+        message.destinationName = `flower-control/${targetFlower}/${command}`;
+        console.log("Would have sent: " + message.destinationName);
+        //mqtt.send(message);
+    });
+
+
     $('#flower-table').append(Heartbeat.headerRow());
-    
+
+    // Testing, until I can work with real heartbeats.
     let heartbeat = new Heartbeat(flower_1_json);
     insertOrUpdateFlowerRow(heartbeat);
     heartbeat = new Heartbeat(flower_2_json)
