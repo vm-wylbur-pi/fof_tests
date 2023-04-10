@@ -1,5 +1,6 @@
 #include "networking.h"
 #include "comms.h"  // For dispatching Server commands
+#include "config.h" // For Wifi name/password and the server IP address
 
 #include <Arduino.h> // For String type.
 #include <ArduinoOTA.h>
@@ -11,9 +12,6 @@
 
 namespace networking {
 
-    const char *WIFI_SSID = "Mariposa";
-    const char *WIFI_PASSWORD = "InselKlingner2020";
-
     // Will set the buffer size for sending and receiving.  Messages
     // exceeding this limit will fail to send.
     const uint16_t MAX_MQTT_MESSAGE_BYTES = 512;
@@ -24,7 +22,7 @@ namespace networking {
 
     void setupWiFi() {
         WiFi.mode(WIFI_STA);
-        WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+        WiFi.begin(config::WIFI_SSID.c_str(), config::WIFI_PASSWORD.c_str());
         while (WiFi.waitForConnectResult() != WL_CONNECTED) {
             Serial.println("Connection Failed! Rebooting...");
             delay(5000);
@@ -88,7 +86,7 @@ namespace networking {
     }
 
     void setupMQTT() {
-        mqtt_client.begin(CONTROLLER_IP_ADDRESS, wifi_client);
+        mqtt_client.begin(config::CONTROLLER_IP_ADDRESS, wifi_client);
         mqtt_client.onMessage(comms::handleMessageFromControlServer);
         connectToMQTTBroker();
     }

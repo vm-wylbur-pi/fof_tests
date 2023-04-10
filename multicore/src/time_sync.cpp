@@ -1,5 +1,6 @@
 #include "time_sync.h"
 #include "comms.h"
+#include "config.h"  // For NTP server IP address
 #include "networking.h"
 
 #include <Arduino.h>
@@ -19,7 +20,7 @@ namespace time_sync
     unsigned long eventReferenceTimeSec = 0;
 
     WiFiUDP ntpUDP;
-    NTPClient ntpClient(ntpUDP, networking::CONTROLLER_IP_ADDRESS,
+    NTPClient ntpClient(ntpUDP, config::CONTROLLER_IP_ADDRESS,
                         NTP_OFFSET, NTP_UPDATE_PERIOD_MILLIS);
 
     void syncWithNTP() {
