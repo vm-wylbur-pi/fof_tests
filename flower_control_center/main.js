@@ -97,6 +97,11 @@ function insertOrUpdateFlowerRow(heartbeat) {
         row.replaceWith(heartbeat.toRow());
     }
 
+    // Green Heartbeat pulse effect
+    $( "#"+heartbeat.id )
+        .css( { backgroundColor: "#0f0" } )
+        .animate( { backgroundColor: "transparent" }, 500 );
+
     // Click handler for populating command form
     $( "#"+heartbeat.id ).children().first().click(function (event) {
         $( 'input[name="flower"]' ).val(heartbeat.flower_id);
