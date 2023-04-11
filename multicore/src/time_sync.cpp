@@ -25,16 +25,22 @@ namespace time_sync
 
     void syncWithNTP() {
         uint8_t num_attempts = 0;
-        comms::sendDebugMessage("Running NTP update...");
+        Serial.println("Getting NTP Time...");
+        comms::sendDebugMessage("Getting NTP Time...");
         while (ntpClient.update() != 1)
         {
             delay(2000);
             ntpClient.forceUpdate();
-            if (++num_attempts > 10) {
+            if (++num_attempts > 3) {
                 break;
             }
         }
-        comms::sendDebugMessage("Time from NTP: " + ntpClient.getFormattedTime());
+        if (ntpClient.isTimeSet()) {
+            comms::sendDebugMessage("Time from NTP: " + ntpClient.getFormattedTime());
+        } else {
+            Serial.println("Failed to get time from NTP.");
+            comms::sendDebugMessage("Failed to get time from NTP.");
+        }
     }
 
     void setupNTPClientAndSync() {
