@@ -92,7 +92,8 @@ namespace networking {
     }
 
     void connectToMQTTBroker() {
-        Serial.print("\nconnecting to MQTT broker...");
+        Serial.print("\nconnecting to MQTT broker at "
+                     + config::CONTROLLER_IP_ADDRESS.toString() + "...");
         String client_name = "flower-" + comms::flowerID();
         // connect() is where we can supply username/password if we want.
         uint8_t num_attempts = 0;
