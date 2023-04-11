@@ -3,19 +3,26 @@ const MQTT_BROKER_PORT = 9001;
 
 const HEARTBEAT_FRESHNESS_UPDATE_PERIOD = 1000; // milliseconds
 
-// The singlenot Pah.MQTT.Client object.
+// The singleton Pah.MQTT.Client object.
 var mqtt;
 
 function connectToMQTT() {
-    $( "#mqtt-status" ).text("Connecting to MQTT Broker at " + MQTT_BROKER_IP + ":" + MQTT_BROKER_PORT + "...");
+    $( "#mqtt-status" ).append("Connecting to MQTT Broker at " + MQTT_BROKER_IP + ":" + MQTT_BROKER_PORT + "...<br/>");
     mqtt = new Paho.MQTT.Client(MQTT_BROKER_IP, MQTT_BROKER_PORT, "Flower_Control_Center");
+
+    mqtt.onConnectionLost = function(context) {
+        $( "#mqtt-status" ).append(`MQTT connection lost: ${context.errorMessage}<br/>`);
+    };
+    mqtt.onMessageArrived = handleMQTTMessage;
+
     var connect_options = {
         timeout: 10,  // seconds
         onSuccess: function() {
-            $( "#mqtt-status" ).text("Conncted to MQTT Broker.")
+            $( "#mqtt-status" ).append("Conncted to MQTT Broker.<br/>");
+            subscribeToHeartbeats();
         },
-        onFailure: function(response) {
-            $( "#mqtt-status" ).text("MQTT Failure: " + response.errorMessage);
+        onFailure: function(context) {
+            $( "#mqtt-status" ).append(`MQTT connection failed: ${context.errorMessage}<br/>`);
         }
     }
     mqtt.connect(connect_options);
@@ -62,33 +69,24 @@ class Heartbeat {
     }
 };
 
-const flower_1_json = `
-{
-  "flower_id": "42:11:94",
-  "uptime": "2 hours 29 min",
-  "IP": "192.168.1.203",
-  "wifi_signal": "-46 dBm (Excellent)",
-  "sd_card": "37/14855 MB",
-  "volume": "10/21",
-  "ntp_time": "15:38:44.884",
-  "control_timer": "141067888",
-  "FastLED_fps": "325"
+function subscribeToHeartbeats() {
+    mqtt.subscribe("flower-heartbeats/#", {
+        onSuccess: function() {
+            $( "#mqtt-status" ).append("Subscribed to flower-heartbeats/#<br/>")
+        },
+        onFailure: function(response) {
+            $( "#mqtt-status" ).append(response.errorMessage);
+        }
+    });
 }
-`;
 
-const flower_2_json = `
-{
-  "flower_id": "A2:A1:94",
-  "uptime": "2 hours 29 min",
-  "IP": "192.168.1.203",
-  "wifi_signal": "-46 dBm (Excellent)",
-  "sd_card": "37/14855 MB",
-  "volume": "10/21",
-  "ntp_time": "15:38:44.884",
-  "control_timer": "141067888",
-  "FastLED_fps": "325"
+function handleMQTTMessage(message) {
+    if (!message.destinationName.startsWith("flower-heartbeats/")) {
+        $( "#mqtt-status" ).append(`Received an unexpected non-heartbeat message to ${message.destinationName}<br/>`)
+    }
+    console.log("handling message: " + message.payloadString);
+    insertOrUpdateFlowerRow(new Heartbeat(message.payloadString));
 }
-`;
 
 function insertOrUpdateFlowerRow(heartbeat) {
     let row = $("#flower-table").find("#" + heartbeat.id);
@@ -147,9 +145,6 @@ function populateCommandChoices() {
     })
 }
 
-// TODO: this isn't working yet.
-
-
 $( document ).ready(function() {
     connectToMQTT();
 
@@ -169,14 +164,7 @@ $( document ).ready(function() {
         //mqtt.send(message);
     });
 
-
     $('#flower-table').append(Heartbeat.headerRow());
-
-    // Testing, until I can work with real heartbeats.
-    let heartbeat = new Heartbeat(flower_1_json);
-    insertOrUpdateFlowerRow(heartbeat);
-    heartbeat = new Heartbeat(flower_2_json)
-    insertOrUpdateFlowerRow(heartbeat);
 
     setInterval(updateFreshnessColumn, HEARTBEAT_FRESHNESS_UPDATE_PERIOD);
 });
