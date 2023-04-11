@@ -8,7 +8,6 @@
 #include <Arduino.h>
 
 // For access to global state needed for heartbeat message.
-#include <Wifi.h>
 #include <FastLED.h>
 
 void Heartbeat::BeatIfItsTime() {
