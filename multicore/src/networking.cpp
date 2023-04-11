@@ -97,7 +97,7 @@ namespace networking {
         String client_name = "flower-" + comms::flowerID();
         // connect() is where we can supply username/password if we want.
         uint8_t num_attempts = 0;
-        while (!mqtt_client.connected() && num_attempts++ <= 10) {
+        while (!mqtt_client.connected() && num_attempts++ <= 3) {
             Serial.print(".");
             mqtt_client.connect(client_name.c_str());
             delay(1000);
