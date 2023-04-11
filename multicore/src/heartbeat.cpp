@@ -25,15 +25,15 @@ String Heartbeat::_makeHeartbeatMessage() {
     // Makes a JSON heartbeat message that will be interpreted by the flower control center
     // See flower_control_center/main.js:Heartbeat.toRow for the expected field names
     String msg = "{";
-    msg += "  flower_id: " + comms::flowerID() + "\n";
-    msg += "  Uptime: " + _uptime.Formatted() + "\n";
-    msg += "  IP: " + WiFi.localIP().toString() + "\n";
-    msg += "  WiFi Signal Strength: " + networking::signalStrength() + "\n";
-    msg += "  SD Card: " + storage::formatStorageUsage() + "\n";
-    msg += "  Audio volume: " + sound::formattedVolume() + "\n";
-    msg += "  NTP-set time: " + time_sync::getFormattedNTPTime() + "\n";
-    msg += "  controlMillis: " + String(time_sync::controlMillis()) + " ms\n";
-    msg += "  FastLED FPS: " + String(FastLED.getFPS()) + "\n";
+    msg += "  \"flower_id\": \"" + comms::flowerID() + "\",\n";
+    msg += "  \"uptime\": \"" + _uptime.Formatted() + "\",\n";
+    msg += "  \"IP\": \"" + WiFi.localIP().toString() + "\",\n";
+    msg += "  \"wifi_signal\": \"" + networking::signalStrength() + "\",\n";
+    msg += "  \"sd_card\": \"" + storage::formatStorageUsage() + "\",\n";
+    msg += "  \"volume\": \"" + sound::formattedVolume() + "\",\n";
+    msg += "  \"ntp_time\": \"" + time_sync::getFormattedNTPTime() + "\",\n";
+    msg += "  \"control_timer\": \"" + String(time_sync::controlMillis()) + " ms\",\n";
+    msg += "  \"FastLED_fps\": \"" + String(FastLED.getFPS()) + "\"\n";
     msg += "}";
     return msg;
 }
