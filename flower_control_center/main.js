@@ -100,7 +100,7 @@ function insertOrUpdateFlowerRow(heartbeat) {
     // Green Heartbeat pulse effect
     $( "#"+heartbeat.id )
         .css( { backgroundColor: "#0f0" } )
-        .animate( { backgroundColor: "transparent" }, 500 );
+        .animate( { backgroundColor: "#eee" }, 500 );
 
     // Click handler for populating command form
     $( "#"+heartbeat.id ).children().first().click(function (event) {
