@@ -95,17 +95,22 @@ namespace networking {
         Serial.print("\nconnecting to MQTT broker...");
         String client_name = "flower-" + comms::flowerID();
         // connect() is where we can supply username/password if we want.
-        while (!mqtt_client.connect(client_name.c_str())) {
+        uint8_t num_attempts = 0;
+        while (!mqtt_client.connected() && num_attempts++ <= 10) {
             Serial.print(".");
+            mqtt_client.connect(client_name.c_str());
             delay(1000);
         }
-        Serial.println("\nconnected!");
-
-        // Main communication channel into the flower
-        // Control commands directed at all flowers.
-        mqtt_client.subscribe("flower-control/all/#");
-        // Control commands directed at just this flower.
-        mqtt_client.subscribe("flower-control/" + comms::flowerID() + "/#");
+        if (mqtt_client.connected()) {
+            Serial.println("\nconnected!");
+            // Main communication channel into the flower
+            // Control commands directed at all flowers.
+            mqtt_client.subscribe("flower-control/all/#");
+            // Control commands directed at just this flower.
+            mqtt_client.subscribe("flower-control/" + comms::flowerID() + "/#");
+        } else {
+            Serial.println("\n MQTT failed to connect.");
+        }
     }
 
     bool isMQTTConnected() {
