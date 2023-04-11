@@ -21,6 +21,7 @@ namespace networking {
     MQTTClient mqtt_client(MAX_MQTT_MESSAGE_BYTES);
 
     void setupWiFi() {
+        Serial.println("Connecting to WiFi (" + config::WIFI_SSID + ")");
         WiFi.mode(WIFI_STA);
         WiFi.begin(config::WIFI_SSID.c_str(), config::WIFI_PASSWORD.c_str());
         while (WiFi.waitForConnectResult() != WL_CONNECTED) {
