@@ -84,7 +84,6 @@ function handleMQTTMessage(message) {
     if (!message.destinationName.startsWith("flower-heartbeats/")) {
         $( "#mqtt-status" ).append(`Received an unexpected non-heartbeat message to ${message.destinationName}<br/>`)
     }
-    console.log("handling message: " + message.payloadString);
     insertOrUpdateFlowerRow(new Heartbeat(message.payloadString));
 }
 
@@ -156,12 +155,12 @@ $( document ).ready(function() {
 
     $( "#send-command" ).click(function( event ) {
         let targetFlower = $('input[name="flower"]').val();
-        let command = $('input[name="command"]').val();
+        let command = $('select[name="command"]').val();
         let payload = $('input[name="parameters"]').val();
         message = new Paho.MQTT.Message(payload);
         message.destinationName = `flower-control/${targetFlower}/${command}`;
-        console.log("Would have sent: " + message.destinationName);
-        //mqtt.send(message);
+        console.log(`Sending command: ${message.destinationName}: ${message.payloadString}`);
+        mqtt.publish(message);
     });
 
     $('#flower-table').append(Heartbeat.headerRow());
