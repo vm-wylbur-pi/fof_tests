@@ -9,6 +9,7 @@
 
 // For access to global state needed for heartbeat message.
 #include <FastLED.h>
+#include <WiFi.h>
 
 void Heartbeat::BeatIfItsTime() {
     uint32_t currentMillis = millis();
