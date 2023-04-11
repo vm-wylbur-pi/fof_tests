@@ -119,9 +119,11 @@ namespace networking {
     }
 
     void publishMQTTMessage(const String& topic, const String& payload) {
-        bool success = mqtt_client.publish(topic, payload);
-        if (!success) {
-            Serial.println("Failed to publish MQTT message in " + topic);
+        if (mqtt_client.connected()) {
+            bool success = mqtt_client.publish(topic, payload);
+            if (!success) {
+                Serial.println("Failed to publish MQTT message in " + topic);
+            }
         }
     }
 
