@@ -1,4 +1,4 @@
-const MQTT_BROKER_IP = "192.168.1.72";
+const MQTT_BROKER_IP = "192.168.119.193";
 const MQTT_BROKER_PORT = 9001;
 
 const HEARTBEAT_FRESHNESS_UPDATE_PERIOD = 1000; // milliseconds
@@ -7,12 +7,15 @@ const HEARTBEAT_FRESHNESS_UPDATE_PERIOD = 1000; // milliseconds
 var mqtt;
 
 function connectToMQTT() {
-    console.log("Connecting to MQTT Broker at " + MQTT_BROKER_IP + ":" + MQTT_BROKER_PORT);
+    $( "#mqtt-status" ).text("Connecting to MQTT Broker at " + MQTT_BROKER_IP + ":" + MQTT_BROKER_PORT + "...");
     mqtt = new Paho.MQTT.Client(MQTT_BROKER_IP, MQTT_BROKER_PORT, "Flower_Control_Center");
     var connect_options = {
-        timeout: 2000,
+        timeout: 10,  // seconds
         onSuccess: function() {
-            document.write("Conncted to MQTT Broker.")
+            $( "#mqtt-status" ).text("Conncted to MQTT Broker.")
+        },
+        onFailure: function(response) {
+            $( "#mqtt-status" ).text("MQTT Failure: " + response.errorMessage);
         }
     }
     mqtt.connect(connect_options);
@@ -148,7 +151,7 @@ function populateCommandChoices() {
 
 
 $( document ).ready(function() {
-    //connectToMQTT();
+    connectToMQTT();
 
     populateCommandChoices();
     
