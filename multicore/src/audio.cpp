@@ -8,6 +8,12 @@
 #include "AudioGeneratorWAV.h"
 #include "AudioOutputI2S.h"
 
+// TODO: Address click/pop issue at the start of playback.
+// Based on others' experience, it's possible but requires
+// a patched library, and the exact fix depends on the audio
+// setup.
+// https://github.com/earlephilhower/ESP8266Audio/issues/406
+
 // Digital I/O used  //Makerfabs Audio V2.0
 #define I2S_DOUT 27  // Data line. aka SD etc
 #define I2S_BCLK 26  // Bit clock line. aka SCK
