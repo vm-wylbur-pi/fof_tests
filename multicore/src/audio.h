@@ -18,7 +18,7 @@ namespace audio
     void beatHappened(unsigned long beatControlTime);
 
     namespace commands {
-        void setVolume(uint8_t newVolume);
+        void setVolume(float newVolume);
         // filename must be a file in the SD card root directory.
         void playSoundFile(const String& filename);
         void stopSoundFile();

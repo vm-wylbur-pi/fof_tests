@@ -94,7 +94,8 @@ namespace comms
             return;
         }
         if (command == "audio/setVolume") {
-            uint8_t newVolume = parameters.toInt();
+            // Range is 0.0 - 11.0.  Minimum audible volume is 0.05.
+            float newVolume = parameters.toFloat();
             audio::commands::setVolume(newVolume);
             return;
         }

@@ -34,9 +34,19 @@ namespace audio
     AudioGeneratorWAV *wavGenerator = nullptr;
     AudioOutputI2S *i2sAudioOutput = nullptr;
 
+    // Volume goes from 0.0 to 11.0
+    float volume;
+    // So we con return directly to the pre-mute volume.
+    float volumeBeforeMuting;
+    const float MIN_VOLUME = 0.0;
+    const float MAX_VOLUME = 11.0;  // Ours go to 11.
+    // Audio library's maximum Gain is 4.0, but setting to exactly 4.0
+    // corresponds to uint8_t=256, which rolls over. So to avoid this
+    // we need a slightly lower ceiling.
+    const float MAX_GAIN = 4.0 * 255.0/256.0;
+
     // State variables for handling physical buttons.
     uint32_t lastButtonTimeMillis = 0;
-    uint8_t volumeBeforeMuting;
 
     void setupAudio() {
         pinMode(PIN_VOL_UP, INPUT_PULLUP);
@@ -53,7 +63,7 @@ namespace audio
 
         // params are int bclkPin, int wclkPin, int doutPin
         i2sAudioOutput->SetPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
-        i2sAudioOutput->SetGain(1.0); // 0.0 - 4.0
+        commands::setVolume(5.0);  // out of 11
 
         comms::sendDebugMessage("Audio initialized");
 
@@ -107,7 +117,8 @@ namespace audio
     }
 
     String formattedVolume() {
-        return "Not supported yet";
+        const static int DECIMAL_PLACES = 1;
+        return String(volume, DECIMAL_PLACES) + "/11";
     }
 
     void beatHappened(unsigned long beatControlTime) {
@@ -117,9 +128,15 @@ namespace audio
     // These functions are generally called from the networking thread
     // after a server command is received. Dispatch is in comms.cpp
     namespace commands {
-        void setVolume(uint8_t newVolume) {
-            float newGain = (static_cast<float>(newVolume) / 256.0) * 4.0;
+        void setVolume(float newVolume) {
+            if (newVolume < MIN_VOLUME) newVolume = MIN_VOLUME;
+            if (newVolume > MAX_VOLUME) newVolume = MAX_VOLUME;
+            
+            float newGain = MAX_GAIN * newVolume / MAX_VOLUME;
             i2sAudioOutput->SetGain(newGain);
+
+            // State variable used for volume reporting and mute restoration.
+            volume = newVolume;
         }
 
         void playSoundFile(const String &filename) {
