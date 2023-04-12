@@ -23,7 +23,7 @@ namespace led_control
     // after a server command is received. Dispatch is in comms.cpp
     namespace commands {
         // Set all LEDs to the given hue.
-        void setHue(uint8_t new_hue);
+        void setHue(uint8_t newHue);
 
         // When enabled, LEDs will flash white, at the current global brigthness,
         // for 50ms once for every beat according to the current BPM

@@ -139,7 +139,7 @@ function populateCommandChoices() {
         "time/setEventReference",
         "time/setBPM",
         "leds/toggleBeatFlashing",
-        "leds/set_hue",
+        "leds/setHue",
         "audio/setVolume",
         "audio/playSoundFile",
         "audio/stopSoundFile"

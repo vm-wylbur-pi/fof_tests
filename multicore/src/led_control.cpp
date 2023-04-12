@@ -77,8 +77,8 @@ namespace led_control {
     }
 
     namespace commands {
-        void setHue(uint8_t new_hue) {
-            gHue = new_hue;
+        void setHue(uint8_t newHue) {
+            gHue = newHue;
             // Fill and push right away, don't wait for the next update
             // of the pulsing loop, to minimize latency.
             fill_solid(gLEDs, NUM_LEDS, CHSV(gHue, 255, gVal));
