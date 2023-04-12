@@ -1,8 +1,9 @@
 #include "comms.h"
+
+#include "audio.h"
 #include "heartbeat.h"
 #include "led_control.h"
 #include "networking.h"
-#include "sound.h"
 #include "time_sync.h"
 #include "music_sync.h"
 
@@ -94,15 +95,15 @@ namespace comms
         }
         if (command == "audio/setVolume") {
             uint8_t newVolume = parameters.toInt();
-            sound::commands::setVolume(newVolume);
+            audio::commands::setVolume(newVolume);
             return;
         }
         if (command == "audio/playSoundFile") {
-            sound::commands::playSoundFile(parameters);
+            audio::commands::playSoundFile(parameters);
             return;
         }
         if (command == "audio/stopSoundFile"){
-            sound::commands::stopSoundFile();
+            audio::commands::stopSoundFile();
             return;
         }
         // Other commands are ignored.

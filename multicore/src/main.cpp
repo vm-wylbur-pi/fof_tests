@@ -1,9 +1,9 @@
 // My libraries for organizing code
+#include "audio.h"
 #include "comms.h"
 #include "networking.h"
 #include "led_control.h"
 #include "storage.h"
-#include "sound.h"
 #include "time_sync.h"
 
 // When I tried this the other way around (LEDs isolated on core 1),
@@ -49,7 +49,7 @@ void TaskComms(void *pvParameters) {
 
 void TaskAudio(void *pvParameters) {
   while (true) {
-    sound::mainLoop();
+    audio::mainLoop();
   }
 }
 
@@ -66,7 +66,7 @@ void setup()
   // Disabled while I'm testing on all three boards, including boards that
   // don't have the audio hardware.
   storage::setupSDCard();
-  sound::setupAudio();
+  audio::setupAudio();
 
 
   // We want to give this a non-contended shot at the CPU, so we run

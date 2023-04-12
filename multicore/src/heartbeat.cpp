@@ -1,8 +1,9 @@
 #include "heartbeat.h"
+
+#include "audio.h"
 #include "comms.h"
 #include "networking.h"
 #include "storage.h"
-#include "sound.h"
 #include "time_sync.h"
 
 #include <Arduino.h>
@@ -30,7 +31,7 @@ String Heartbeat::_makeHeartbeatMessage() {
     msg += "  \"IP\": \"" + WiFi.localIP().toString() + "\",\n";
     msg += "  \"wifi_signal\": \"" + networking::signalStrength() + "\",\n";
     msg += "  \"sd_card\": \"" + storage::formatStorageUsage() + "\",\n";
-    msg += "  \"volume\": \"" + sound::formattedVolume() + "\",\n";
+    msg += "  \"volume\": \"" + audio::formattedVolume() + "\",\n";
     msg += "  \"ntp_time\": \"" + time_sync::getFormattedNTPTime() + "\",\n";
     msg += "  \"control_timer\": \"" + String(time_sync::controlMillis()) + " ms\",\n";
     msg += "  \"FastLED_fps\": \"" + String(FastLED.getFPS()) + "\"\n";

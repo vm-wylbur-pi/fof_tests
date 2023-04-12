@@ -1,13 +1,9 @@
-// I would have named tihs file audio.h, except that conflicts with the
-// installed library Audio.h
+#ifndef AUDIO_H
+#define AUDIO_H
 
-#ifndef SOUND_H
-#define SOUND_H
+#include <Arduino.h> // For String type
 
-#include <Arduino.h>
-//#include <Audio.h>
-
-namespace sound
+namespace audio
 {
     // Should be called from the main app's setup()
     void setupAudio();
@@ -29,4 +25,4 @@ namespace sound
     } // namespace commands
 } // namespace audio
 
-#endif // SOUND_H
+#endif // AUDIO_H

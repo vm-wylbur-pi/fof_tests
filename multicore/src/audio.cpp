@@ -1,10 +1,9 @@
-#include "sound.h"
+#include "audio.h"
 
 #include "comms.h"
 #include "music_sync.h"
 
-// https://github.com/schreibfaul1/ESP32-audioI2S/blob/master/src/Audio.h
-// #include <Audio.h>
+// https://github.com/earlephilhower/ESP8266Audio
 #include "AudioFileSourceSD.h"
 #include "AudioGeneratorWAV.h"
 #include "AudioOutputI2S.h"
@@ -27,7 +26,7 @@ const uint8_t PIN_PREVIOUS = 15;
 const uint8_t PIN_PAUSE = 33;
 const uint8_t PIN_NEXT = 2;
 
-namespace sound
+namespace audio
 {
     //  The main audio objects
     //Audio audio;
@@ -47,10 +46,6 @@ namespace sound
         pinMode(PIN_PAUSE, INPUT_PULLUP);
         pinMode(PIN_NEXT, INPUT_PULLUP);
 
-        // TODO: experiment with more Audio parameters.
-        //   - The constructor takes (bool internalDAC).
-        //  - It may or may not us PSRAM, and we might care about the difference.
-
         // Audio(I2S)
         sdAudioSource = new AudioFileSourceSD();
         wavGenerator = new AudioGeneratorWAV();
@@ -59,8 +54,6 @@ namespace sound
         // params are int bclkPin, int wclkPin, int doutPin
         i2sAudioOutput->SetPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
         i2sAudioOutput->SetGain(1.0); // 0.0 - 4.0
-        //audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
-        //audio.setVolume(audio.maxVolume() / 2);
 
         comms::sendDebugMessage("Audio initialized");
 
@@ -75,7 +68,6 @@ namespace sound
                 wavGenerator->stop();
             }
         }
-        //audio.loop();
 
         // This is where I could put code for tracking progress through
         // the current sound, notifications for when sounds finish, etc.
@@ -116,7 +108,6 @@ namespace sound
 
     String formattedVolume() {
         return "Not supported yet";
-        //return String(audio.getVolume()) + "/" + String(audio.maxVolume());
     }
 
     void beatHappened(unsigned long beatControlTime) {
@@ -129,11 +120,6 @@ namespace sound
         void setVolume(uint8_t newVolume) {
             float newGain = (static_cast<float>(newVolume) / 256.0) * 4.0;
             i2sAudioOutput->SetGain(newGain);
-            // if (newVolume <= audio.maxVolume()) {
-            //     audio.setVolume(newVolume);
-            // } else {
-            //     audio.setVolume(audio.maxVolume());
-            // }
         }
 
         void playSoundFile(const String &filename) {
@@ -148,11 +134,10 @@ namespace sound
         }
 
         void stopSoundFile() {
-            //audio.stopSong();
             wavGenerator->stop();
             sdAudioSource->close();
         }
 
     } // namespace commands
 
-} // namespace sound
+} // namespace audio
