@@ -24,10 +24,6 @@ table td {
     margin: 10px;
 }
 
-#command-form td {
-    
-}
-
 table th {
     background-color: #54585d;
     color: #ffffff;
@@ -56,5 +52,9 @@ button#send-command {
 }
 
 #mqtt-status {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+#mqtt-ip {
     font-family: 'Courier New', Courier, monospace;
 }

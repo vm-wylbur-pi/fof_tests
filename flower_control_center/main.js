@@ -1,14 +1,16 @@
-const MQTT_BROKER_IP = "192.168.119.193";
 const MQTT_BROKER_PORT = 9001;
 
 const HEARTBEAT_FRESHNESS_UPDATE_PERIOD = 1000; // milliseconds
 
 // The singleton Pah.MQTT.Client object.
+// Docs https://www.eclipse.org/paho/files/jsdoc/index.html
 var mqtt;
 
 function connectToMQTT() {
-    $( "#mqtt-status" ).append("Connecting to MQTT Broker at " + MQTT_BROKER_IP + ":" + MQTT_BROKER_PORT + "...<br/>");
-    mqtt = new Paho.MQTT.Client(MQTT_BROKER_IP, MQTT_BROKER_PORT, "Flower_Control_Center");
+    $( "#mqtt-status" ).text("");
+    let brokerIP = $( "#mqtt-ip" ).val();
+    $( "#mqtt-status" ).append("Connecting to MQTT Broker at " + brokerIP + ":" + MQTT_BROKER_PORT + "...<br/>");
+    mqtt = new Paho.MQTT.Client(brokerIP, MQTT_BROKER_PORT, "Flower_Control_Center");
 
     mqtt.onConnectionLost = function(context) {
         $( "#mqtt-status" ).append(`MQTT connection lost: ${context.errorMessage}<br/>`);
@@ -16,7 +18,7 @@ function connectToMQTT() {
     mqtt.onMessageArrived = handleMQTTMessage;
 
     var connect_options = {
-        timeout: 10,  // seconds
+        timeout: 5,  // seconds
         onSuccess: function() {
             $( "#mqtt-status" ).append("Conncted to MQTT Broker.<br/>");
             subscribeToHeartbeats();
@@ -166,6 +168,10 @@ $( document ).ready(function() {
         message.destinationName = `flower-control/${targetFlower}/${command}`;
         console.log(`Sending command: ${message.destinationName}: ${message.payloadString}`);
         mqtt.publish(message);
+    });
+
+    $( "#mqtt-reconnect" ).click(function( event ) {
+        connectToMQTT();  // Uses the current value of the IP address form field.
     });
 
     $('#flower-table').append(Heartbeat.headerRow());
