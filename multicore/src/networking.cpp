@@ -60,10 +60,12 @@ namespace networking {
 
             // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
             Serial.println("Start updating " + type);
+            comms::sendDebugMessage("Receiving OTA update.");
         })
         .onEnd([]()
         {
             Serial.println("\nEnd");
+            comms::sendDebugMessage("OTA Update complete.  Rebooting...");
         })
         .onProgress([](unsigned int progress, unsigned int total)
         {
