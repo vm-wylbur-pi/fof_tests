@@ -108,8 +108,8 @@ namespace comms
             return;
         }
         // Other commands are ignored.
-        Serial.println("Unhandled MQTT Message: " + command + " - " + parameters);
-        sendDebugMessage("Unhandled MQTT Message: " + command + " - " + parameters);
+        Serial.println("Unhandled command: " + command + " - " + parameters);
+        sendDebugMessage("Unhandled command: " + command + " - " + parameters);
     }
 }
 
