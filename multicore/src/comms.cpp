@@ -4,6 +4,7 @@
 #include "heartbeat.h"
 #include "led_control.h"
 #include "networking.h"
+#include "screen.h"
 #include "time_sync.h"
 #include "music_sync.h"
 
@@ -100,6 +101,10 @@ namespace comms
         }
         if (command == "audio/stopSoundFile"){
             audio::commands::stopSoundFile();
+            return;
+        }
+        if (command == "screen/setContent") {
+            screen::commands::setContent(parameters);
             return;
         }
         // Other commands are ignored.

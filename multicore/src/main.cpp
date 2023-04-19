@@ -3,6 +3,7 @@
 #include "comms.h"
 #include "networking.h"
 #include "led_control.h"
+#include "screen.h"
 #include "storage.h"
 #include "time_sync.h"
 
@@ -62,12 +63,9 @@ void setup()
   networking::setupWiFi();
   networking::setupOTA();
   networking::setupMQTT();
-
-  // Disabled while I'm testing on all three boards, including boards that
-  // don't have the audio hardware.
   storage::setupSDCard();
   audio::setupAudio();
-
+  screen::setupScreen();
 
   // We want to give this a non-contended shot at the CPU, so we run
   // one sync here, before starting up all the sepaate tasks. For now,
