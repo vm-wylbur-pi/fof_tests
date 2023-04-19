@@ -7,7 +7,7 @@
 
 namespace music_sync
 {
-    uint16_t millisPerBeat = 500;
+    uint16_t millisPerBeat = 2000;
     unsigned long nextBeat = 0;
     std::vector<std::function<void(unsigned long)>> beatCallbacks;
 
