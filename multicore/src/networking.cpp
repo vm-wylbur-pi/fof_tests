@@ -1,6 +1,7 @@
 #include "networking.h"
 #include "comms.h"  // For dispatching Server commands
 #include "config.h" // For Wifi name/password and the server IP address
+#include "screen.h"
 
 #include <Arduino.h> // For String type.
 #include <ArduinoOTA.h>
@@ -33,6 +34,7 @@ namespace networking {
         Serial.println("WiFi Ready");
         Serial.print("IP address: ");
         Serial.println(WiFi.localIP());
+        screen::commands::appendText("WiFi Connected\n");
     };
 
     void setupOTA() {
@@ -61,6 +63,7 @@ namespace networking {
             // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
             Serial.println("Start updating " + type);
             comms::sendDebugMessage("Receiving OTA update.");
+            screen::commands::setText("Receiving OTA update.\n");
         })
         .onEnd([]()
         {
@@ -107,6 +110,7 @@ namespace networking {
         }
         if (mqtt_client.connected()) {
             Serial.println("\nconnected!");
+            screen::commands::appendText("MQTT connected\n");
             // Main communication channel into the flower
             // Control commands directed at all flowers.
             mqtt_client.subscribe("flower-control/all/#");

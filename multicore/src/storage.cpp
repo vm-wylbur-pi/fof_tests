@@ -1,5 +1,6 @@
 #include "storage.h"
 #include "comms.h"
+#include "screen.h"
 
 #include <Arduino.h>
 #include <SPI.h> // Serial peripheral interface, for integrating with the audio/SD board
@@ -35,6 +36,7 @@ namespace storage
         }
         Serial.println("SD card filesystem mount succedded.");
         comms::sendDebugMessage("SD card filesystem mount succeeded.");
+        screen::commands::appendText("SD Card mounted\n");
 
         // Temp, as a way to test directory listing.
         String fileListDebugMsg = "SD Card Root directory contents\n";

@@ -2,6 +2,7 @@
 
 #include "comms.h"
 #include "music_sync.h"
+#include "screen.h"
 
 // https://github.com/earlephilhower/ESP8266Audio
 #include "AudioFileSourceSD.h"
@@ -72,6 +73,7 @@ namespace audio
         commands::setVolume(5.0);  // out of 11
 
         comms::sendDebugMessage("Audio initialized");
+        screen::commands::appendText("Audio initialized");
 
         // TEMP: register the beat handler as a callback. If this slows down
         // FPS too much, I should hard-code it in the music sync poller instead.

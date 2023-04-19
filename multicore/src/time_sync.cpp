@@ -2,6 +2,7 @@
 #include "comms.h"
 #include "config.h"  // For NTP server IP address
 #include "networking.h"
+#include "screen.h"
 
 #include <Arduino.h>
 // This is the modified version of the standard Library,
@@ -37,6 +38,7 @@ namespace time_sync
         }
         if (ntpClient.isTimeSet()) {
             comms::sendDebugMessage("Time from NTP: " + ntpClient.getFormattedTime());
+            screen::commands::appendText("Got global time from NTP\n");
         } else {
             Serial.println("Failed to get time from NTP.");
             comms::sendDebugMessage("Failed to get time from NTP.");

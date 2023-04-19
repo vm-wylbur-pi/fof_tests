@@ -59,19 +59,23 @@ void setup()
   Serial.begin(115200);
   Serial.println("Booting");
 
+  screen::setupScreen();
+  screen::commands::setText("Booting\n");
   led_control::setupFastLED();
   networking::setupWiFi();
   networking::setupOTA();
   networking::setupMQTT();
   storage::setupSDCard();
   audio::setupAudio();
-  screen::setupScreen();
 
   // We want to give this a non-contended shot at the CPU, so we run
   // one sync here, before starting up all the sepaate tasks. For now,
   // this is the only NTP sync that runs, since we trust later NTP sync
   // runs less (because of the other running tasks).
   time_sync::setupNTPClientAndSync();
+
+  // All boot-time setup is complete.
+  screen::commands::setText("Hello, JOBI.\nI am flower " + comms::flowerID() + "\n");
 
   startTask(TaskLED, "LED Control", CORE_FOR_LED_CONTROL);
   startTask(TaskOTA, "OTA", CORE_FOR_EVERTHING_ELSE);
