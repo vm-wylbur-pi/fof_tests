@@ -34,13 +34,13 @@ namespace screen
             initialized = true;
             Serial.println("Screen initialized");
             comms::sendDebugMessage("Screen initialized");
-            commands::setContent("Hello, JOBI.\nI am flower " + comms::flowerID());
+            commands::setText("Hello, JOBI.\nI am flower " + comms::flowerID());
         }
     }
 
     namespace commands
     {
-        void setContent(const String &newScreenContent) {
+        void setText(const String &newScreenText) {
             if (initialized) {
                 display.clearDisplay();
 
@@ -49,7 +49,7 @@ namespace screen
                 display.setCursor(0, 0);             // Start at top-left corner
                 display.cp437(true);                 // Use full 256 char 'Code Page 437' font
 
-                display.println(newScreenContent);
+                display.println(newScreenText);
                 display.display();
             }
         }

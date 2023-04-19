@@ -103,8 +103,8 @@ namespace comms
             audio::commands::stopSoundFile();
             return;
         }
-        if (command == "screen/setContent") {
-            screen::commands::setContent(parameters);
+        if (command == "screen/setText") {
+            screen::commands::setText(parameters);
             return;
         }
         // Other commands are ignored.

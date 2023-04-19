@@ -10,7 +10,7 @@ namespace screen
 
     namespace commands
     {
-        void setContent(const String &newScreenContent);
+        void setText(const String &newScreenText);
     } // namespace commands
 } // namespace screen
 
