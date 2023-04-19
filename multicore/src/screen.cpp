@@ -34,8 +34,7 @@ namespace screen
             initialized = true;
             Serial.println("Screen initialized");
             comms::sendDebugMessage("Screen initialized");
-            display.clearDisplay();
-            display.display();
+            commands::setContent("Hello, JOBI.\nI am flower " + comms::flowerID());
         }
     }
 
