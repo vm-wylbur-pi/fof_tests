@@ -88,7 +88,7 @@ namespace comms
             led_control::commands::toggleBeatFlashing();
             return;
         }
-        if (command == "leds/setHUE") {
+        if (command == "leds/setHue") {
             uint8_t newHue = parameters.toInt();  // Sets to zero on unconvertible string
             led_control::commands::setHue(newHue);
             return;
