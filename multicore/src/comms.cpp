@@ -62,18 +62,13 @@ namespace comms
     }
 
     void dispatchFlowerControlCommand(String &command, String &parameters) {
-        // # Set a reference time
-        // EVT_REFERENCE_TIME=$(date +%s)
-        // /usr/local/bin/mosquitto_pub --id testclient --topic flower-control/all/time/setEventReference --message ${EVT_REFERENCE_TIME}  --retain
-        // # Tell the flower to execute a flash command 4 seconds in the future.
-        // COMMAND_TIME=$(echo "( $(date +%s) - ${EVT_REFERENCE_TIME} + 4) * 1000" | bc)
-        // usr/local/bin/mosquitto_pub --id testclient --topic flower-control/leds/flashWhiteFiveTimesSynced --message "${COMMAND_TIME}"
-
         if (command == "reboot") {
             ESP.restart();
         }
-
         // Reference time for flower events, in seconds since unix epoch.
+        // # This command should generally be "retained", so flowers will pick it up on reboot. 
+        // EVT_REFERENCE_TIME=$(date +%s)
+        // /usr/local/bin/mosquitto_pub --id testclient --topic flower-control/all/time/setEventReference --message ${EVT_REFERENCE_TIME}  --retain
         if (command == "time/setEventReference") {
             unsigned long newReferenceTime = parameters.toInt();
             time_sync::commands::setEventReferenceTime(newReferenceTime);
