@@ -58,3 +58,23 @@ button#send-command {
 #mqtt-ip {
     font-family: 'Courier New', Courier, monospace;
 }
+
+div.debugMessages {
+    background-color: #fce9ca;
+    border: 5px solid black;
+    border-radius: 8px;
+    margin: 2px;
+}
+
+div.debugMessages button.close {
+    margin: 5px;
+}
+
+div.debugMessages h3 {
+    margin: 5px;
+}
+
+div.debugMessages p {
+    margin: 1px;
+    font-family: 'Courier New', Courier, monospace;
+}

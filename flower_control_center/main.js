@@ -6,6 +6,8 @@ const HEARTBEAT_FRESHNESS_UPDATE_PERIOD = 1000; // milliseconds
 // Docs https://www.eclipse.org/paho/files/jsdoc/index.html
 var mqtt;
 
+var debugMessages;
+
 function connectToMQTT() {
     $( "#mqtt-status" ).text("");
     let brokerIP = $( "#mqtt-ip" ).val();
@@ -21,7 +23,7 @@ function connectToMQTT() {
         timeout: 5,  // seconds
         onSuccess: function() {
             $( "#mqtt-status" ).append("Conncted to MQTT Broker.<br/>");
-            subscribeToHeartbeats();
+            subscribeToFlowerMessages();
         },
         onFailure: function(context) {
             $( "#mqtt-status" ).append(`MQTT connection failed: ${context.errorMessage}<br/>`);
@@ -44,6 +46,7 @@ class Heartbeat {
     static headerRow() {
         return $("<tr>")
             .append("<th>Flower ID</th>")
+            .append("<th>Debug Messages</th>")
             .append("<th>Heartbeat age</th>")
             .append("<th>Uptime</th>")
             .append("<th>IP</th>")
@@ -58,6 +61,7 @@ class Heartbeat {
     toRow () {
         return $("<tr>")
             .append("<td>" + this.flower_id + "</td>")
+            .append("<td><button>show</button></td>")
             .append('<td heartbeat_timestamp="' + this.creation_timestamp + '">:00</td>')
             .append("<td>" + this.uptime + "</td>")
             .append("<td>" + this.IP + "</td>")
@@ -71,21 +75,56 @@ class Heartbeat {
     }
 };
 
-function subscribeToHeartbeats() {
-    mqtt.subscribe("flower-heartbeats/#", {
-        onSuccess: function() {
-            $( "#mqtt-status" ).append("Subscribed to flower-heartbeats/#<br/>")
-        },
-        onFailure: function(response) {
-            $( "#mqtt-status" ).append(response.errorMessage);
-        }
+function subscribeToFlowerMessages() {
+    const topics = ["flower-heartbeats/#", "flower-debug/#"];
+    topics.forEach(function(topic) {
+        mqtt.subscribe(topic, {
+            onSuccess: function() {
+                $( "#mqtt-status" ).append(`Subscribed to ${topic}<br/>`)
+            },
+            onFailure: function(response) {
+                $( "#mqtt-status" ).append(response.errorMessage);
+            }
+        });
     });
 }
 
 function handleMQTTMessage(message) {
-    if (!message.destinationName.startsWith("flower-heartbeats/")) {
+    if (message.destinationName.startsWith("flower-debug/")) {
+        handleFlowerDebugMessage(message);
+    } else if (message.destinationName.startsWith("flower-heartbeats/")) {
+        handleHeartbeatMessage(message);
+    } else {
         $( "#mqtt-status" ).append(`Received an unexpected non-heartbeat message to ${message.destinationName}<br/>`)
     }
+}
+
+function handleFlowerDebugMessage(message) {
+    const prefixLen = "flower-debug/".length;
+    let flower_id = message.destinationName.substring(prefixLen);
+    console.log(`got debug message from flower ${flower_id}`);
+    let $debugDiv = findOrCreateDebugDiv(flower_id);
+    $debugDiv.append(`<p>${message.payloadString}</p>`)
+}
+
+function findOrCreateDebugDiv(flower_id) {
+    let debugDivID = "debug_" + flower_id.replaceAll(":","_");
+    var $debugDiv = $( '#'+debugDivID );
+    if(!$debugDiv.length) {
+        // No debug messages from this flower yet, create a new div for them.
+        $debugDiv = $(`<div id="${debugDivID}"></div>`).appendTo('#debugContainer');
+        $debugDiv.addClass("debugMessages");
+        $debugDiv.append(`<h3><button class="close">close</button> Debug messages for flower ${flower_id.replaceAll("_",":")}</h3>`);
+        $debugDiv.hide()
+
+        $debugDiv.find(".close").click(function(event) {
+            $debugDiv.hide();
+        });
+    }
+    return $debugDiv;
+}
+
+function handleHeartbeatMessage(message) {
     try {
         let heartbeat = new Heartbeat(message.payloadString);
         insertOrUpdateFlowerRow(heartbeat);
@@ -114,7 +153,13 @@ function insertOrUpdateFlowerRow(heartbeat) {
     // Click handler for populating command form
     $( "#"+heartbeat.id ).children().first().click(function (event) {
         $( 'input[name="flower"]' ).val(heartbeat.flower_id);
-    })
+    });
+
+    // Click handler for showing debug messages from this flower.
+    $( "#"+heartbeat.id+" button").click(function (event) {
+        let $debugDiv = findOrCreateDebugDiv(heartbeat.id);
+        $debugDiv.show();
+    });
 }
 
 function formatHeartbeatAge(age_milliseconds) {
