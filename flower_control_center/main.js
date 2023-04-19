@@ -86,7 +86,14 @@ function handleMQTTMessage(message) {
     if (!message.destinationName.startsWith("flower-heartbeats/")) {
         $( "#mqtt-status" ).append(`Received an unexpected non-heartbeat message to ${message.destinationName}<br/>`)
     }
-    insertOrUpdateFlowerRow(new Heartbeat(message.payloadString));
+    try {
+        let heartbeat = new Heartbeat(message.payloadString);
+        insertOrUpdateFlowerRow(heartbeat);
+    } catch(e) {
+        console.log(`Error handling heartbeat message from ${message.destinationName}`);
+        console.log(e);
+        console.log(message.payloadString);
+    }
 }
 
 function insertOrUpdateFlowerRow(heartbeat) {
