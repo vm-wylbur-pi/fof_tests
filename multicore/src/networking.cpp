@@ -21,6 +21,9 @@ namespace networking {
     WiFiClient wifi_client;
     MQTTClient mqtt_client(MAX_MQTT_MESSAGE_BYTES);
 
+    // For throttlng OTA update progress messages
+    unsigned long lastProgressUpdate = 0;
+
     void setupWiFi() {
         Serial.println("Connecting to WiFi (" + config::WIFI_SSID + ")");
         WiFi.mode(WIFI_STA);
@@ -69,10 +72,17 @@ namespace networking {
         {
             Serial.println("\nEnd");
             comms::sendDebugMessage("OTA Update complete.  Rebooting...");
+            screen::commands::appendText("OTA Update complete.  Rebooting...");
         })
         .onProgress([](unsigned int progress, unsigned int total)
         {
-            Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+            // Echoing the progress to the screen on every call slows down OTA a lot,
+            // so only do it every couple of secodns.
+            if (millis() > lastProgressUpdate + 2000) {
+                Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+                screen::commands::setText("OTA progress: \n" + String(progress) + "/" + String(total) + "\n");
+                lastProgressUpdate = millis();
+            }
         })
         .onError([](ota_error_t error)
         {
