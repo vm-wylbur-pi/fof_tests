@@ -60,10 +60,9 @@ namespace led_control {
             unsigned long controlTime = time_sync::controlMillis();
             bool inFlash = controlTime > flashStartTime && controlTime < flashStartTime + flashDurationMillis;
             if (inFlash) {
-                // Override whatever color would have been drawn with white,
-                // but stick to the current level of brightness
-                fill_solid(gLEDs, NUM_LEDS, CHSV(0, 0, gB));
-                //FastLED.setBrightness(128);
+                // Override whatever color would have been drawn with medium-brightness white.
+                fill_solid(gLEDs, NUM_LEDS, CHSV(0, 0, 128));
+                FastLED.setBrightness(128);
             }
         }
 
