@@ -66,15 +66,27 @@ div.debugMessages {
     margin: 2px;
 }
 
-div.debugMessages button.close {
+div.debugMessages button {
     margin: 5px;
+}
+
+div.debugMessages button.close {
+    float: left;
+}
+
+div.debugMessages button.clear {
+    float: right;
 }
 
 div.debugMessages h3 {
     margin: 5px;
+    margin-bottom: 10px;
+    text-align: center;
 }
 
 div.debugMessages p {
-    margin: 1px;
+    margin: 2px;
     font-family: 'Courier New', Courier, monospace;
+    /* So it shows below both buttons */
+    clear: both;
 }

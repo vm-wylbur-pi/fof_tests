@@ -6,8 +6,6 @@ const HEARTBEAT_FRESHNESS_UPDATE_PERIOD = 1000; // milliseconds
 // Docs https://www.eclipse.org/paho/files/jsdoc/index.html
 var mqtt;
 
-var debugMessages;
-
 function connectToMQTT() {
     $( "#mqtt-status" ).text("");
     let brokerIP = $( "#mqtt-ip" ).val();
@@ -114,11 +112,19 @@ function findOrCreateDebugDiv(flower_id) {
         // No debug messages from this flower yet, create a new div for them.
         $debugDiv = $(`<div id="${debugDivID}"></div>`).appendTo('#debugContainer');
         $debugDiv.addClass("debugMessages");
-        $debugDiv.append(`<h3><button class="close">close</button> Debug messages for flower ${flower_id.replaceAll("_",":")}</h3>`);
+        $debugDiv.append(
+            `<h3>
+                <button class="close">close</button>
+                Debug messages for flower ${flower_id.replaceAll("_",":")}
+                <button class="clear">clear</button>
+             </h3>`);
         $debugDiv.hide()
 
         $debugDiv.find(".close").click(function(event) {
             $debugDiv.hide();
+        });
+        $debugDiv.find(".clear").click(function(event) {
+            $debugDiv.find("p").remove();
         });
     }
     return $debugDiv;
