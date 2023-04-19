@@ -203,7 +203,8 @@ function populateCommandChoices() {
         "audio/setVolume",
         "audio/playSoundFile",
         "audio/stopSoundFile",
-        "screen/setText"
+        "screen/setText",
+        "screen/appendText"
     ]
     commands.forEach((command) => {
         $('#command-dropDown').append(`<option value="${command}">${command}</option>`)

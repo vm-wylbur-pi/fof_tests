@@ -11,6 +11,7 @@ namespace screen
     namespace commands
     {
         void setText(const String &newScreenText);
+        void appendText(const String &textToAdd);
     } // namespace commands
 } // namespace screen
 

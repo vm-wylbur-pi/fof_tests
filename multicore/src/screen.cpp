@@ -23,6 +23,7 @@ namespace screen
     Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET_PIN);
 
     bool initialized = false;
+    String currentText = "";
 
     void setupScreen() {
         Wire.begin(MAKEPYTHON_ESP32_SDA, MAKEPYTHON_ESP32_SCL);
@@ -34,14 +35,15 @@ namespace screen
             initialized = true;
             Serial.println("Screen initialized");
             comms::sendDebugMessage("Screen initialized");
-            commands::setText("Hello, JOBI.\nI am flower " + comms::flowerID());
+            display.clearDisplay();
+            display.display();
         }
     }
 
-    namespace commands
-    {
-        void setText(const String &newScreenText) {
-            if (initialized) {
+    namespace {
+        void drawText(const String &newScreenText) {
+            if (initialized)
+            {
                 display.clearDisplay();
 
                 display.setTextSize(1);              // Normal 1:1 pixel scale
@@ -53,5 +55,17 @@ namespace screen
                 display.display();
             }
         }
+    }
+
+    namespace commands
+    {
+        void setText(const String &newScreenText) {
+            currentText = newScreenText;
+            drawText(currentText);
+        }
+        void appendText(const String &textToAdd) {
+            currentText += textToAdd;
+            drawText(currentText);
+        };
     } // namespace commands
 } // namespace screen

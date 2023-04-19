@@ -107,6 +107,10 @@ namespace comms
             screen::commands::setText(parameters);
             return;
         }
+        if (command == "screen/appendText") {
+            screen::commands::appendText(parameters);
+            return;
+        }
         // Other commands are ignored.
         Serial.println("Unhandled command: " + command + " - " + parameters);
         sendDebugMessage("Unhandled command: " + command + " - " + parameters);
