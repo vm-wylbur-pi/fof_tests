@@ -110,8 +110,10 @@ namespace networking {
     }
 
     void connectToMQTTBroker() {
-        Serial.print("\nconnecting to MQTT broker at "
-                     + config::CONTROLLER_IP_ADDRESS.toString() + "...");
+        String mqttAttemptMessage = "connecting to MQTT...\n";
+        Serial.print(mqttAttemptMessage);
+        screen::commands::appendText(mqttAttemptMessage);
+
         String client_name = "flower-" + comms::flowerID();
         // connect() is where we can supply username/password if we want.
         uint8_t num_attempts = 0;
@@ -129,7 +131,10 @@ namespace networking {
             // Control commands directed at just this flower.
             mqtt_client.subscribe("flower-control/" + comms::flowerID() + "/#");
         } else {
-            Serial.println("\n MQTT failed to connect.");
+            String mqttFailureMessage = "\nFailed to connect to MQTT broker at\n"
+                + config::CONTROLLER_IP_ADDRESS.toString();
+            Serial.println(mqttFailureMessage);
+            screen::commands::setText(mqttFailureMessage);
         }
     }
 
