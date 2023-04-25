@@ -21,6 +21,12 @@ namespace config {
     // router config to ensure that it always has this IP address.
     const IPAddress CONTROLLER_IP_ADDRESS = IPAddress(192, 168, 1, 72);
 
+    // These need to be #defines, not consts, because of compiled optimizations in FastLED
+    // Note that #define values are NOT namespace-scoped, they're just here so they can be
+    // listed together with other config values.
+    #define PRODUCTION_LED_DATA_PIN 13  // The custom-PCB boards ordered from China
+    #define PROTOTYPE_LED_DATA_PIN 15   // The prototype boards that Patrick made.
+    #define LED_DATA_PIN PRODUCTION_LED_DATA_PIN  // Referenced from led_control.cpp
 }
 
 #endif // CONFIG_H

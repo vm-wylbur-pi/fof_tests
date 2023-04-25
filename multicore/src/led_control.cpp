@@ -1,12 +1,10 @@
 #include "led_control.h"
 #include "comms.h"  // not a good idea?
+#include "config.h" // for LED_DATA_PIN
 #include "time_sync.h"
 #include "music_sync.h"
 
 #include <FastLED.h>
-
-// IO pin to which the LED data line is soldered.
-#define DATA_PIN 15
 
 // puck is 41, flower+leaves is about 100
 #define NUM_LEDS 100
@@ -20,7 +18,7 @@ namespace led_control {
     uint8_t gDeltaB;
 
     void setupFastLED() {
-        FastLED.addLeds<NEOPIXEL, DATA_PIN>(gLEDs, NUM_LEDS);
+        FastLED.addLeds<NEOPIXEL, LED_DATA_PIN>(gLEDs, NUM_LEDS);
 
         // This turns on temporal dithering, which can only work
         // if FastLED.show() is called as often as possible.
