@@ -14,10 +14,10 @@ plt.ion()
 #pt_D = [1014, 804]
 
 img = cv2.imread('./pics/diamond.jpg')
-pt_A = [1966, 2086]
-pt_B = [3924, 1008]
-pt_C = [2034, 642]
-pt_D = [116, 896]
+pt_A = [1971, 2073]
+pt_B = [3912, 1006]
+pt_C = [2032, 646]
+pt_D = [132, 900]
 
 width_AD = np.sqrt(((pt_A[0] - pt_D[0]) ** 2) + ((pt_A[1] - pt_D[1]) ** 2))
 width_BC = np.sqrt(((pt_B[0] - pt_C[0]) ** 2) + ((pt_B[1] - pt_C[1]) ** 2))
@@ -49,9 +49,9 @@ plt.xticks(np.arange(0,maxHeight, step=maxHeight/10), np.arange(0,100, step=10))
 plt.yticks(np.arange(0,maxHeight, step=maxHeight/10), np.arange(0,100, step=10))
 
 ax.imshow(out)
-ax.plot(maxWidth/2,maxHeight/2,'.', color='#90EE90')
+ax.plot(maxWidth/2,maxHeight/2,'.', color='red')
 
-ax.plot(pt_warp[0][0][0],pt_warp[0][0][1],'.', color='red')
+#ax.plot(pt_warp[0][0][0],pt_warp[0][0][1],'.', color='red')
 
 
 #plt.imshow(out)
