@@ -6,6 +6,8 @@
 #include <SPI.h> // Serial peripheral interface, for integrating with the audio/SD board
 #include <SD.h>  // SD card
 #include <FS.h>  // Generic filesystem
+#include <ESP-FTP-Server-Lib.h>  // FTP Server
+#include <FTPFilesystem.h>       // FTP Server link targets for SD, SPIFFS, etc
 
 // Good reference for understanding SPI
 // https://randomnerdtutorials.com/esp32-spi-communication-arduino/
@@ -17,8 +19,13 @@ const uint8_t SPI_COPI = 23;  // Controller out - peripheral in
 const uint8_t SPI_CIPO = 19;  // Conroller in - perpheral out
 const uint8_t SPI_SCK = 18;   // Serial Clock
 
+#define FTP_USER "fof"
+#define FTP_PASSWORD "fof"
+
 namespace storage
 {
+    FTPServer ftp;
+
     void setupSDCard() {
         // This is copy-pased without reading any docs.
         Serial.println("trying to connect to SD");
@@ -49,6 +56,29 @@ namespace storage
         } 
         Serial.println(fileListDebugMsg);
         comms::sendDebugMessage(fileListDebugMsg);
+    }
+
+    void setupFTP() {
+        ftp.addUser(FTP_USER, FTP_PASSWORD);
+        // This is the global SD filesystem reference, valid only after
+        // it's been initialized via setupSDCard()
+        // Using "SD" here means that the server will mount everything under the SD
+        // filesystem in a folder named "SD" at the root of the FTP server. So audio
+        // files are at, e.g. /SD/cool-sound.wav
+        ftp.addFilesystem("SD", &SD);
+        // Current design leaves the FTP server running all the time, for simplicity.
+        // If this turns out to be a problem, we could instead start/stop it via
+        // commands sent over MQTT.
+        ftp.begin();
+
+        const String ftpMessage = "FTP server started\n";
+        Serial.println(ftpMessage);
+        comms::sendDebugMessage(ftpMessage);
+        screen::commands::appendText(ftpMessage);
+    }
+
+    void handleFTP() {
+        ftp.handle();
     }
 
     String formatStorageUsage() {

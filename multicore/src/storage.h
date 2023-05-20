@@ -8,6 +8,14 @@ namespace storage
     // Should be called from main app setup();
     void setupSDCard();
 
+    // Should be called from main app setup(), only after calling
+    // both storage::setupSDCard and networking::setupWiFi
+    void setupFTP();
+
+    // Should be called from one of the mainLoop() functions,
+    // probably the comms loop.
+    void handleFTP();
+
     // Get the names of files stored in the root directory of the SD card.
     // Directories and files that start with "." are ignored.
     // Returns at most 30 filenames.  Retrun value is the actual number of

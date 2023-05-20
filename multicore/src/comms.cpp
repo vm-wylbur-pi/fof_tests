@@ -5,6 +5,7 @@
 #include "led_control.h"
 #include "networking.h"
 #include "screen.h"
+#include "storage.h"
 #include "time_sync.h"
 #include "music_sync.h"
 
@@ -26,6 +27,12 @@ namespace comms
         // by altering state or issuing LED control calls. If messages are
         // received, the main callback in comms.cc will dispatch.
         networking::mqttSendReceive();
+
+        // Handle any FTP requests.
+        // Warning!! This may block for a while, resulting in interruptions of
+        // other functions running in the non-LED core, including audio,
+        // OTA firmware update, and MQTT.  Be careful with large file operations.
+        storage::handleFTP();
 
         // I may need to move this to the LED main loop, if beats come late
         // or are skipped because of network traffic.

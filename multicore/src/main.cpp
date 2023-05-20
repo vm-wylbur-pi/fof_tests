@@ -66,6 +66,7 @@ void setup()
   networking::setupOTA();
   networking::setupMQTT();
   storage::setupSDCard();
+  storage::setupFTP();
   audio::setupAudio();
 
   // We want to give this a non-contended shot at the CPU, so we run
