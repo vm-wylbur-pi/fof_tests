@@ -3,6 +3,7 @@
 #include "comms.h"
 #include "music_sync.h"
 #include "screen.h"
+#include "storage.h"
 
 // https://github.com/earlephilhower/ESP8266Audio
 #include "AudioFileSourceSD.h"
@@ -162,6 +163,25 @@ namespace audio
         void stopSoundFile() {
             wavGenerator->stop();
             sdAudioSource->close();
+        }
+
+        void listSoundFiles() {
+            String fileListDebugMsg = "SD Card Root directory contents\n";
+            String fileNames[30];
+            int num_files = storage::listFilesInRootDir(fileNames);
+            fileListDebugMsg += "  " + String(num_files) + " files\n";
+            if (num_files > 30) {
+                int numNotShown = num_files - 30;
+                fileListDebugMsg += " WARNING! Only the first 30 files are listed.\n "
+                                    + String(numNotShown) + " files are not shown.";
+                num_files = 30;
+            }
+            for (uint16_t i = 0; i < num_files; i++) {
+                fileListDebugMsg += fileNames[i];
+                fileListDebugMsg += "\n";
+            }
+            Serial.println(fileListDebugMsg);
+            comms::sendDebugMessage(fileListDebugMsg);
         }
 
     } // namespace commands

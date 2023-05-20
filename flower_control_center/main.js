@@ -203,6 +203,7 @@ function populateCommandChoices() {
         "audio/setVolume",
         "audio/playSoundFile",
         "audio/stopSoundFile",
+        "audio/listSoundFiles",
         "screen/setText",
         "screen/appendText"
     ]

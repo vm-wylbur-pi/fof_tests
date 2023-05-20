@@ -44,18 +44,6 @@ namespace storage
         Serial.println("SD card filesystem mount succedded.");
         comms::sendDebugMessage("SD card filesystem mount succeeded.");
         screen::commands::appendText("SD Card mounted\n");
-
-        // Temp, as a way to test directory listing.
-        String fileListDebugMsg = "SD Card Root directory contents\n";
-        String fileNames[30];
-        int num_files = listFilesInRootDir(fileNames);
-        fileListDebugMsg += "  " + String(num_files) + " files\n";
-        for (uint16_t i=0; i<num_files; i++) {
-            fileListDebugMsg += fileNames[i];
-            fileListDebugMsg += "\n";
-        } 
-        Serial.println(fileListDebugMsg);
-        comms::sendDebugMessage(fileListDebugMsg);
     }
 
     void setupFTP() {

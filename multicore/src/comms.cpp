@@ -110,6 +110,10 @@ namespace comms
             audio::commands::stopSoundFile();
             return;
         }
+        if (command == "audio/listSoundFiles") {
+            audio::commands::listSoundFiles();
+            return;
+        }
         if (command == "screen/setText") {
             screen::commands::setText(parameters);
             return;

@@ -22,6 +22,9 @@ namespace audio
         // filename must be a file in the SD card root directory.
         void playSoundFile(const String& filename);
         void stopSoundFile();
+        // Send a listing of files in the SD card over the MQTT debug channel
+        // Any of these files ending in .wav is probably playable.
+        void listSoundFiles();
     } // namespace commands
 } // namespace audio
 
