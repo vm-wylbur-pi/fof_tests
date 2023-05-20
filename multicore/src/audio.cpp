@@ -76,7 +76,8 @@ namespace audio
 
         // TEMP: register the beat handler as a callback. If this slows down
         // FPS too much, I should hard-code it in the music sync poller instead.
-        music_sync::onBeat(&beatHappened);
+        // Disabled while working on basic audio functionality.
+        //music_sync::onBeat(&beatHappened);
     }
 
     void mainLoop() {
