@@ -11,7 +11,7 @@
 // The LEDs stalled every 5-10 seconds. I think there might be some
 // kind of implicit networking or something also running on core 1.
 #define CORE_FOR_LED_CONTROL 0
-#define CORE_FOR_EVERTHING_ELSE 1
+#define CORE_FOR_EVERYTHING_ELSE 1
 
 void startTask(TaskFunction_t pvTaskCode, const char *const pcName, const BaseType_t xCoreID)
 {
@@ -78,9 +78,9 @@ void setup()
   screen::commands::setText("Hello, JOBI.\nI am flower " + comms::flowerID() + "\n");
 
   startTask(TaskLED, "LED Control", CORE_FOR_LED_CONTROL);
-  startTask(TaskOTA, "OTA", CORE_FOR_EVERTHING_ELSE);
-  startTask(TaskComms, "Control Server Comms", CORE_FOR_EVERTHING_ELSE);
-  startTask(TaskAudio, "Audio", CORE_FOR_EVERTHING_ELSE);
+  startTask(TaskOTA, "OTA", CORE_FOR_EVERYTHING_ELSE);
+  startTask(TaskComms, "Control Server Comms", CORE_FOR_EVERYTHING_ELSE);
+  startTask(TaskAudio, "Audio", CORE_FOR_EVERYTHING_ELSE);
 }
 
 void loop()
