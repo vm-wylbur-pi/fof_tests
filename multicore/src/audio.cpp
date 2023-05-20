@@ -65,6 +65,7 @@ namespace audio
         // Audio(I2S)
         sdAudioSource = new AudioFileSourceSD();
         wavGenerator = new AudioGeneratorWAV();
+        //wavGenerator->SetBufferSize(2048);
         i2sAudioOutput = new AudioOutputI2S();
 
         // params are int bclkPin, int wclkPin, int doutPin
