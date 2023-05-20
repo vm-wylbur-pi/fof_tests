@@ -102,7 +102,7 @@ function handleFlowerDebugMessage(message) {
     let flower_id = message.destinationName.substring(prefixLen);
     console.log(`got debug message from flower ${flower_id}`);
     let $debugDiv = findOrCreateDebugDiv(flower_id);
-    $debugDiv.append(`<p>${message.payloadString}</p>`)
+    $debugDiv.append(`<pre>${message.payloadString}</pre>`)
 }
 
 function findOrCreateDebugDiv(flower_id) {
@@ -124,7 +124,7 @@ function findOrCreateDebugDiv(flower_id) {
             $debugDiv.hide();
         });
         $debugDiv.find(".clear").click(function(event) {
-            $debugDiv.find("p").remove();
+            $debugDiv.find("pre").remove();
         });
     }
     return $debugDiv;

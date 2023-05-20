@@ -84,9 +84,9 @@ div.debugMessages h3 {
     text-align: center;
 }
 
-div.debugMessages p {
+div.debugMessages pre {
     margin: 2px;
-    font-family: 'Courier New', Courier, monospace;
+    margin-bottom: 6px;
     /* So it shows below both buttons */
     clear: both;
 }
