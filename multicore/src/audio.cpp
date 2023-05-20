@@ -36,7 +36,6 @@ const uint8_t PIN_NEXT = 2;
 namespace audio
 {
     //  The main audio objects
-    //Audio audio;
     AudioFileSourceSD *sdAudioSource = nullptr;
     AudioGeneratorWAV *wavGenerator = nullptr;
     AudioOutputI2S *i2sAudioOutput = nullptr;
