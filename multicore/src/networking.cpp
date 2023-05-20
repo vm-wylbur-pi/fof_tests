@@ -132,7 +132,7 @@ namespace networking {
             mqtt_client.subscribe("flower-control/" + comms::flowerID() + "/#");
         } else {
             String mqttFailureMessage = "\nFailed to connect to MQTT broker at\n"
-                + config::CONTROLLER_IP_ADDRESS.toString();
+                + config::CONTROLLER_IP_ADDRESS.toString() + "\n";
             Serial.println(mqttFailureMessage);
             screen::commands::setText(mqttFailureMessage);
         }
