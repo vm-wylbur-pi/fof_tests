@@ -29,7 +29,7 @@ namespace networking {
         WiFi.mode(WIFI_STA);
         WiFi.begin(config::WIFI_SSID.c_str(), config::WIFI_PASSWORD.c_str());
         while (WiFi.waitForConnectResult() != WL_CONNECTED) {
-            String failure_message = "WiFi Connection to\n" + config::WIFI_SSID + "failed.\nRebooting in 5 sec.";
+            String failure_message = "WiFi Connection to\n" + config::WIFI_SSID + " failed.\nRebooting in 5 sec.";
             Serial.println(failure_message);
             screen::commands::setText(failure_message);
             delay(5000);
