@@ -3,6 +3,8 @@
 
 #include <FastLED.h>
 
+#define NUM_LEDS 111
+
 namespace led_control
 {
     // Should be run during setup()

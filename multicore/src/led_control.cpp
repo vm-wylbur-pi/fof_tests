@@ -1,13 +1,12 @@
 #include "led_control.h"
+
 #include "comms.h"  // not a good idea?
 #include "config.h" // for LED_DATA_PIN
+#include "led_patterns.h"
 #include "time_sync.h"
 #include "music_sync.h"
 
 #include <FastLED.h>
-
-// puck is 41, flower+leaves is about 100
-#define NUM_LEDS 100
 
 namespace led_control {
 
@@ -34,35 +33,22 @@ namespace led_control {
     unsigned long flashStartTime;
     unsigned long flashDurationMillis = 50;
 
-    void mainLoop() {
-        /// Vary gVal & dithering brightness within a low-medium range.
-        // The purpose is to have the flower in a continuous smooth
-        // brightness oscillation that depends on temporal dithering. Any
-        // interruption in LED contol throughput should be visible as
-        // pulse freezing or stuttering.
-        EVERY_N_MILLISECONDS(10) {
-            if (gB < 32) {
-                gB = 31;
-                gDeltaB = 1;
-            } else if (gB > 128) {
-                gB = 129;
-                gDeltaB = -1;
-            }
-            gB += gDeltaB;
-            gVal = gB;
-            FastLED.setBrightness(gB);
-            fill_solid(gLEDs, NUM_LEDS, CHSV(gHue, 255, gVal));
-        }
+    // Default pattern is an independent idle, which will look OK in the absence
+    // of any field coordination, and/or if the sync timer is not set.
+    led_patterns::Pattern* currentPattern = new led_patterns::IndependentIdle();
 
-        if (beatFlashingEnabled) {
-            unsigned long controlTime = time_sync::controlMillis();
-            bool inFlash = controlTime > flashStartTime && controlTime < flashStartTime + flashDurationMillis;
-            if (inFlash) {
-                // Override whatever color would have been drawn with medium-brightness white.
-                fill_solid(gLEDs, NUM_LEDS, CHSV(0, 0, 128));
-                FastLED.setBrightness(128);
-            }
-        }
+    void mainLoop() {
+        currentPattern->run(0, gLEDs);
+
+        // if (beatFlashingEnabled) {
+        //     unsigned long controlTime = time_sync::controlMillis();
+        //     bool inFlash = controlTime > flashStartTime && controlTime < flashStartTime + flashDurationMillis;
+        //     if (inFlash) {
+        //         // Override whatever color would have been drawn with medium-brightness white.
+        //         fill_solid(gLEDs, NUM_LEDS, CHSV(0, 0, 128));
+        //         FastLED.setBrightness(128);
+        //     }
+        // }
 
         // This is essential. Calling FastLED.show as often as possible
         // is what makes temporal dithering work.
