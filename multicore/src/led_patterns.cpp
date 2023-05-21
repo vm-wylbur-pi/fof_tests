@@ -19,8 +19,15 @@ const CRGBPalette16 leafyGreensPalette = LEAFY_GREENS_GP;
 
 namespace led_patterns {
 
+void SolidHue::run(uint32_t time, CRGB leds[NUM_LEDS]) {
+    if (!_has_run && time > _start_time) {
+        fill_solid(leds, NUM_LEDS, CHSV(_hue, 255, 100));
+        _has_run = true;
+    }
+}
+
 IndependentIdle::IndependentIdle() {
-    _blossomHue = random8();
+    _blossomHue = 0;
     // Start each point in each leaf at a random spot in the palette; each led
     // will rotate through the palette independently, to avoid spatial coherence.
     for (uint8_t i=0; i<LEAF_SIZE; i++) {
@@ -35,11 +42,12 @@ void IndependentIdle::run(uint32_t time, CRGB leds[NUM_LEDS]) {
         }
     }
     for (uint8_t i=BLOSSOM_START; i<BLOSSOM_END; i++) {
+        // Simple hue for now. TODO: add some variation, probably with palette cycling
         leds[i] = CHSV(_blossomHue, 255, 100);
     }
 
     // Palette cycling for each point in each leaf.
-    EVERY_N_MILLISECONDS(40) {
+    EVERY_N_MILLISECONDS(10) {
         for (uint8_t i = 0; i < LEAF_SIZE; i++) {
             _leafPaletteIdx[i]++;
         }

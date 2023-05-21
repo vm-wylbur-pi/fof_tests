@@ -27,6 +27,18 @@ namespace led_patterns {
         virtual String name() = 0;
     };
 
+    // Solid hue at full saturation, sent to the LEDs exactly once, at the start time.
+    class SolidHue : public Pattern {
+      public:
+        SolidHue(uint8_t hue, uint32_t start_time) : _hue(hue), _start_time(start_time) {};
+        String name() { return "SolidHue;" };
+        void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
+      private:
+        uint8_t _hue;
+        uint32_t _start_time;
+        bool _has_run = false;
+    };
+
     // Idle pattern not related to a flower's position and not synced.
     // Gently varying greens in the leaves, and gently varying color in
     // the blossom centered around a random main hue.
