@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "comms.h"
+#include "time_sync.h"
 #include "util.h"
 
 #include <FastLED.h>
@@ -60,7 +61,16 @@ void IndependentIdle::run(uint32_t time, CRGB leds[NUM_LEDS]) {
     }
 }
 
-std::unique_ptr<Pattern> makePattern(const String &patternName, const String &parameters) {
+uint32_t parseStartTime(const String& startTimeParameter) {
+    if (startTimeParameter.startsWith("+")) {
+        const uint32_t offset = startTimeParameter.substring(1).toInt();
+        return time_sync::controlMillis() + offset;
+    } else {
+        return startTimeParameter.toInt();
+    }
+}
+
+std::unique_ptr<Pattern> makePattern(const String& patternName, const String& parameters) {
     std::vector<String> params = util::splitCommaSepString(parameters);
 
     // Parameters are
@@ -70,7 +80,7 @@ std::unique_ptr<Pattern> makePattern(const String &patternName, const String &pa
         uint8_t hue = 0;
         uint32_t start_time = 0;
         if (params.size() >= 1) { hue = params[0].toInt(); }
-        if (params.size() >= 2) { start_time = params[1].toInt(); }
+        if (params.size() >= 2) { start_time = parseStartTime(params[1]); }
         return std::unique_ptr<Pattern>(new SolidHue(hue, start_time));
     }
     if (patternName == "IndependentIdle") {
