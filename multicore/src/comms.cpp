@@ -96,6 +96,13 @@ namespace comms
             led_control::commands::setHue(newHue);
             return;
         }
+        if (command.startsWith("leds/runPattern/")) {
+            // Delegate parameter interpretation to the led control module, where all
+            // the led patterns are defined.
+            String patternName = command.substring(String("leds/runPattern/").length());
+            led_control::commands::runPattern(patternName, parameters);
+            return;
+        }
         if (command == "audio/setVolume") {
             // Range is 0.0 - 11.0.  Minimum audible volume is 0.05.
             float newVolume = parameters.toFloat();

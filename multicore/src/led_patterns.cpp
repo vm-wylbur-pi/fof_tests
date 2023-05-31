@@ -1,5 +1,10 @@
 #include "led_patterns.h"
 
+#include <vector>
+
+#include "comms.h"
+#include "util.h"
+
 #include <FastLED.h>
 
 // LEDs in order from stem to tip
@@ -23,6 +28,7 @@ void SolidHue::run(uint32_t time, CRGB leds[NUM_LEDS]) {
     if (!_has_run && time > _start_time) {
         fill_solid(leds, NUM_LEDS, CHSV(_hue, 255, 100));
         _has_run = true;
+        comms::sendDebugMessage("Ran SolidHue->run()");
     }
 }
 
@@ -54,6 +60,25 @@ void IndependentIdle::run(uint32_t time, CRGB leds[NUM_LEDS]) {
     }
 }
 
+std::unique_ptr<Pattern> makePattern(const String &patternName, const String &parameters) {
+    std::vector<String> params = util::splitCommaSepString(parameters);
 
+    // Parameters are
+    //   hue: 0-255
+    //   start_time: relative to control timer
+    if (patternName == "SolidHue") {
+        uint8_t hue = 0;
+        uint32_t start_time = 0;
+        if (params.size() >= 1) { hue = params[0].toInt(); }
+        if (params.size() >= 2) { start_time = params[1].toInt(); }
+        return std::unique_ptr<Pattern>(new SolidHue(hue, start_time));
+    }
+    if (patternName == "IndependentIdle") {
+        return std::unique_ptr<Pattern>(new IndependentIdle());
+    }
+
+    comms::sendDebugMessage("Unknown LED pattern: " + patternName);
+    return nullptr;
+}
 
 } // namespace led_patterns

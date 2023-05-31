@@ -30,6 +30,9 @@ namespace led_control
         // When enabled, LEDs will flash white, at the current global brigthness,
         // for 50ms once for every beat according to the current BPM
         void toggleBeatFlashing();
+
+        // Schedule the given pattern to run according to its parameters.
+        void runPattern(const String& patternName, const String& parameters);
     }
 }
 

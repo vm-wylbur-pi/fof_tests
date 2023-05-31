@@ -1,6 +1,7 @@
 #ifndef LED_PATTERNS_H
 #define LED_PATTERNS_H
 
+#include <memory>
 #include <FastLED.h>
 
 #include "led_control.h" // for NUM_LEDS
@@ -25,13 +26,15 @@ namespace led_patterns {
         // given an offset in milliseconds from the start of the pattern.
         virtual void run(uint32_t time, CRGB leds[NUM_LEDS]) = 0;
         virtual String name() = 0;
+      private:
+        uint32_t _start_time;
     };
 
     // Solid hue at full saturation, sent to the LEDs exactly once, at the start time.
     class SolidHue : public Pattern {
       public:
         SolidHue(uint8_t hue, uint32_t start_time) : _hue(hue), _start_time(start_time) {};
-        String name() { return "SolidHue;" };
+        String name() { return "SolidHue"; };
         void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
       private:
         uint8_t _hue;
@@ -64,6 +67,9 @@ namespace led_patterns {
         void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
         String name() {return "HuePulse";};
     };
+
+    // Construct a pattern object of the specified name and parameters.
+    std::unique_ptr<Pattern> makePattern(const String& patternName, const String& parameters);
 }  // namespace led_patterns
 
 #endif // LED_PATTERNS_H

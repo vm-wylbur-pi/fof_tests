@@ -6,6 +6,7 @@
 #include "time_sync.h"
 #include "music_sync.h"
 
+#include <memory>
 #include <FastLED.h>
 
 namespace led_control {
@@ -35,10 +36,10 @@ namespace led_control {
 
     // Default pattern is an independent idle, which will look OK in the absence
     // of any field coordination, and/or if the sync timer is not set.
-    led_patterns::Pattern* currentPattern = new led_patterns::IndependentIdle();
+    std::unique_ptr<led_patterns::Pattern> currentPattern = std::unique_ptr<led_patterns::Pattern>(new led_patterns::IndependentIdle());
 
     void mainLoop() {
-        currentPattern->run(0, gLEDs);
+        currentPattern->run(time_sync::controlMillis(), gLEDs);
 
         // if (beatFlashingEnabled) {
         //     unsigned long controlTime = time_sync::controlMillis();
@@ -70,6 +71,16 @@ namespace led_control {
 
         void toggleBeatFlashing() {
             beatFlashingEnabled = !beatFlashingEnabled;
+        }
+
+        void runPattern(const String &patternName, const String &parameters) {
+            std::unique_ptr<led_patterns::Pattern> pattern = led_patterns::makePattern(patternName, parameters);
+            if (pattern != nullptr) {
+                currentPattern = std::move(pattern);
+                comms::sendDebugMessage("Switching to pattern: " + currentPattern->name());
+            } else {
+                comms::sendDebugMessage("Failed to initialize pattern. Staying with: " + currentPattern->name());
+            }
         }
     }
 }
