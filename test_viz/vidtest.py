@@ -3,13 +3,16 @@ import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
 
+#from vidstab.VidStab import VidStab
+#stabilizer = VidStab()
+
 # pip install opencv-python, tensorflow-macos, matplotlib
+video_file = "./vids/final-crazy.mp4"
 
 # convert mov:
 #  ./ffmpeg -i short-movement-test.mov -vcodec h264 -acodec mp2 short-movement-test.mp4
 # https://tfhub.dev/tensorflow/lite-model/efficientdet/lite2/detection/default/1
 model_file = "./models/lite-model_efficientdet_lite2_detection_default_1.tflite"
-video_file = "./vids/big-test.mp4.mp4"
 threshold = 0.3
 RMIN = 1
 RMAX = 10000009
@@ -29,6 +32,63 @@ frame_height = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 out = cv2.VideoWriter('output.mp4', fourcc, 30.0, (frame_width, frame_height))
 
+################################################################
+# Randomly select 25 frames
+frameIds = video.get(cv2.CAP_PROP_FRAME_COUNT) * np.random.uniform(size=100)
+
+# Store selected frames in an array
+frames = []
+for fid in frameIds:
+    video.set(cv2.CAP_PROP_POS_FRAMES, fid)
+    ret, frame = video.read()
+    frames.append(frame)
+
+# Calculate the median along the time axis
+medianFrame = np.median(frames, axis=0).astype(dtype=np.uint8)
+
+# Display median frame
+#cv2.imshow('frame', medianFrame)
+#cv2.waitKey(0)
+
+# Reset frame number to 0
+video.set(cv2.CAP_PROP_POS_FRAMES, 0)
+
+# Convert background to grayscale
+# grayMedianFrame = cv2.cvtColor(medianFrame, cv2.COLOR_BGR2GRAY)
+
+# Loop over all frames
+#ret = True
+#cnt = 0
+#while(ret):
+    # Read frame
+#    ret, frame = cap.read()
+#    if not ret:
+#        break
+    # Convert current frame to grayscale
+    #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    # Calculate absolute difference of current frame and
+    # the median frame
+ #   dframe = cv2.absdiff(frame, medianFrame)
+#    # Treshold to binarize
+#    th, dframe = cv2.threshold(dframe, 30, 255, cv2.THRESH_BINARY)
+#    # Display image
+#    # Display median frame
+#    cv2.imshow('frame', dframe)
+#    cv2.waitKey(0)
+#    print(cnt)
+#    cnt += 1
+
+# Release video object
+#cap.release()
+#out.release()
+
+# Destroy all windows
+#cv2.destroyAllWindows()
+
+# sys.exit()
+################################################################
+
+
 counter = 0
 # Loop over each frame in the video
 while True:
@@ -47,6 +107,10 @@ while True:
     if not ret:
         break
 
+    ##### let's mask some stuff
+    dframe = cv2.absdiff(frame, medianFrame)
+    # Treshold to binarize
+    th, frame = cv2.threshold(dframe, 30, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,)
 
     # Preprocess the image for input to the model
     input_shape = tuple(input_details[0]['shape'][1:3])
@@ -82,7 +146,7 @@ while True:
             ymin = int(ymin * frame_height)
             ymax = int(ymax * frame_height)
             cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), (0, 255, 0), 2)
-            cv2.putText(frame, str(round(scores[i],2)), (xmax,ymin), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255),1,2)
+            cv2.putText(frame, str(round(scores[i],2)) + "x " + str(xmax) + "y " + str(ymax), (xmax,ymin), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255),1,2)
 
     # Write the processed frame to the output video file
     out.write(frame)
