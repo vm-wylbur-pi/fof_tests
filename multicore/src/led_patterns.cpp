@@ -25,11 +25,14 @@ const CRGBPalette16 leafyGreensPalette = LEAFY_GREENS_GP;
 
 namespace led_patterns {
 
+String SolidHue::name() {
+    return "SolidHue(" + String(_hue) + ", " + String(_start_time) + ")";
+}
+
 void SolidHue::run(uint32_t time, CRGB leds[NUM_LEDS]) {
     if (!_has_run && time > _start_time) {
         fill_solid(leds, NUM_LEDS, CHSV(_hue, 255, 100));
         _has_run = true;
-        comms::sendDebugMessage("Ran SolidHue->run()");
     }
 }
 

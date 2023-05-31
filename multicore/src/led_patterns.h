@@ -34,7 +34,7 @@ namespace led_patterns {
     class SolidHue : public Pattern {
       public:
         SolidHue(uint8_t hue, uint32_t start_time) : _hue(hue), _start_time(start_time) {};
-        String name() { return "SolidHue"; };
+        String name();
         void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
       private:
         uint8_t _hue;
