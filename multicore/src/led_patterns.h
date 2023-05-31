@@ -23,11 +23,9 @@ namespace led_patterns {
     class Pattern {
       public:
         // Evaluate the pattern, altering the content of the leds array,
-        // given an offset in milliseconds from the start of the pattern.
+        // given an absolute control timer value.
         virtual void run(uint32_t time, CRGB leds[NUM_LEDS]) = 0;
         virtual String name() = 0;
-      private:
-        uint32_t _start_time;
     };
 
     // Solid hue at full saturation, sent to the LEDs exactly once, at the start time.
@@ -54,6 +52,18 @@ namespace led_patterns {
       private:
         uint8_t _blossomHue;
         uint8_t _leafPaletteIdx[LEAF_SIZE];
+    };
+
+    // Change a single LED to white at medium brightness, cycling through all
+    // LEDs in order; this gives an effect of a single dot bouncing around the
+    // flower. Does not alter any LEDs besides the dot, so this is good for
+    // testing pattern compositing.
+    class RunningDot : public Pattern {
+      public:
+        void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
+        String name() {return "RunningDot";};
+      private:
+        uint8_t _dotLocation = 0;
     };
 
     // Pulse once, from black through to the given hue, then back to black.

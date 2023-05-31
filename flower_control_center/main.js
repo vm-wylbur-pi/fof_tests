@@ -203,6 +203,7 @@ function populateCommandChoices() {
         "leds/clearPatterns",
         "leds/runPattern/IndependentIdle",
         "leds/runPattern/SolidHue",
+        "leds/runPattern/RunningDot",
         "audio/setVolume",
         "audio/playSoundFile",
         "audio/stopSoundFile",

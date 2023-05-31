@@ -64,6 +64,13 @@ void IndependentIdle::run(uint32_t time, CRGB leds[NUM_LEDS]) {
     }
 }
 
+void RunningDot::run(uint32_t time, CRGB leds[NUM_LEDS]) {
+    leds[_dotLocation] = CRGB(100, 100, 100);
+    EVERY_N_MILLISECONDS(10) {
+      _dotLocation = (_dotLocation + 1) % NUM_LEDS;
+    }
+}
+
 uint32_t parseStartTime(const String& startTimeParameter) {
     if (startTimeParameter.startsWith("+")) {
         const uint32_t offset = startTimeParameter.substring(1).toInt();
@@ -88,6 +95,9 @@ std::unique_ptr<Pattern> makePattern(const String& patternName, const String& pa
     }
     if (patternName == "IndependentIdle") {
         return std::unique_ptr<Pattern>(new IndependentIdle());
+    }
+    if (patternName == "RunningDot") {
+        return std::unique_ptr<Pattern>(new RunningDot());
     }
 
     comms::sendDebugMessage("Unknown LED pattern: " + patternName);
