@@ -200,6 +200,7 @@ function populateCommandChoices() {
         "time/setBPM",
         "leds/toggleBeatFlashing",
         "leds/setHue",
+        "leds/clearPatterns",
         "leds/runPattern/IndependentIdle",
         "leds/runPattern/SolidHue",
         "audio/setVolume",

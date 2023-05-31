@@ -96,6 +96,10 @@ namespace comms
             led_control::commands::setHue(newHue);
             return;
         }
+        if (command == "leds/clearPatterns") {
+            led_control::commands::clearPatterns();
+            return;
+        }
         if (command.startsWith("leds/runPattern/")) {
             // Delegate parameter interpretation to the led control module, where all
             // the led patterns are defined.

@@ -33,6 +33,9 @@ namespace led_control
 
         // Schedule the given pattern to run according to its parameters.
         void runPattern(const String& patternName, const String& parameters);
+
+        // Remove all currently active LED patterns, even if they're not done yet.
+        void clearPatterns();
     }
 }
 

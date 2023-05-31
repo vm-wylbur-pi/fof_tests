@@ -7,6 +7,7 @@
 #include "music_sync.h"
 
 #include <memory>
+#include <vector>
 #include <FastLED.h>
 
 namespace led_control {
@@ -16,6 +17,9 @@ namespace led_control {
     uint8_t gVal = 150;
     uint8_t gB; // drives gVal and setBrightness.
     uint8_t gDeltaB;
+
+    // The set of currently-active LED patterns.
+    std::vector<std::unique_ptr<led_patterns::Pattern>> patterns = {};
 
     void setupFastLED() {
         FastLED.addLeds<NEOPIXEL, LED_DATA_PIN>(gLEDs, NUM_LEDS);
@@ -27,6 +31,10 @@ namespace led_control {
         // TEMP: register the beat handler as a callback. If this slows down
         // FPS too much, I should hard-code it in the music sync poller instead.
         music_sync::onBeat(&beatHappened);
+
+        // Default pattern is an independent idle, which will look OK in the absence
+        // of any field coordination, and/or if the sync timer is not set.
+        patterns.emplace_back(new led_patterns::IndependentIdle());
     }
 
     // State variables for flashing.
@@ -34,12 +42,10 @@ namespace led_control {
     unsigned long flashStartTime;
     unsigned long flashDurationMillis = 50;
 
-    // Default pattern is an independent idle, which will look OK in the absence
-    // of any field coordination, and/or if the sync timer is not set.
-    std::unique_ptr<led_patterns::Pattern> currentPattern = std::unique_ptr<led_patterns::Pattern>(new led_patterns::IndependentIdle());
-
     void mainLoop() {
-        currentPattern->run(time_sync::controlMillis(), gLEDs);
+        for (auto& pattern : patterns) {
+            pattern->run(time_sync::controlMillis(), gLEDs);
+        }
 
         // if (beatFlashingEnabled) {
         //     unsigned long controlTime = time_sync::controlMillis();
@@ -76,11 +82,15 @@ namespace led_control {
         void runPattern(const String &patternName, const String &parameters) {
             std::unique_ptr<led_patterns::Pattern> pattern = led_patterns::makePattern(patternName, parameters);
             if (pattern != nullptr) {
-                currentPattern = std::move(pattern);
-                comms::sendDebugMessage("Switching to pattern: " + currentPattern->name());
+                comms::sendDebugMessage("Adding LED pattern: " + pattern->name());
+                patterns.push_back(std::move(pattern));
             } else {
-                comms::sendDebugMessage("Failed to initialize pattern. Staying with: " + currentPattern->name());
+                comms::sendDebugMessage("Failed to initialize LED pattern.");
             }
+        }
+
+        void clearPatterns() {
+            patterns.clear();
         }
     }
 }
