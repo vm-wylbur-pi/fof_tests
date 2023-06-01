@@ -30,40 +30,20 @@ namespace led_control {
 
         // TEMP: register the beat handler as a callback. If this slows down
         // FPS too much, I should hard-code it in the music sync poller instead.
-        music_sync::onBeat(&beatHappened);
 
         // Default pattern is an independent idle, which will look OK in the absence
         // of any field coordination, and/or if the sync timer is not set.
         patterns.emplace_back(new led_patterns::IndependentIdle());
     }
 
-    // State variables for flashing.
-    bool beatFlashingEnabled = true;
-    unsigned long flashStartTime;
-    unsigned long flashDurationMillis = 50;
-
     void mainLoop() {
         for (auto& pattern : patterns) {
             pattern->run(time_sync::controlMillis(), gLEDs);
         }
 
-        // if (beatFlashingEnabled) {
-        //     unsigned long controlTime = time_sync::controlMillis();
-        //     bool inFlash = controlTime > flashStartTime && controlTime < flashStartTime + flashDurationMillis;
-        //     if (inFlash) {
-        //         // Override whatever color would have been drawn with medium-brightness white.
-        //         fill_solid(gLEDs, NUM_LEDS, CHSV(0, 0, 128));
-        //         FastLED.setBrightness(128);
-        //     }
-        // }
-
         // This is essential. Calling FastLED.show as often as possible
         // is what makes temporal dithering work.
         FastLED.show();
-    }
-
-    void beatHappened(unsigned long beatControlTime) {
-        flashStartTime = beatControlTime;
     }
 
     namespace commands {
@@ -73,10 +53,6 @@ namespace led_control {
             // of the pulsing loop, to minimize latency.
             fill_solid(gLEDs, NUM_LEDS, CHSV(gHue, 255, gVal));
             FastLED.show();
-        }
-
-        void toggleBeatFlashing() {
-            beatFlashingEnabled = !beatFlashingEnabled;
         }
 
         void runPattern(const String &patternName, const String &parameters) {
@@ -90,6 +66,9 @@ namespace led_control {
         }
 
         void clearPatterns() {
+            // TODO: why is the beatflash callback not getting unregistered at this point,
+            // I expect all the patterns' destructors to be called.
+            comms::sendDebugMessage("Clearing all LED patterns.");
             patterns.clear();
         }
     }

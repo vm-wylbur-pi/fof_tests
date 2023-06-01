@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "comms.h"
+#include "music_sync.h"
 #include "time_sync.h"
 #include "util.h"
 
@@ -71,7 +72,30 @@ void RunningDot::run(uint32_t time, CRGB leds[NUM_LEDS]) {
     }
 }
 
-uint32_t parseStartTime(const String& startTimeParameter) {
+BeatFlash::BeatFlash(){
+    std::function<void(unsigned long)> callOnBeat = [=](unsigned long time) {
+        this->_OnBeat(time);
+    };
+    _beatCallbackIterator = music_sync::onBeat(callOnBeat);
+}
+
+BeatFlash::~BeatFlash(){
+    music_sync::unRegisterCallback(_beatCallbackIterator);
+}
+
+void BeatFlash::_OnBeat(unsigned long beatTime) {
+    _flashStartTime = beatTime;
+}
+
+void BeatFlash::run(uint32_t time, CRGB leds[NUM_LEDS]) {
+    bool inFlash = time > _flashStartTime && time < _flashStartTime + _flashDurationMillis;
+    if (inFlash) {
+        fill_solid(leds, NUM_LEDS, CHSV(0, 0, 128));
+        //FastLED.setBrightness(128);
+    }
+}
+
+uint32_t parseStartTime(const String &startTimeParameter) {
     if (startTimeParameter.startsWith("+")) {
         const uint32_t offset = startTimeParameter.substring(1).toInt();
         return time_sync::controlMillis() + offset;
@@ -98,6 +122,9 @@ std::unique_ptr<Pattern> makePattern(const String& patternName, const String& pa
     }
     if (patternName == "RunningDot") {
         return std::unique_ptr<Pattern>(new RunningDot());
+    }
+    if (patternName == "BeatFlash") {
+        return std::unique_ptr<Pattern>(new BeatFlash());
     }
 
     comms::sendDebugMessage("Unknown LED pattern: " + patternName);

@@ -14,22 +14,12 @@ namespace led_control
     // a separate task's forever loop. Either way, that loop should
     // have no delay() or other time-consuming blocking calls.
     void mainLoop();
-
-    // Called from the music sync time polling loop once for each beat.
-    // Used for beat visualization mode.
-    // beatControlTime is the value of the control time at which the beat
-    // takes place. It's passed here to avoid extra calls to time_sinc::controlMillis()
-    void beatHappened(unsigned long beatControlTime);
     
     // These functions are generally called from the networking thread
     // after a server command is received. Dispatch is in comms.cpp
     namespace commands {
         // Set all LEDs to the given hue.
         void setHue(uint8_t newHue);
-
-        // When enabled, LEDs will flash white, at the current global brigthness,
-        // for 50ms once for every beat according to the current BPM
-        void toggleBeatFlashing();
 
         // Schedule the given pattern to run according to its parameters.
         void runPattern(const String& patternName, const String& parameters);
