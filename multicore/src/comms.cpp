@@ -92,6 +92,10 @@ namespace comms
             led_control::commands::setHue(newHue);
             return;
         }
+        if (command == "leds/listPatterns") {
+            led_control::commands::listPatterns();
+            return;
+        }
         if (command == "leds/clearPatterns") {
             led_control::commands::clearPatterns();
             return;

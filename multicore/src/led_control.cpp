@@ -65,6 +65,17 @@ namespace led_control {
             }
         }
 
+        void listPatterns() {
+            String msg = "LED Patterns: ";
+            for (auto& pattern : patterns) {
+                msg += pattern->name() + ", ";
+            } 
+            if (msg.endsWith(", ")) {
+                msg = msg.substring(0, msg.length() - 2);
+            }
+            comms::sendDebugMessage(msg);
+        }
+
         void clearPatterns() {
             // TODO: why is the beatflash callback not getting unregistered at this point,
             // I expect all the patterns' destructors to be called.

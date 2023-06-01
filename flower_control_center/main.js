@@ -199,6 +199,7 @@ function populateCommandChoices() {
         "time/setEventReference",
         "time/setBPM",
         "leds/setHue",
+        "leds/listPatterns",
         "leds/clearPatterns",
         "leds/runPattern/IndependentIdle",
         "leds/runPattern/SolidHue",
