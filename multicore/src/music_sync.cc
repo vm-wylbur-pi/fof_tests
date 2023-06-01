@@ -3,18 +3,25 @@
 #include "comms.h"
 
 #include <functional>
-#include <vector>
+#include <list>
 
 namespace music_sync
 {
     uint16_t millisPerBeat = 2000;
     unsigned long nextBeat = 0;
-    std::vector<std::function<void(unsigned long)>> beatCallbacks;
+    std::list<std::function<void(unsigned long)>> beatCallbacks;
 
-    void onBeat(std::function<void(unsigned long)> callback) {
+    std::_List_iterator<std::function<void(unsigned long)>> onBeat(std::function<void(unsigned long)> callback) {
         // Currently, no support for un-registering a callback. I wonder if we'll need it.
-        beatCallbacks.push_back(callback);
+        beatCallbacks.push_front(callback);
+        comms::sendDebugMessage("Registered beat callback.");
+        return beatCallbacks.begin();
     };
+
+    void unRegisterCallback(std::_List_iterator<std::function<void(unsigned long)>> callbackIteratorToRemove) {
+        beatCallbacks.erase(callbackIteratorToRemove);
+        comms::sendDebugMessage("Unregistered beat callback.");
+    }
 
     // This needs to be very snappy, since it's going to be called from
     // the inner loop, probably from the LED control task.

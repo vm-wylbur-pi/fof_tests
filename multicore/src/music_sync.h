@@ -5,8 +5,15 @@
 
 namespace music_sync
 {
-    // callback once, at every beat, with the control time value at the beat.
-    void onBeat(std::function<void(unsigned long)> callback);
+    // Register a callback function. This function will be called once.
+    // at every beat, with the control time value at the beat.
+    // The return value is used to unregister this callback. It mast be
+    // owned by the caller.
+    std::_List_iterator<std::function<void(unsigned long)>> onBeat(std::function<void(unsigned long)> callback);
+
+    // Unregister the given callback. It will no longer be called on each beat.
+    // callbackIteratorToRemove becomes invalid after calling this method.
+    void unRegisterCallback(std::_List_iterator<std::function<void(unsigned long)>> callbackIteratorToRemove);
 
     // To be called from an inner loop. Uses the global control timer
     // and the setBPM tempo to decide if a beat has begun since the
