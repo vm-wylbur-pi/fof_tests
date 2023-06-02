@@ -67,7 +67,13 @@ void IndependentIdle::run(uint32_t time, CRGB leds[NUM_LEDS]) {
 void RunningDot::run(uint32_t time, CRGB leds[NUM_LEDS]) {
     leds[_dotLocation] = CRGB(100, 100, 100);
     EVERY_N_MILLISECONDS(10) {
-      _dotLocation = (_dotLocation + 1) % NUM_LEDS;
+        if (_dotLocation == 0) {
+            _dotDelta = 1;  // Bounce off bottom 
+        }
+        if (_dotLocation >= NUM_LEDS+1) {
+            _dotDelta = -1; // Bounce off top.
+        }
+      _dotLocation += _dotDelta;
     }
 }
 

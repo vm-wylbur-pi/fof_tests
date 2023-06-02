@@ -64,6 +64,7 @@ namespace led_patterns {
         String name() {return "RunningDot";};
       private:
         uint8_t _dotLocation = 0;
+        uint8_t _dotDelta = 1;
     };
 
     class BeatFlash : public Pattern {
