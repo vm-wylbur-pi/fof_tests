@@ -27,13 +27,15 @@ namespace led_control {
         // This turns on temporal dithering, which can only work
         // if FastLED.show() is called as often as possible.
         FastLED.setBrightness(100);
-        
+
         // Default pattern is an independent idle, which will look OK in the absence
         // of any field coordination, and/or if the sync timer is not set.
         patterns.emplace_back(new led_patterns::IndependentIdle());
     }
 
     void mainLoop() {
+        // Start with all LEDs off; so any transient patterns can have noticeable effects
+        fill_solid(gLEDs, NUM_LEDS, CRGB::Black);
         for (auto& pattern : patterns) {
             pattern->run(time_sync::controlMillis(), gLEDs);
         }
