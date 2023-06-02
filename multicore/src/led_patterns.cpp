@@ -72,26 +72,14 @@ void RunningDot::run(uint32_t time, CRGB leds[NUM_LEDS]) {
     }
 }
 
-BeatFlash::BeatFlash(){
-    std::function<void(unsigned long)> callOnBeat = [=](unsigned long time) {
-        this->_OnBeat(time);
-    };
-    _beatCallbackIterator = music_sync::onBeat(callOnBeat);
-}
-
-BeatFlash::~BeatFlash(){
-    music_sync::unRegisterCallback(_beatCallbackIterator);
-}
-
-void BeatFlash::_OnBeat(unsigned long beatTime) {
-    _flashStartTime = beatTime;
-}
-
 void BeatFlash::run(uint32_t time, CRGB leds[NUM_LEDS]) {
+    uint32_t beatTime = _beatTracker.checkForBeat();
+    if (beatTime) {
+      _flashStartTime = beatTime;
+    }
     bool inFlash = time > _flashStartTime && time < _flashStartTime + _flashDurationMillis;
     if (inFlash) {
         fill_solid(leds, NUM_LEDS, CHSV(0, 0, 128));
-        //FastLED.setBrightness(128);
     }
 }
 

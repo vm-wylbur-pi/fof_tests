@@ -27,10 +27,7 @@ namespace led_control {
         // This turns on temporal dithering, which can only work
         // if FastLED.show() is called as often as possible.
         FastLED.setBrightness(100);
-
-        // TEMP: register the beat handler as a callback. If this slows down
-        // FPS too much, I should hard-code it in the music sync poller instead.
-
+        
         // Default pattern is an independent idle, which will look OK in the absence
         // of any field coordination, and/or if the sync timer is not set.
         patterns.emplace_back(new led_patterns::IndependentIdle());

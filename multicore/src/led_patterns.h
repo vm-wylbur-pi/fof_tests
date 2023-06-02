@@ -1,11 +1,11 @@
 #ifndef LED_PATTERNS_H
 #define LED_PATTERNS_H
 
-#include <list>
 #include <memory>
 #include <FastLED.h>
 
 #include "led_control.h" // for NUM_LEDS
+#include "music_sync.h"
 
 // Constants defining the layout of LEDs across each flower,
 // useful for defining patterns that move in defined ways relative
@@ -69,15 +69,12 @@ namespace led_patterns {
 
     class BeatFlash : public Pattern {
       public:
-        BeatFlash();
-        ~BeatFlash();
         void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
         String name() { return "BeatFlash"; };
       private:
-        std::_List_iterator<std::function<void(unsigned long)>> _beatCallbackIterator;
-        void _OnBeat(unsigned long beatTime);
+        music_sync::MusicBeat _beatTracker;
         uint32_t _flashStartTime;
-        uint32_t _flashDurationMillis = 50;
+        uint32_t _flashDurationMillis = 50;  // could be made a parameter in the future.
     };
 
     // Pulse once, from black through to the given hue, then back to black.

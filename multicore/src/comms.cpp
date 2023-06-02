@@ -33,10 +33,6 @@ namespace comms
         // other functions running in the non-LED core, including audio,
         // OTA firmware update, and MQTT.  Be careful with large file operations.
         storage::handleFTP();
-
-        // I may need to move this to the LED main loop, if beats come late
-        // or are skipped because of network traffic.
-        music_sync::checkForBeatAndRunCallbacks();
     }
 
     String flowerID() {
