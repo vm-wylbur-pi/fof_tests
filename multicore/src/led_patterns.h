@@ -38,7 +38,6 @@ namespace led_patterns {
       private:
         uint8_t _hue;
         uint32_t _start_time;
-        bool _has_run = false;
     };
 
     // Idle pattern not related to a flower's position and not synced.

@@ -31,9 +31,8 @@ String SolidHue::name() {
 }
 
 void SolidHue::run(uint32_t time, CRGB leds[NUM_LEDS]) {
-    if (!_has_run && time > _start_time) {
+    if (time > _start_time) {
         fill_solid(leds, NUM_LEDS, CHSV(_hue, 255, 100));
-        _has_run = true;
     }
 }
 
