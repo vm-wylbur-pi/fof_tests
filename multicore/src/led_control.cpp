@@ -13,10 +13,6 @@
 namespace led_control {
 
     CRGB gLEDs[NUM_LEDS];
-    uint8_t gHue = 100;  // default to a nice green at startup
-    uint8_t gVal = 150;
-    uint8_t gB; // drives gVal and setBrightness.
-    uint8_t gDeltaB;
 
     // The set of currently-active LED patterns.
     std::vector<std::unique_ptr<led_patterns::Pattern>> patterns = {};
@@ -46,13 +42,6 @@ namespace led_control {
     }
 
     namespace commands {
-        void setHue(uint8_t newHue) {
-            gHue = newHue;
-            // Fill and push right away, don't wait for the next update
-            // of the pulsing loop, to minimize latency.
-            fill_solid(gLEDs, NUM_LEDS, CHSV(gHue, 255, gVal));
-            FastLED.show();
-        }
 
         void runPattern(const String &patternName, const String &parameters) {
             std::unique_ptr<led_patterns::Pattern> pattern = led_patterns::makePattern(patternName, parameters);

@@ -85,11 +85,6 @@ namespace comms
             music_sync::commands::setBPM(newBPM);
             return;
         }
-        if (command == "leds/setHue") {
-            uint8_t newHue = parameters.toInt();  // Sets to zero on unconvertible string
-            led_control::commands::setHue(newHue);
-            return;
-        }
         if (command == "leds/listPatterns") {
             led_control::commands::listPatterns();
             return;

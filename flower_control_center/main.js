@@ -198,7 +198,6 @@ function populateCommandChoices() {
         "reboot",
         "time/setEventReference",
         "time/setBPM",
-        "leds/setHue",
         "leds/listPatterns",
         "leds/clearPatterns",
         "leds/runPattern/IndependentIdle",

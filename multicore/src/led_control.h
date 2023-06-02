@@ -18,9 +18,6 @@ namespace led_control
     // These functions are generally called from the networking thread
     // after a server command is received. Dispatch is in comms.cpp
     namespace commands {
-        // Set all LEDs to the given hue.
-        void setHue(uint8_t newHue);
-
         // Schedule the given pattern to run according to its parameters.
         void runPattern(const String& patternName, const String& parameters);
 
