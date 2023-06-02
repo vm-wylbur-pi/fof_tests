@@ -3,6 +3,8 @@
 
 #include <Arduino.h>
 
+#include <cstdint>
+
 namespace time_sync
 {
     // To be called at startup.
@@ -24,14 +26,14 @@ namespace time_sync
     // can be specified using a single simple-data-type value. Giving times
     // since the unix epoch with millisecond precision requires at least two
     // values.
-    unsigned long controlMillis();
+    uint32_t controlMillis();
 
     namespace commands {
         // Sets the "event reference time", relative to which eventMillis
         // values are defined.  referenceTimeSec is given in seconds
         // since the unix epoch.  This will be subtracted from the
         // true seconds since the epoch derived from NTP.
-        void setEventReferenceTime(unsigned long referenceTimeSec);
+        void setEventReferenceTime(uint32_t referenceTimeSec);
     }
 }
 

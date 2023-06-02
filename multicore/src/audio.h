@@ -15,7 +15,7 @@ namespace audio
     String formattedVolume();
 
     // Called from the music sync time polling loop once for each beat.
-    void beatHappened(unsigned long beatControlTime);
+    void beatHappened(uint32_t beatControlTime);
 
     namespace commands {
         void setVolume(float newVolume);

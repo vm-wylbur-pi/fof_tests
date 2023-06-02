@@ -12,6 +12,8 @@
 #include <Arduino.h>  // For String type
 #include <WiFi.h> // For macAddress used in flowerID
 
+#include <cstdint>
+
 namespace comms
 {
     Heartbeat heartbeat;
@@ -74,7 +76,7 @@ namespace comms
         // EVT_REFERENCE_TIME=$(date +%s)
         // /usr/local/bin/mosquitto_pub --id testclient --topic flower-control/all/time/setEventReference --message ${EVT_REFERENCE_TIME}  --retain
         if (command == "time/setEventReference") {
-            unsigned long newReferenceTime = parameters.toInt();
+            uint32_t newReferenceTime = parameters.toInt();
             time_sync::commands::setEventReferenceTime(newReferenceTime);
             return;
         }

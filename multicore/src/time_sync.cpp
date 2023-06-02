@@ -11,6 +11,8 @@
 #include <NTPClient.h>
 #include <WiFiUdp.h>
 
+#include <cstdint>
+
 namespace time_sync
 {
     const uint16_t NTP_UPDATE_PERIOD_MILLIS = 60 * 1000;
@@ -18,7 +20,7 @@ namespace time_sync
     const uint16_t NTP_OFFSET = 0;
     const uint16_t NTP_TIMEOUT_MILLIS = 800;
 
-    unsigned long eventReferenceTimeSec = 0;
+    uint32_t eventReferenceTimeSec = 0;
 
     WiFiUDP ntpUDP;
     NTPClient ntpClient(ntpUDP, config::CONTROLLER_IP_ADDRESS,
@@ -65,7 +67,7 @@ namespace time_sync
     }
 
     // Number of milliseconds since the event reference time.
-    unsigned long controlMillis()
+    uint32_t controlMillis()
     {
         // This is initialized to zero above, so if it's still zero, that means
         // We've never set a reference time, and 
@@ -83,13 +85,13 @@ namespace time_sync
         // past (e.g. when the controller started up), so that the number of seconds
         // since then is small enough that when we multiply it by 1000, it won't
         // overflow an unsigned long (32 bits, max representable offset is about 50 days)
-        unsigned long whole_seconds = ntpClient.getEpochTime() - eventReferenceTimeSec;
-        unsigned long millis = (int) ntpClient.get_millis();
+        uint32_t whole_seconds = ntpClient.getEpochTime() - eventReferenceTimeSec;
+        uint32_t millis = (int) ntpClient.get_millis();
         return whole_seconds * 1000 + millis;
     }
 
     namespace commands {
-        void setEventReferenceTime(unsigned long referenceTimeSec) {
+        void setEventReferenceTime(uint32_t referenceTimeSec) {
             eventReferenceTimeSec = referenceTimeSec;
         }
     }

@@ -10,6 +10,8 @@
 #include "AudioGeneratorWAV.h"
 #include "AudioOutputI2S.h"
 
+#include <cstdint>
+
 // TODO: Address click/pop issue at the start of playback.
 // Based on others' experience, it's possible but requires
 // a patched library, and the exact fix depends on the audio
@@ -131,7 +133,7 @@ namespace audio
         return String(volume, DECIMAL_PLACES) + "/11";
     }
 
-    void beatHappened(unsigned long beatControlTime) {
+    void beatHappened(uint32_t beatControlTime) {
         //commands::playSoundFile("mono-kick-full-one-shot_110bpm_C.wav");
     }
 

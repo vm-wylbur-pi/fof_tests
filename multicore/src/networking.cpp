@@ -11,6 +11,8 @@
 // #include <WiFiServer.h>
 #include <MQTT.h>
 
+#include <cstdint>
+
 namespace networking {
 
     // Will set the buffer size for sending and receiving.  Messages
@@ -22,7 +24,7 @@ namespace networking {
     MQTTClient mqtt_client(MAX_MQTT_MESSAGE_BYTES);
 
     // For throttlng OTA update progress messages
-    unsigned long lastProgressUpdate = 0;
+    uint32_t lastProgressUpdate = 0;
 
     void setupWiFi() {
         Serial.println("Connecting to WiFi (" + config::WIFI_SSID + ")");
@@ -76,7 +78,7 @@ namespace networking {
             comms::sendDebugMessage("OTA Update complete.  Rebooting...");
             screen::commands::appendText("OTA Update complete.  Rebooting...");
         })
-        .onProgress([](unsigned int progress, unsigned int total)
+        .onProgress([](uint32_t progress, uint32_t total)
         {
             // Echoing the progress to the screen on every call slows down OTA a lot,
             // so only do it every couple of secodns.
