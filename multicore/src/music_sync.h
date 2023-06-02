@@ -1,6 +1,8 @@
 #ifndef MUSIC_SYNC_H
 #define MUSIC_SYNC_H
 
+#include <cstdint>
+
 namespace music_sync {
 
 class MusicBeat {

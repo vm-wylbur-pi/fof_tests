@@ -1,6 +1,8 @@
 #include "music_sync.h"
 #include "time_sync.h"
 
+#include <cstdint>
+
 namespace music_sync {
 
 // This is a global, referenced by all instances of MusicBeat, and maybe later
