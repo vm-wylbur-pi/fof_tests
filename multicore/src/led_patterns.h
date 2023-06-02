@@ -22,7 +22,7 @@ namespace led_patterns {
 
 // Abstract superclass for all patterns
 class Pattern {
-    public:
+  public:
     // Evaluate the pattern, altering the content of the leds array,
     // given an absolute control timer value.
     virtual void run(uint32_t time, CRGB leds[NUM_LEDS]) = 0;
@@ -31,11 +31,11 @@ class Pattern {
 
 // Solid hue at full saturation, sent to the LEDs exactly once, at the start time.
 class SolidHue : public Pattern {
-    public:
+  public:
     SolidHue(uint8_t hue, uint32_t start_time) : _hue(hue), _start_time(start_time) {};
     String name();
     void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
-    private:
+  private:
     uint8_t _hue;
     uint32_t _start_time;
 };
@@ -45,11 +45,11 @@ class SolidHue : public Pattern {
 // the blossom centered around a random main hue.
 // As an "idle" pattern, this continues indefinitely.
 class IndependentIdle : public Pattern {
-    public:
+  public:
     IndependentIdle();
     void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
     String name() {return "IndependentIdle";};
-    private:
+  private:
     uint8_t _blossomHue;
     uint8_t _leafPaletteIdx[LEAF_SIZE];
 };
@@ -59,19 +59,19 @@ class IndependentIdle : public Pattern {
 // flower. Does not alter any LEDs besides the dot, so this is good for
 // testing pattern compositing.
 class RunningDot : public Pattern {
-    public:
+  public:
     void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
     String name() {return "RunningDot";};
-    private:
+  private:
     uint8_t _dotLocation = 0;
     uint8_t _dotDelta = 1;
 };
 
 class BeatFlash : public Pattern {
-    public:
+  public:
     void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
     String name() { return "BeatFlash"; };
-    private:
+  private:
     music_sync::MusicBeat _beatTracker;
     uint32_t _flashStartTime;
     uint32_t _flashDurationMillis = 50;  // could be made a parameter in the future.
@@ -83,7 +83,7 @@ class BeatFlash : public Pattern {
 // fades up and down from black, so this pattern should be applied on
 // top of an idling background.
 class HuePulse : public Pattern {
-    public:
+  public:
     HuePulse(uint8_t hue, uint32_t duration);
     void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
     String name() {return "HuePulse";};
