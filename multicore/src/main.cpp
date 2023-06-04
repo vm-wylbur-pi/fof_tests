@@ -1,5 +1,6 @@
 // My libraries for organizing code
 #include "audio.h"
+#include "buttons.h"
 #include "comms.h"
 #include "networking.h"
 #include "led_control.h"
@@ -68,6 +69,7 @@ void setup()
   storage::setupSDCard();
   storage::setupFTP();
   audio::setupAudio();
+  buttons::setupButtons();
 
   // We want to give this a non-contended shot at the CPU, so we run
   // one sync here, before starting up all the sepaate tasks. For now,

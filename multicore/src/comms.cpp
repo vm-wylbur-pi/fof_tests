@@ -1,6 +1,7 @@
 #include "comms.h"
 
 #include "audio.h"
+#include "buttons.h"
 #include "heartbeat.h"
 #include "led_control.h"
 #include "networking.h"
@@ -24,6 +25,9 @@ namespace comms
         }
 
         heartbeat.BeatIfItsTime();
+
+        // Handle physical button pushes on the side of the flower circuit board
+        buttons::mainLoop();
 
         // Send/received any MQTT messages, and respond to received messages
         // by altering state or issuing LED control calls. If messages are

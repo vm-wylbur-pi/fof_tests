@@ -26,16 +26,6 @@
 //       set it in the i2s constructor. Optional, but gives the
 //       i2s board a reference clock that might help audio quality.
 
-// Physical Buttons on the Audio board
-// I think this is the button next to the 3.5 audio jack
-const uint8_t PIN_VOL_UP = 39; // rock one way
-const uint8_t PIN_VOL_DOWN = 36;  // rock the other way
-const uint8_t PIN_MUTE = 35;      // push down in the middle.
-// TODO: confirm which button is which
-const uint8_t PIN_PREVIOUS = 15;
-const uint8_t PIN_PAUSE = 33;
-const uint8_t PIN_NEXT = 2;
-
 namespace audio
 {
     //  The main audio objects
@@ -54,17 +44,7 @@ namespace audio
     // we need a slightly lower ceiling.
     const float MAX_GAIN = 4.0 * 255.0/256.0;
 
-    // State variables for handling physical buttons.
-    uint32_t lastButtonTimeMillis = 0;
-
     void setupAudio() {
-        pinMode(PIN_VOL_UP, INPUT_PULLUP);
-        pinMode(PIN_VOL_DOWN, INPUT_PULLUP);
-        pinMode(PIN_MUTE, INPUT_PULLUP);
-        pinMode(PIN_PREVIOUS, INPUT_PULLUP);
-        pinMode(PIN_PAUSE, INPUT_PULLUP);
-        pinMode(PIN_NEXT, INPUT_PULLUP);
-
         // Audio(I2S)
         sdAudioSource = new AudioFileSourceSD();
         wavGenerator = new AudioGeneratorWAV();
@@ -77,11 +57,6 @@ namespace audio
 
         comms::sendDebugMessage("Audio initialized");
         screen::commands::appendText("Audio initialized");
-
-        // TEMP: register the beat handler as a callback. If this slows down
-        // FPS too much, I should hard-code it in the music sync poller instead.
-        // Disabled while working on basic audio functionality.
-        //music_sync::onBeat(&beatHappened);
     }
 
     void mainLoop() {
@@ -93,39 +68,6 @@ namespace audio
 
         // This is where I could put code for tracking progress through
         // the current sound, notifications for when sounds finish, etc.
-
-        // Protect against botton bounce.  This could be more sophisticated
-        // if we cared, wanted to respond to held-down buttons, etc.
-        // bool longEnoughSinceLastButtonPress = millis() - lastButtonTimeMillis > 300;
-        // if (longEnoughSinceLastButtonPress) {
-        //     if (digitalRead(PIN_VOL_DOWN) == 0)
-        //     {
-        //         comms::sendDebugMessage("Physical button: vol_down");
-        //         if (audio.getVolume() > 0) {
-        //             audio.setVolume(audio.getVolume() - 1);
-        //         }
-        //         lastButtonTimeMillis = millis();
-        //     }
-        //     if (digitalRead(PIN_VOL_UP) == 0)
-        //     {
-        //         comms::sendDebugMessage("Physical button: vol_down");
-        //         if (audio.getVolume() < audio.maxVolume()) {
-        //             audio.setVolume(audio.getVolume() + 1);
-        //         }
-        //         lastButtonTimeMillis = millis();
-        //     }
-        //     if (digitalRead(PIN_MUTE) == 0)
-        //     {
-        //         comms::sendDebugMessage("Physical button: mute");
-        //         if (audio.getVolume() != 0) {
-        //             volumeBeforeMuting = audio.getVolume();
-        //             audio.setVolume(0);
-        //         } else {
-        //             audio.setVolume(volumeBeforeMuting);
-        //         }
-        //         lastButtonTimeMillis = millis();
-        //     }
-        // }
     }
 
     String formattedVolume() {
