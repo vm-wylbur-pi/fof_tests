@@ -93,11 +93,11 @@ namespace comms
             led_control::commands::clearPatterns();
             return;
         }
-        if (command.startsWith("leds/runPattern/")) {
+        if (command.startsWith("leds/addPattern/")) {
             // Delegate parameter interpretation to the led control module, where all
             // the led patterns are defined.
-            String patternName = command.substring(String("leds/runPattern/").length());
-            led_control::commands::runPattern(patternName, parameters);
+            String patternName = command.substring(String("leds/addPattern/").length());
+            led_control::commands::addPattern(patternName, parameters);
             return;
         }
         if (command == "audio/setVolume") {

@@ -18,10 +18,11 @@ namespace led_control
     // These functions are generally called from the networking thread
     // after a server command is received. Dispatch is in comms.cpp
     namespace commands {
-        // Schedule the given pattern to run according to its parameters.
-        void runPattern(const String& patternName, const String& parameters);
+        // Add the given pattern to the stack of patterns, on top of all existing
+        // patterns. Should not be run from the LED control task.
+        void addPattern(const String& patternName, const String& parameters);
 
-        // Echo the set of patterns as an MQTT debug message.
+        // Echo the set of patterns, in order from bottom to top, as an MQTT debug message.
         void listPatterns();
 
         // Remove all currently active LED patterns, even if they're not done yet.

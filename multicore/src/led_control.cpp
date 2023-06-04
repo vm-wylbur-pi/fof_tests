@@ -59,7 +59,7 @@ namespace led_control {
 
     namespace commands {
 
-        void runPattern(const String &patternName, const String &parameters) {
+        void addPattern(const String &patternName, const String &parameters) {
             std::unique_ptr<led_patterns::Pattern> pattern = led_patterns::makePattern(patternName, parameters);
             if (pattern != nullptr) {
                 comms::sendDebugMessage("Adding LED pattern: " + pattern->name());
