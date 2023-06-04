@@ -54,6 +54,23 @@ class IndependentIdle : public Pattern {
     uint8_t _leafPaletteIdx[LEAF_SIZE];
 };
 
+class Raindrops : public Pattern {
+  public:
+    Raindrops();
+    // raindropsPerSecond: How often new raindrops hit the flower
+    // fadeSpeed: How much brightness is removed from raindrops per update
+    //            This is like the water being absorbed or flowing off the flower.
+    Raindrops(uint8_t raindropsPerSecond, uint16_t fadeSpeed) :
+      _raindropsPerSecond(raindropsPerSecond), _fadeSpeed(fadeSpeed) {};
+    void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
+    String name();
+  private:
+    uint8_t _raindropsPerSecond;
+    uint16_t _fadeSpeed;
+    uint32_t _nextRaindropTime = 0;
+    CRGB _leds[NUM_LEDS];
+};
+
 // Change a single LED to white at medium brightness, cycling through all
 // LEDs in order; this gives an effect of a single dot bouncing around the
 // flower. Does not alter any LEDs besides the dot, so this is good for

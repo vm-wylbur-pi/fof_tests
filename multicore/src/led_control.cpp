@@ -27,6 +27,7 @@ namespace led_control {
         // Default pattern is an independent idle, which will look OK in the absence
         // of any field coordination, and/or if the sync timer is not set.
         patterns.emplace_back(new led_patterns::IndependentIdle());
+        patterns.emplace_back(new led_patterns::Raindrops(12, 3));
     }
 
     void mainLoop() {

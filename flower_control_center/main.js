@@ -201,6 +201,7 @@ function populateCommandChoices() {
         "leds/listPatterns",
         "leds/clearPatterns",
         "leds/runPattern/IndependentIdle",
+        "leds/runPattern/Raindrops",
         "leds/runPattern/SolidHue",
         "leds/runPattern/RunningDot",
         "leds/runPattern/BeatFlash",

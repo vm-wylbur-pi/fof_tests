@@ -45,6 +45,30 @@ IndependentIdle::IndependentIdle() {
     }
 }
 
+String Raindrops::name() {
+    return "Raindrops(" + String(_raindropsPerSecond) + ", " + String(_fadeSpeed) + ")";
+}
+
+Raindrops::Raindrops() {
+    // Initialize owned array so non-raindrop spots won't write random data to the shared array.
+    fill_solid(_leds, NUM_LEDS, CRGB::Black);
+}
+
+void Raindrops::run(uint32_t time, CRGB leds[NUM_LEDS]) {
+    if (time > _nextRaindropTime) {
+        uint8_t raindropIdx = random8(NUM_LEDS);
+        _leds[raindropIdx] = CRGB(150,150,150);
+        _nextRaindropTime = time + 1000 / _raindropsPerSecond;
+    }
+    // Fades the raindrops only, not the shared leds array containing whatever
+    // the raindrops are on top of.
+    fadeToBlackBy(_leds, NUM_LEDS, _fadeSpeed);
+
+    for (uint8_t i=0; i<NUM_LEDS; i++) {
+        leds[i] += _leds[i];
+    }
+}
+
 void IndependentIdle::run(uint32_t time, CRGB leds[NUM_LEDS]) {
     for (uint8_t leaf_start : LEAF_STARTS) {
         for (uint8_t i=0; i<LEAF_SIZE; i++) {
@@ -112,6 +136,13 @@ std::unique_ptr<Pattern> makePattern(const String& patternName, const String& pa
     }
     if (patternName == "IndependentIdle") {
         return std::unique_ptr<Pattern>(new IndependentIdle());
+    }
+    if (patternName == "Raindrops") {
+        uint8_t raindropsPerSecond = 10;
+        uint32_t fadeTime = 5;
+        if (params.size() >= 1) { raindropsPerSecond = params[0].toInt(); }
+        if (params.size() >= 2) { fadeTime = params[1].toInt(); }
+        return std::unique_ptr<Pattern>(new Raindrops(raindropsPerSecond, fadeTime));
     }
     if (patternName == "RunningDot") {
         return std::unique_ptr<Pattern>(new RunningDot());
