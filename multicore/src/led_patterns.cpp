@@ -75,7 +75,7 @@ String HuePulse::name() {
 }
 
 bool HuePulse::isDone(uint32_t time) {
-    return time > (_startTime + 2*_rampDuration + _peakDuration + 60);
+    return time > (_startTime + 2*_rampDuration + _peakDuration + 600);
 }
 
 void HuePulse::run(uint32_t time, CRGB leds[NUM_LEDS]) {
@@ -83,13 +83,13 @@ void HuePulse::run(uint32_t time, CRGB leds[NUM_LEDS]) {
     if (time < _startTime) return;
     // Full pattern has finished; don't do any unnecessary work.
     // TODO: replace 60, which is hard-coded as the max delayDueToHeight
-    if (time > _startTime + 2*_rampDuration + _peakDuration + 60) return;
+    if (time > _startTime + 2*_rampDuration + _peakDuration + 600) return;
 
     for (int i=0; i<NUM_LEDS; i++) {
         uint8_t height = LED_HEIGHTS[i];
         // TODO: This could be more sophisticated. For now, accept the arbitrary height
         //       scale as literal milliseconds.
-        uint32_t delayDueToHegiht = height;
+        uint32_t delayDueToHegiht = height * 10;
         // How far into pattern execution (in ms) is the LED at index i
         uint32_t patternTime = time - _startTime - delayDueToHegiht;
 
