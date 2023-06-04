@@ -105,6 +105,9 @@ void HuePulse::run(uint32_t time, CRGB leds[NUM_LEDS]) {
         //   |-----------------------------------------------------------------
         //    increasing patternTime ->
 
+        // Default alpha is zero, which means leave the background pattern unchanged.
+        _alpha[i] = 0;
+
         // Case 0: pulse hasn't reached this part of the flower yet.
         if (patternTime < 0) continue;
         // Case 1: ramping up. Same for leaves and blossom.
@@ -137,14 +140,13 @@ void HuePulse::run(uint32_t time, CRGB leds[NUM_LEDS]) {
         }
     }
 
-    // Alpha-compositing with patterns under this one, in HSV space
+    // Alpha-compositing with patterns under this one.
+    // I tried this in HSV space; it looked worse.
     for (int i=0; i<NUM_LEDS; i++) {
-        // NOTE: using rgb->hsv here could slow things down; need to check
-        CHSV background = rgb2hsv_approximate(leds[i]);
-        uint8_t hue = lerp8by8(background.hue, _hue, _alpha[i]);
-        uint8_t sat = lerp8by8(background.sat, 255, _alpha[i]);
-        uint8_t val = lerp8by8(background.val, _brightness, _alpha[i]);
-        leds[i] = CHSV(hue, sat, val);
+        CRGB target = CHSV(_hue, 255, _brightness);
+        leds[i].r = lerp8by8(leds[i].r, target.r, _alpha[i]);
+        leds[i].g = lerp8by8(leds[i].g, target.g, _alpha[i]);
+        leds[i].b = lerp8by8(leds[i].b, target.b, _alpha[i]);
     }
 }
 
@@ -255,11 +257,11 @@ std::unique_ptr<Pattern> makePattern(const String& patternName, const String& pa
     // peakDuration: ms to hold the flower at beak brightness
     // peakBrightness: how bright to get 0-255
     if (patternName == "HuePulse") {
-        uint8_t hue = 0;
+        uint8_t hue = 80;
         uint32_t startTime = parseStartTime("+0");
         uint32_t rampDuration = 300;
-        uint32_t peakDuration = 1000;
-        uint8_t brightness = 255;
+        uint32_t peakDuration = 600;
+        uint8_t brightness = 200;
         if (params.size() >= 1) { hue = params[0].toInt(); }
         if (params.size() >= 2) { brightness = params[1].toInt(); }
         if (params.size() >= 3) { startTime = parseStartTime(params[2]); }
