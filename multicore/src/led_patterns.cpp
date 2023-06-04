@@ -257,7 +257,7 @@ std::unique_ptr<Pattern> makePattern(const String& patternName, const String& pa
     // peakDuration: ms to hold the flower at beak brightness
     // peakBrightness: how bright to get 0-255
     if (patternName == "HuePulse") {
-        uint8_t hue = 80;
+        uint8_t hue = 160;
         uint32_t startTime = parseStartTime("+0");
         uint32_t rampDuration = 300;
         uint32_t peakDuration = 600;
