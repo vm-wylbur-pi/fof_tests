@@ -200,6 +200,7 @@ function populateCommandChoices() {
         "time/setBPM",
         "leds/listPatterns",
         "leds/clearPatterns",
+        "leds/runPattern/HuePulse",
         "leds/runPattern/IndependentIdle",
         "leds/runPattern/Raindrops",
         "leds/runPattern/SolidHue",

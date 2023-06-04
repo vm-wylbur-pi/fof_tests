@@ -16,7 +16,7 @@
 #define LEAF_SIZE 17
 #define BLOSSOM_START 51
 #define BLOSSOM_END 111  // one past the end
-#define BLOSSOM_SIZE 50
+#define BLOSSOM_SIZE 60
 
 namespace led_patterns {
 
@@ -97,13 +97,22 @@ class BeatFlash : public Pattern {
 // Pulse once, from black through to the given hue, then back to black.
 // Has a spatial progression, moving up through the leaves to the blossom,
 // then back down.
-// fades up and down from black, so this pattern should be applied on
-// top of an idling background.
+// fades up and down from black, so this pattern can be applied on top of an idling background.
 class HuePulse : public Pattern {
   public:
-    HuePulse(uint8_t hue, uint32_t duration);
+    HuePulse(uint8_t hue, uint8_t brightness, uint32_t startTime,
+             uint32_t rampDuration, uint32_t peakDuration)
+        : _hue(hue), _brightness(brightness), _startTime(startTime),
+          _rampDuration(rampDuration), _peakDuration(peakDuration) {};
     void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
-    String name() {return "HuePulse";};
+    String name();
+  private:
+    uint8_t _hue;
+    uint8_t _brightness;
+    uint32_t _startTime;
+    uint32_t _rampDuration;
+    uint32_t _peakDuration;
+    fract8 _alpha[NUM_LEDS];
 };
 
 // Interpret a string parameter as a moment in time. There are two formats:
