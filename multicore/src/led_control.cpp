@@ -37,6 +37,21 @@ namespace led_control {
             pattern->run(time_sync::controlMillis(), gLEDs);
         }
 
+        // Unload any patterns that have finished
+        EVERY_N_MILLISECONDS(500) {
+            patterns.erase(std::remove_if(
+                patterns.begin(), patterns.end(),
+                [](const std::unique_ptr<led_patterns::Pattern>& p) {
+                    bool done = p->isDone(time_sync::controlMillis());
+                    if (done) {
+                        comms::sendDebugMessage("Unloading finished pattern: " + p->name());
+                    }
+                    return done;
+                }
+            ), 
+            patterns.end());
+        }
+
         // This is essential. Calling FastLED.show as often as possible
         // is what makes temporal dithering work.
         FastLED.show();

@@ -26,6 +26,10 @@ class Pattern {
     // Evaluate the pattern, altering the content of the leds array,
     // given an absolute control timer value.
     virtual void run(uint32_t time, CRGB leds[NUM_LEDS]) = 0;
+    // Returns true if the pattern was limited in time and has finished.
+    // This will cause the pattern to be unloaded to free memory.
+    // If this method is not overridden, the pattern will run forever.
+    virtual bool isDone(uint32_t time) { return false; }
     virtual String name() = 0;
 };
 
@@ -105,6 +109,7 @@ class HuePulse : public Pattern {
         : _hue(hue), _brightness(brightness), _startTime(startTime),
           _rampDuration(rampDuration), _peakDuration(peakDuration) {};
     void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
+    bool isDone(uint32_t time) override;
     String name();
   private:
     uint8_t _hue;

@@ -74,6 +74,10 @@ String HuePulse::name() {
            ", peakDuration=" + String(_peakDuration) + ")";
 }
 
+bool HuePulse::isDone(uint32_t time) {
+    return time > (_startTime + 2*_rampDuration + _peakDuration + 60);
+}
+
 void HuePulse::run(uint32_t time, CRGB leds[NUM_LEDS]) {
     // Nothing to do yet.
     if (time < _startTime) return;
