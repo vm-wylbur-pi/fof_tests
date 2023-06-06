@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Flower Control Center</title>
+    <link rel="icon" href="img/daisy.ico" type="image/x-icon">
+
+
+    <script src="lib/jquery-3.6.4.js"></script>
+    <script src="lib/jquery.color-2.1.2.js"></script>
+    <script src="lib/paho-mqtt.js"></script>
+    <script src="js/main.js"></script>
+
+    <script src="lib/cytoscape-3.25.min.js"></script>
+    <script src="lib/cytoscape-grid-guide.js"></script>
+    <script src="lib/bootstrap-5.3.0.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap-5.3.0.min.css">
+    <link rel="stylesheet" href="css/fcc.css">
+
+<body>
+<div class="container-flex">
+    <div class="row">
+        <div class="col d-flex justify-content-lg-evenly">
+            <nav class="navbar navbar-expand-lg navbar-light">
+                <div class="container">
+                    <a class="navbar-brand" href="#">
+                        <img class="flower" src="img/daisy.png" >
+                        <img class="flower" src="img/crocus.png">
+                        <img class="flower" src="img/buttercup.png">
+                        Flower Control Center
+                        <img class="flower" src="img/buttercup.png">
+                        <img class="flower" src="img/crocus.png">
+                        <img class="flower" src="img/daisy.png" ></a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav me-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="control.html">Visual</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="viz.html">Games</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="logs.html">Config</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="logs.html">Logs</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+        </div>
+    </div>
+
+    <div class="row" id="fieldRow">
+        <div class="col d-flex justify-content-center" >
+            <div id="field"></div>
+        </div>
+    </div>
+
+    <div class="row" id="CommandRow">
+        <div class="col d-flex justify-content-center">
+            <div id="command-form">
+                <table>
+                    <tr>
+                        <td>Which flower:</td>
+                        <td><input name="flower" /> ('<span id="all">all</span>', or click ID below to fill in flower ID)</td>
+                    </tr>
+                    <tr>
+                        <td>Command:</td>
+                        <td><select name="command" id="command-dropDown">
+                            <option value="">choose a command...</option>
+                        </select></td>
+                    </tr>
+                    <tr>
+                        <td>Parameters:</td>
+                        <td><input name="parameters" /> (Depends on command, see comms.cpp for details.</td>
+                    </tr>
+                </table>
+                <button id="send-command">Send Command</button>
+            </div>
+
+
+        </div>
+        <div class="row" id="debugROW">
+            <div class="col d-flex justify-content-center">
+                <div id="debugContainer"></div>
+            </div>
+        </div>
+        <div class="row" id="flowertableROW">
+            <div class="col d-flex justify-content-center">
+                <table id="flower-table">
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" id="mqttROW">
+        <div class="col d-flex justify-content-center">
+            <p id="mqtt-status"></p>
+        </div>
+    </div>
+    <div class="row" id="reconnectROW">
+        <div class="col d-flex justify-content-center">
+            MQTT Broker IP:
+                <input type="text" id="mqtt-ip" value="127.0.0.1" />
+                <button id="mqtt-reconnect">Reconnect</button>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+<script src="js/field.js"></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+deployment:
+  name: "Default Test Field"
+  description: "This deployment is used for internal testing or when no deployment is specified"
+  field:
+    description: "A 100x100 field to simulate the setup at the burn"
+    dimensions:
+      x: 100
+      y: 100

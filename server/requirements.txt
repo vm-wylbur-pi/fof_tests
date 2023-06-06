@@ -1,0 +1,13 @@
+# FCC
+Flask==2.3.2
+Response
+paho-mqtt
+
+# viz system
+opencv-python
+numpy
+
+# CDC
+redis
+pyyaml
+openpyxl
