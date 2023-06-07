@@ -219,6 +219,7 @@ void BeatFlash::run(uint32_t time, CRGB leds[NUM_LEDS]) {
     uint32_t beatTime = _beatTracker.checkForBeat();
     if (beatTime) {
       _flashStartTime = beatTime;
+      comms::sendDebugMessage("Beat flash at control time " + String(beatTime));
     }
     bool inFlash = time > _flashStartTime && time < _flashStartTime + _flashDurationMillis;
     if (inFlash) {
@@ -273,8 +274,8 @@ std::unique_ptr<Pattern> makePattern(const String& patternName, const String& pa
         return std::unique_ptr<Pattern>(new IndependentIdle());
     }
     if (patternName == "Raindrops") {
-        uint8_t raindropsPerSecond = 10;
-        uint32_t fadeTime = 5;
+        uint8_t raindropsPerSecond = 5;
+        uint32_t fadeTime = 3;
         if (params.size() >= 1) { raindropsPerSecond = params[0].toInt(); }
         if (params.size() >= 2) { fadeTime = params[1].toInt(); }
         return std::unique_ptr<Pattern>(new Raindrops(raindropsPerSecond, fadeTime));
