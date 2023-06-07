@@ -11,3 +11,7 @@ numpy
 redis
 pyyaml
 openpyxl
+
+# State
+psutil
+requests

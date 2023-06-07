@@ -9,6 +9,9 @@ import json
 import yaml
 import redis
 
+# state
+import subprocess
+
 FCC_PATH = '/app/flower_control_center'
 
 app = Flask(__name__)
@@ -40,6 +43,17 @@ def generate_frames():
 def video_feed():
     return Response(generate_frames(),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/api/status/<dtype>')
+def status_report(dtype):
+    status_result = subprocess.run(['python3', 'code/state.py'], capture_output=True, text=True)
+
+    if dtype == 'text':
+        return Response(status_result.stderr, content_type='text/plain')
+    elif dtype == 'json':
+        return Response(status_result.stdout, content_type='text/plain')
+    else:
+        return Response("Unknown data type, your options are json or text")
 
 if __name__ == "__main__":
     global rc

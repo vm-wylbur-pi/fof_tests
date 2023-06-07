@@ -14,7 +14,9 @@ RUN apt-get update && apt-get install -y \
     mosquitto \
     mosquitto-clients \
     wget \
-    redis-tools
+    redis-tools \
+    gcc \
+    python3-dev
 
 #COPY ./requirements.txt /app/requirements.txt
 # Install any needed packages specified in requirements.txt
