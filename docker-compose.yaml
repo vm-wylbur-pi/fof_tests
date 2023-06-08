@@ -8,6 +8,7 @@ services:
       - 8000:8000
       - 1883:1883
       - 9001:9001
+      - 123:123
     volumes:
       - ./server/code:/app/code
       - ./server/flower_control_center:/app/flower_control_center

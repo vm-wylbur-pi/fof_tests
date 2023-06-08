@@ -39,12 +39,14 @@ def generate_frames():
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
+# testing video feed plugin, needs a page wrapped around it
 @app.route('/video_feed')
 def video_feed():
     return Response(generate_frames(),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
-@app.route('/api/status/<dtype>')
+# Executes Unit tests in the state.py and presents them in pretty format
+@app.route('/api/state/test/<dtype>')
 def status_report(dtype):
     status_result = subprocess.run(['python3', 'code/state.py'], capture_output=True, text=True)
 
@@ -55,10 +57,23 @@ def status_report(dtype):
     else:
         return Response("Unknown data type, your options are json or text")
 
+# Returns contents of the redis cache, read-only right now.
+@app.route('/api/state/cache/<dtype>')
+def status_cache(dtype):
+    if dtype == 'deployment':
+        return Response(rc.get('deployment'), content_type='application/json')
+    elif dtype == 'flowers':
+        return Response(rc.get('flowers'), content_type='application/json')
+    else:
+        return Response("Unknown data type, your options are json or text")
+
+
 if __name__ == "__main__":
     global rc
     rc = redis.Redis(host='redis', port=6379)
 
     global config
     config = json.loads(rc.get('config'))
+    print("FCC Starting Up")
     app.run(host='0.0.0.0', port=8000, debug=True)
+    print ("FCC Shutting down....which is weird.")

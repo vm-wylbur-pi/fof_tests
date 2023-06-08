@@ -16,7 +16,11 @@ RUN apt-get update && apt-get install -y \
     wget \
     redis-tools \
     gcc \
-    python3-dev
+    python3-dev \
+    chrony
+
+# install our ntp server config
+COPY ./config/chrony.conf /etc/chrony/chrony.conf
 
 #COPY ./requirements.txt /app/requirements.txt
 # Install any needed packages specified in requirements.txt

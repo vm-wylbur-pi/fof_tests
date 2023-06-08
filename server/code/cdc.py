@@ -31,7 +31,6 @@ def inventory_to_redis():
 
             # Add the object to the dictionary using FoF Mac as the key
             data_dict[mac] = flower_object
-    print(data_dict)
     rc.set('flowers',json.dumps(data_dict))
 
 
@@ -60,9 +59,11 @@ def deployment_to_redis():
 
 
 if __name__ == "__main__":
+    print("CDC STARTING")
     global rc
     rc = redis.Redis(host='redis', port=6379)
     config_to_redis()
     inventory_to_redis()
     deployment_to_redis()
+    print("CDC DONE")
 

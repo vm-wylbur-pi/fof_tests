@@ -6,7 +6,7 @@ var table = new Tabulator("#status-table", {
     layout:"fitDataColumns",
     movableRows:true,
     groupBy:"suite",
-    ajaxURL: "/api/status/json",
+    ajaxURL: "/api/state/test/json",
     columns:[
         {title:"Test", field:"test"},
         {title:"Status", field:"status", hozAlign:"center", formatter:"tickCross", width:110},
@@ -16,7 +16,7 @@ var table = new Tabulator("#status-table", {
 });
 
 $.ajax({
-    url: '/api/status/text',
+    url: '/api/state/test/text',
     success: function(response) {
         // Update the content of the div
         if (response.indexOf("OK") == -1){
