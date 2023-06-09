@@ -1,6 +1,7 @@
 version: '3'
 services:
   server:
+    privileged: true
     build:
       context: ./server
       dockerfile: Dockerfile
@@ -9,6 +10,7 @@ services:
       - 1883:1883
       - 9001:9001
       - 123:123
+      - 123:123/udp
     volumes:
       - ./server/code:/app/code
       - ./server/flower_control_center:/app/flower_control_center

@@ -95,7 +95,7 @@ $(document).ready(function() {
             return res.deployment
         })
         .then(d => {
-            $.ajax({url:'/api/state/cache/flowers'})
+            return $.ajax({url:'/api/state/cache/flowers'})
                 .then( res => {
                     let de = cy.$id('field')
                     let d = de.data()
@@ -112,26 +112,26 @@ $(document).ready(function() {
                                 id: fid,
                                 sid: flower['sequence'],
                                 ftype: flower['flower_type'],
-                            }
+                            },
                         })
-                        console.log('added one')
                         n.style('z-index',1)
                         fu = fu.add(n)
                     }
-                    cy.minZoom(cy.zoom())
-
+                    cy.zoomingEnabled(false)
+                    cy.panningEnabled(false)
                     fu.layout({
                         name:'random',
+                        fit: true,
                         boundingBox: {
                             x1: 30,
                             y1: 30,
-                            w: d.width-30,
-                            h: d.height-30
+                            w: d.width-100,
+                            h: d.height-100
                         },
                         animate: true
                     }).run()
-                    cy.center(de) //(de ,padding = 20)
-
+                    cy.zoomingEnabled(true)
+                    cy.panningEnabled(true)
                 })
         })
 });

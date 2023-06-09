@@ -17,7 +17,10 @@ RUN apt-get update && apt-get install -y \
     redis-tools \
     gcc \
     python3-dev \
-    chrony
+    chrony \
+    ntpdate \
+    procps \
+    lsof
 
 # install our ntp server config
 COPY ./config/chrony.conf /etc/chrony/chrony.conf
@@ -37,6 +40,9 @@ RUN wget -O 'inventory/flower-inventory.csv' "https://docs.google.com/spreadshee
 EXPOSE 8000
 # Mosquitto broker port
 EXPOSE 1883 9001
+# chrony / ntp port
+EXPOSE 123
+EXPOSE 123/udp
 
 # Define environment variable
 #ENV NAME World

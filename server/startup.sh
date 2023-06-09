@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# NTP service start
+chronyd -f /etc/chrony/chrony.conf
+
 # Start mosquitto
 mosquitto -c config/mosquitto.conf &
 

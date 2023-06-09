@@ -2,30 +2,65 @@ import psutil
 import unittest
 import requests
 import json
+import time
+import paho.mqtt.client as mqtt
 from collections import OrderedDict
 
 # redis tests
 import redis
 import traceback
 
+RESULT_TRACKER = {}
 def addResult(suite, test, status, response):
     state_report.append({'suite':suite,'test': test, 'status': status, 'response': response})
 
-class fccTestCases(unittest.TestCase):
+# helper function to track state
+def setResult(key, val):
+    RESULT_TRACKER[key] = val
+
+class a_localProcessTestCases(unittest.TestCase):
+    process_list = {
+        'fcc': {
+            'name': ['/usr/local/bin/python3', '/app/code/fcc.py'],
+            'state': ['sleeping', 'running']
+        },
+        'mosquitto': {
+            'name': ['mosquitto', '-c', 'config/mosquitto.conf'],
+            'state': ['sleeping','running']
+        },
+        'chrony': {
+            'name': ['chronyd', '-f', '/etc/chrony/chrony.conf'],
+            'state': ['sleeping','running']
+        }
+    }
+
+    suite = "local processes"
+
+    def test_1_local_processes_running(self):
+        pSuccess = True
+        test_result = "Local process checks"
+        for pname in self.process_list:
+            p = self.process_list[pname]
+
+            process_running = False
+            test_result = "Could not detect process --> %s" %pname
+
+            for process in psutil.process_iter(['status']):
+                if process.cmdline() == p['name'] and process.info['status'] in p['state']:
+                    test_result = "Found the %s process as expected, it's state was '%s' ...yay!" % (pname, process.info['status'])
+                    process_running = True
+                    break
+
+            if not process_running:
+                pSuccess = False
+                test_result = test_result + " " + pname
+
+            addResult(self.suite,'%s process' % pname, process_running, test_result)
+
+        self.assertTrue(pSuccess, test_result)
+
+class b_fccTestCases(unittest.TestCase):
     fccURL = "http://127.0.0.1:8000"
-    def test_1_fcc_process_running(self):
-        process_running = False
-        test_result = "Could not detect process for /usr/local/bin/python3 /app/code/fcc.py"
-
-        for process in psutil.process_iter(['status']):
-            if process.cmdline() == ['/usr/local/bin/python3', '/app/code/fcc.py'] and process.info['status'] in ['sleeping', 'running']:
-                test_result = "Found the fcc python process as expected, it's state was '%s' ...yay!" % process.info['status']
-                process_running = True
-                break
-
-        addResult('fcc','Python process running', process_running, test_result)
-
-        self.assertTrue(process_running, test_result)
 
     def test_2_url_status_code(self):
         test_result = "Could not connect to web server on %s" % self.fccURL
@@ -55,7 +90,7 @@ class fccTestCases(unittest.TestCase):
         addResult('fcc', 'index.html is working', res, test_result)
         self.assertIn(expected_text, response.text)
 
-class redisTestCases(unittest.TestCase):
+class c_redisTestCases(unittest.TestCase):
     redisHost = "redis"
     redisPort = 6379
     suite = 'redis'
@@ -103,6 +138,42 @@ class redisTestCases(unittest.TestCase):
 
         self.assertTrue(overallResult)
 
+
+class d_mosquittoTestCases(unittest.TestCase):
+    suite = 'mosquitto'
+    broker_address = '127.0.0.1'
+    broker_port = 1883
+    topic = 'flower-heartbeats/'
+
+    @classmethod
+    def setUpClass(cls):
+        cls.client = mqtt.Client('state')
+        cls.client.on_connect = on_connect
+        cls.client.connect(cls.broker_address, cls.broker_port)
+        cls.client.loop_start()
+        time.sleep(1)
+
+    def tearDown(self):
+        self.client.disconnect()
+
+    def test_1_mosquitto_accessible(self):
+        test_result = "Could not connect to mosquitto broker on %s port %d" %(self.broker_address, self.broker_port)
+
+
+        test_result = "Connected to mosquitto broker on %s port %d" %(self.broker_address, self.broker_port)
+
+        addResult(self.suite,'Broker connected', RESULT_TRACKER['MQTT Connect'], test_result)
+        self.assertTrue(self.client, RESULT_TRACKER['MQTT Connect'])
+
+# MQTT connect function that blows up if i put it insidet the test class
+def on_connect(client, userdata, flags, rc):
+    if rc == 0:
+        setResult('MQTT Connect', True)
+        pass
+        # Perform additional actions upon successful connection
+    else:
+        setResult('MQTT Connect', False)
+        raise Execption('could not connect to mosquitto broker')
 
 if __name__ == '__main__':
     global state_report
