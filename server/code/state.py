@@ -6,6 +6,10 @@ import time
 import paho.mqtt.client as mqtt
 from collections import OrderedDict
 
+#chronyd
+import ntplib
+from datetime import datetime
+
 # redis tests
 import redis
 import traceback
@@ -143,7 +147,8 @@ class d_mosquittoTestCases(unittest.TestCase):
     suite = 'mosquitto'
     broker_address = '127.0.0.1'
     broker_port = 1883
-    topic = 'flower-heartbeats/'
+    heartbeats = 'flower-heartbeats/'
+    debug_topic = 'state-debug/'
 
     @classmethod
     def setUpClass(cls):
@@ -157,15 +162,84 @@ class d_mosquittoTestCases(unittest.TestCase):
         self.client.disconnect()
 
     def test_1_mosquitto_accessible(self):
-        test_result = "Could not connect to mosquitto broker on %s port %d" %(self.broker_address, self.broker_port)
-
-
-        test_result = "Connected to mosquitto broker on %s port %d" %(self.broker_address, self.broker_port)
+        if RESULT_TRACKER['MQTT Connect']:
+            test_result = "Connected to mosquitto broker on %s port %d" %(self.broker_address, self.broker_port)
+        else:
+            test_result = "Could not connect to mosquitto broker on %s port %d" %(self.broker_address, self.broker_port)
 
         addResult(self.suite,'Broker connected', RESULT_TRACKER['MQTT Connect'], test_result)
         self.assertTrue(self.client, RESULT_TRACKER['MQTT Connect'])
 
-# MQTT connect function that blows up if i put it insidet the test class
+    def test_2_mosquitto_publish(self):
+        rt = 'MQTT Topic: %s' % self.debug_topic
+        client = mqtt.Client('mqtt-pubish-test')
+        client.on_connect = on_connect
+        client.connect(self.broker_address, self.broker_port)
+        client.subscribe(self.debug_topic)
+        client.on_message = on_message
+        client.loop_start()
+        client.publish(self.debug_topic, 'state check:  testing testing 1 2 3')
+        time.sleep(4)
+
+        if rt in RESULT_TRACKER and RESULT_TRACKER[rt]:
+            test_result = "Published message to broker on topic %s" % self.debug_topic
+            test_end = True
+        else:
+            test_result = "Could not detect debug message after 2 seconds...although this intermittently fails and i haven't bothered to fix it omg async processes r hard"
+            test_end = False
+
+        addResult(self.suite,'Pub/Sub Check', test_end, test_result)
+        self.assertTrue(test_end)
+
+    '''def test_3_mosquitto_topics(self):
+        rt = 'MQTT Topic: %s' % self.heartbeats
+        client = mqtt.Client('mqtt-topic-test')
+        client.on_connect = on_connect
+        client.connect(self.broker_address, self.broker_port)
+        client.subscribe(self.heartbeats)
+        client.on_message = on_message
+        client.loop_start()
+        time.sleep(2)
+
+        if rt in RESULT_TRACKER and RESULT_TRACKER[rt]:
+            test_result = "Heard flower-heartbeat messages"
+            test_end = True
+        else:
+            test_result = "Could not detect flower-heartbeats after 2 seconds"
+            test_end = False
+
+        client.disconnect()
+
+        addResult(self.suite,'Heartbeat Check', test_end, test_result)
+        self.assertTrue(test_end)
+'''
+
+class d_chronydTestCases(unittest.TestCase):
+    suite = 'ntp'
+    server = '127.0.0.1'
+
+    def test_1_ntp_checks(self):
+
+        # Create an NTP client
+        client = ntplib.NTPClient()
+
+        ntp_time = None
+        try:
+            # Request the time from the NTP server
+            response = client.request(self.server)
+            # Get the NTP server's timestamp
+            ntp_time = datetime.fromtimestamp(response.tx_time)
+
+            test_result = "Time check worked, evidently it's %s " % ntp_time
+            test_end = True
+        except Exception as e:
+            test_result = "time check fail for ntp server at %s  ntp time returned: %s" % (self.server, str(e))
+            test_end = False
+
+        addResult(self.suite,'Time Check', test_end, test_result)
+        self.assertTrue(test_end)
+
+# MQTT connect function that blows up if I put it inside the test class
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         setResult('MQTT Connect', True)
@@ -173,7 +247,13 @@ def on_connect(client, userdata, flags, rc):
         # Perform additional actions upon successful connection
     else:
         setResult('MQTT Connect', False)
-        raise Execption('could not connect to mosquitto broker')
+        raise Exception('could not connect to mosquitto broker')
+
+def on_message(client, userdata, message):
+    setResult('MQTT Topic: %s' % message.topic, True)
+
+def on_publish(client, userdata, mid):
+    setResult('MQTT Publish', True)
 
 if __name__ == '__main__':
     global state_report

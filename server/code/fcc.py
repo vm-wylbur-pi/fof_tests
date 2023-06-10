@@ -11,6 +11,8 @@ import redis
 
 # state
 import subprocess
+import ntplib
+from datetime import datetime
 
 FCC_PATH = '/app/flower_control_center'
 
@@ -67,6 +69,22 @@ def status_cache(dtype):
     else:
         return Response("Unknown data type, your options are json or text")
 
+@app.route('/api/state/time')
+def time_check():
+    try:
+        # Create an NTP client instance and query the server
+        client = ntplib.NTPClient()
+        response = client.request('server')
+
+        # Get the NTP server's response time
+        ntp_time = datetime.fromtimestamp(response.tx_time)
+
+        # Format the time string to a format easily parsed by JavaScript
+        time_string = ntp_time.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        return Response(time_string, content_type='text/plain')
+
+    except Exception as e:
+        return Response('Error:' + str(e), content_type='text/plain')
 
 if __name__ == "__main__":
     global rc

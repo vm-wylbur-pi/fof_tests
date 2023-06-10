@@ -12,4 +12,4 @@ python3 code/cdc.py
 # Start flask webserver
 python3 code/fcc.py
 
-echo "Shutting down now"
+echo "Shutting down now...bye"

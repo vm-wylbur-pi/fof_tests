@@ -1,12 +1,11 @@
 console.log('sup')
 
-
 var table = new Tabulator("#status-table", {
     //height:"400px",
     layout:"fitDataColumns",
     movableRows:true,
     groupBy:"suite",
-    ajaxURL: "/api/state/test/json",
+    //ajaxURL: "/api/state/test/json",
     columns:[
         {title:"Test", field:"test"},
         {title:"Status", field:"status", hozAlign:"center", formatter:"tickCross", width:110},
@@ -15,15 +14,46 @@ var table = new Tabulator("#status-table", {
     ],
 });
 
+
+$.ajax({
+    url: '/api/state/test/json',
+    success: function(response) {
+        table.setData(response)
+
+        var status = true
+        for (var ent of JSON.parse(response)){
+            if(!ent.status){
+                status = false
+            }
+        }
+
+        let sa = $('#StatusAlert')
+        if(status){
+            sa.text("ALL TESTS PASSED WOOT");
+            sa.css('color', 'green');
+        }else{
+            sa.text("SOMETHING BROKEN");
+            sa.css('color', 'red');
+        }
+    },
+    error: function() {
+        console.log('Error occurred during AJAX request to json.');
+    }
+});
+
+
 $.ajax({
     url: '/api/state/test/text',
     success: function(response) {
         // Update the content of the div
-        if (response.indexOf("OK") == -1){
-            $('#StatusText').text("\n\nTest Results\n" + response);
+        let st = $('#StatusText')
+        if (response.indexOf("OK") === -1){
+            st.text("\n\nTest Results\n" + response);
+            st.text("SOMETHING BROKEN");
+            st.css('color', 'red');
         }
     },
     error: function() {
-        console.log('Error occurred during AJAX request.');
+        console.log('Error occurred during AJAX request text.');
     }
 });
