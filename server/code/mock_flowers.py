@@ -5,14 +5,22 @@ import string
 import paho.mqtt.client as mqtt
 import sys
 
+from preconfig import PreConfig
+
+pc = PreConfig()
+
 broker_address = '127.0.0.1'
 broker_port = 1883
 topic = 'flower-heartbeats/'
 
-flowerCount = 1
 
-def generate_random_id():
-    return ''.join(random.choices(string.ascii_lowercase + string.digits, k=5))
+if len(sys.argv) > 1:
+    flowerCount = int(sys.argv[1])
+else:
+    flowerCount = 1
+
+def get_fid(id):
+    return list(pc.inventory)[int(id)]
 
 def on_connect(client, userdata, flags, rc):
     print('Connected to MQTT broker')
@@ -25,6 +33,7 @@ def main():
     clients = []
     for i in range(flowerCount):
         client = mqtt.Client(f'client{i+1}')
+        client.id = str(i)
         client.on_connect = on_connect
         client.on_publish = on_publish
         clients.append(client)
@@ -36,7 +45,7 @@ def main():
 
     while True:
         for client in clients:
-            flower_id = generate_random_id()
+            flower_id = get_fid(client.id)
             payload = json.dumps({
                 'flower_id': flower_id,
                 'uptime': 1,
@@ -44,7 +53,7 @@ def main():
                 'wifi_signal': "great",
                 'sd_card': 10,
                 'volume': 10,
-                'ntp_time': 1234566789,
+                'ntp_time': int(time.time()),
                 'control_timer': 10,
                 'FastLED_fps': 10
             })

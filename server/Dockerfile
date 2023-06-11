@@ -56,4 +56,4 @@ RUN wget -O 'inventory/flower-inventory.csv' "https://docs.google.com/spreadshee
 #ENV NAME World
 
 # Run various server apps when the container launches
-#CMD ["chronyd","-f","/etc/chrony/chrony.conf"]
+CMD ["sh", "./startup.sh"]

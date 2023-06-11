@@ -5,6 +5,7 @@ import json
 import time
 import paho.mqtt.client as mqtt
 from collections import OrderedDict
+import sys
 
 #chronyd
 import ntplib
@@ -14,7 +15,12 @@ from datetime import datetime
 import redis
 import traceback
 
+from preconfig import PreConfig
+
 RESULT_TRACKER = {}
+
+pc = PreConfig()
+
 def addResult(suite, test, status, response):
     state_report.append({'suite':suite,'test': test, 'status': status, 'response': response})
 
@@ -26,6 +32,10 @@ class a_localProcessTestCases(unittest.TestCase):
     process_list = {
         'fcc': {
             'name': ['/usr/local/bin/python3', '/app/code/fcc.py'],
+            'state': ['sleeping', 'running']
+        },
+        'fda': {
+            'name': ['python3', 'code/fda.py'],
             'state': ['sleeping', 'running']
         },
         'mosquitto': {
@@ -47,7 +57,7 @@ class a_localProcessTestCases(unittest.TestCase):
             p = self.process_list[pname]
 
             process_running = False
-            test_result = "Could not detect process --> %s" %pname
+            test_result = "Could not detect one of the processes --> "
 
             for process in psutil.process_iter(['status']):
                 if process.cmdline() == p['name'] and process.info['status'] in p['state']:
@@ -100,7 +110,7 @@ class c_redisTestCases(unittest.TestCase):
     suite = 'redis'
     rc = None
 
-    rcCommon = ['config','deployment','flowers']
+    rcCommon = ['config','deployment','inventory']
 
     @classmethod
     def setUpClass(cls):
@@ -238,6 +248,15 @@ class d_chronydTestCases(unittest.TestCase):
 
         addResult(self.suite,'Time Check', test_end, test_result)
         self.assertTrue(test_end)
+
+
+#class d_fdaTestCases(unittest.TestCase):
+#    def test_1_queue_check(self):
+
+
+
+
+
 
 # MQTT connect function that blows up if I put it inside the test class
 def on_connect(client, userdata, flags, rc):

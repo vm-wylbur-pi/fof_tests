@@ -74,15 +74,15 @@ $(document).ready(function() {
         .then( res => {
             let n = cy.add({
                 position: {
-                  x: res.deployment.field.dimensions.x*5,
-                  y: res.deployment.field.dimensions.y*5
+                  x: res.field.dimensions.x*5,
+                  y: res.field.dimensions.y*5
                 },
                 group: 'nodes',
                 data: {
                     id: 'field',
                     ntype: 'field',
-                    width: res.deployment.field.dimensions.x*10,
-                    height: res.deployment.field.dimensions.y*10
+                    width: res.field.dimensions.x*10,
+                    height: res.field.dimensions.y*10
                 },
                 locked: true,
                 selectable: false,
@@ -92,44 +92,39 @@ $(document).ready(function() {
             n.style('z-index',0)
             cy.fit(padding = 30)
             cy.minZoom(cy.zoom())
-            return res.deployment
+            return res
         })
         .then(d => {
             return $.ajax({url:'/api/state/cache/flowers'})
                 .then( res => {
                     let de = cy.$id('field')
                     let d = de.data()
-                    let fu = cy.collection()
                     for(var fid in res){
                         let flower = res[fid]
+
+                        let position
+                        if (flower['position']){
+                            position = {
+                                x: flower['position']['x'] * 10,
+                                y: flower['position']['y'] * 10
+                            }
+                        }else {
+                            position = {x: 0, y:0}
+                        }
+
                         let n = cy.add({
-                            position: {
-                                x: d.width/2,
-                                y: d.height/2
-                            },
+                            position: position,
+                            locked: true,
                             group: 'nodes',
                             data: {
                                 id: fid,
                                 sid: flower['sequence'],
                                 ftype: flower['flower_type'],
+                                height: flower['height']
                             },
                         })
                         n.style('z-index',1)
-                        fu = fu.add(n)
                     }
-                    cy.zoomingEnabled(false)
-                    cy.panningEnabled(false)
-                    fu.layout({
-                        name:'random',
-                        fit: true,
-                        boundingBox: {
-                            x1: 30,
-                            y1: 30,
-                            w: d.width-100,
-                            h: d.height-100
-                        },
-                        animate: true
-                    }).run()
                     cy.zoomingEnabled(true)
                     cy.panningEnabled(true)
                 })

@@ -1,8 +1,6 @@
-console.log('sup')
-
 var table = new Tabulator("#status-table", {
     //height:"400px",
-    layout:"fitDataColumns",
+    layout:"fitData",
     movableRows:true,
     groupBy:"suite",
     //ajaxURL: "/api/state/test/json",
@@ -37,7 +35,7 @@ $.ajax({
         }
     },
     error: function() {
-        console.log('Error occurred during AJAX request to json.');
+        console.log('Error occurred during AJAX request to /api/state/test/json');
     }
 });
 
@@ -49,11 +47,9 @@ $.ajax({
         let st = $('#StatusText')
         if (response.indexOf("OK") === -1){
             st.text("\n\nTest Results\n" + response);
-            st.text("SOMETHING BROKEN");
-            st.css('color', 'red');
         }
     },
     error: function() {
-        console.log('Error occurred during AJAX request text.');
+        console.log('Error occurred during AJAX request /api/state/test/text.');
     }
 });

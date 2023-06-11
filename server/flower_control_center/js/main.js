@@ -144,10 +144,10 @@ function handleHeartbeatMessage(message) {
 function insertOrUpdateFlowerRow(heartbeat) {
     let row = $("#flower-table").find("#" + heartbeat.id);
     if (row.length == 0) {
-        console.log("Adding new flower: " + heartbeat.flower_id);
+        //console.log("Adding new flower: " + heartbeat.flower_id);
         $("#flower-table").append(heartbeat.toRow());
     } else {
-        console.log("updating flower " + heartbeat.flower_id);
+        //console.log("updating flower " + heartbeat.flower_id);
         row.replaceWith(heartbeat.toRow());
     }
 

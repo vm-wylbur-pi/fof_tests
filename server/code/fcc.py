@@ -14,6 +14,8 @@ import subprocess
 import ntplib
 from datetime import datetime
 
+from preconfig import PreConfig
+
 FCC_PATH = '/app/flower_control_center'
 
 app = Flask(__name__)
@@ -64,10 +66,36 @@ def status_report(dtype):
 def status_cache(dtype):
     if dtype == 'deployment':
         return Response(rc.get('deployment'), content_type='application/json')
+    elif dtype == 'inventory':
+        return Response(rc.get('inventory'), content_type='application/json')
     elif dtype == 'flowers':
-        return Response(rc.get('flowers'), content_type='application/json')
+        lfids = rc.keys(config['redis']['liveflowers'] + '*')
+
+        if not lfids:
+            return Response({}, content_type='application/json')
+
+        res = {}
+        for lfid in lfids:
+            flower = json.loads(rc.get(lfid).decode('utf-8'))
+            fid = lfid.decode('utf-8').split(':',1)[1]
+            res[fid] = flower
+        return Response(json.dumps(res), content_type='application/json')
+
+    elif dtype == 'flowers-dead':
+        lfids = rc.keys(config['redis']['deadflowers'] + '*')
+
+        if not lfids:
+            return Response({}, content_type='application/json')
+
+        res = {}
+        for lfid in lfids:
+            flower = json.loads(rc.get(lfid).decode('utf-8'))
+            fid = lfid.decode('utf-8').split(':',1)[1]
+            res[fid] = flower
+        return Response(json.dumps(res), content_type='application/json')
+
     else:
-        return Response("Unknown data type, your options are json or text")
+        return Response("Unknown cache type")
 
 @app.route('/api/state/time')
 def time_check():
@@ -87,11 +115,14 @@ def time_check():
         return Response('Error:' + str(e), content_type='text/plain')
 
 if __name__ == "__main__":
+    pc = PreConfig()
+
     global rc
-    rc = redis.Redis(host='redis', port=6379)
+    rc = pc.rc
 
     global config
-    config = json.loads(rc.get('config'))
+    config = pc.config
+
     print("FCC Starting Up")
     app.run(host='0.0.0.0', port=8000, debug=True)
     print ("FCC Shutting down....which is weird.")

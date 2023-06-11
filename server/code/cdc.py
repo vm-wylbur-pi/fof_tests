@@ -17,21 +17,22 @@ def inventory_to_redis():
         reader = csv.reader(csvfile)
 
         # Skip the first three rows
-        for _ in range(3):
+        for _ in range(1):
             next(reader)
 
         for row in reader:
-            sequence, mac, flower_type = row
+            sequence, mac, flower_type, height = row[0:4]
 
             # Create an object with flower_type
             flower_object = {
                 'flower_type': flower_type,
-                'sequence': sequence
+                'sequence': sequence,
+                'height': height
             }
 
             # Add the object to the dictionary using FoF Mac as the key
             data_dict[mac] = flower_object
-    rc.set('flowers',json.dumps(data_dict))
+    rc.set('inventory',json.dumps(data_dict))
 
 
 def config_to_redis():
