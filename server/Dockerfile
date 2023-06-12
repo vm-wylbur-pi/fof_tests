@@ -12,6 +12,11 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 ADD . /app
 
+# This additional configuration of apt-get is needed to avoid "Hash Sum mismatch" on Jeff's mackbook.
+# From https://stackoverflow.com/questions/67732260/how-to-fix-hash-sum-mismatch-in-docker-on-mac
+RUN echo "Acquire::http::Pipeline-Depth 0;" > /etc/apt/apt.conf.d/99custom && \
+    echo "Acquire::http::No-Cache true;"   >> /etc/apt/apt.conf.d/99custom 
+
 RUN apt-get update && apt-get install -y \
     libgl1-mesa-glx \
     libglib2.0-0 \
