@@ -104,19 +104,19 @@ class BeatFlash : public Pattern {
 // fades up and down from black, so this pattern can be applied on top of an idling background.
 class HuePulse : public Pattern {
   public:
-    HuePulse(uint8_t hue, uint8_t brightness, uint32_t startTime,
-             uint32_t rampDuration, uint32_t peakDuration)
-        : _hue(hue), _brightness(brightness), _startTime(startTime),
-          _rampDuration(rampDuration), _peakDuration(peakDuration) {};
+    HuePulse(uint8_t hue, uint32_t startTime, uint32_t rampDuration,
+             uint32_t peakDuration, uint8_t brightness)
+        : _hue(hue), _startTime(startTime), _rampDuration(rampDuration),
+          _peakDuration(peakDuration), _brightness(brightness){};
     void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
     bool isDone(uint32_t time) override;
     String name();
   private:
     uint8_t _hue;
-    uint8_t _brightness;
     uint32_t _startTime;
     uint32_t _rampDuration;
     uint32_t _peakDuration;
+    uint8_t _brightness;
     fract8 _alpha[NUM_LEDS];
 };
 

@@ -268,7 +268,7 @@ std::unique_ptr<Pattern> makePattern(const String& patternName, const String& pa
         if (params.size() >= 3) { rampDuration = params[2].toInt(); }
         if (params.size() >= 4) { peakDuration = params[3].toInt(); }
         if (params.size() >= 5) { brightness = params[4].toInt(); }
-        return std::unique_ptr<Pattern>(new HuePulse(hue, brightness, startTime, rampDuration, peakDuration));
+        return std::unique_ptr<Pattern>(new HuePulse(hue, startTime, rampDuration, peakDuration, brightness));
     }
     if (patternName == "IndependentIdle") {
         return std::unique_ptr<Pattern>(new IndependentIdle());
