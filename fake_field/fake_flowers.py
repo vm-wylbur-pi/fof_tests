@@ -26,9 +26,9 @@ class FakeFlower:
                            pygame.Vector2(self.x, self.y), radius=20)
 
         # clear out finished patterns
-        self.patterns = [p for p in self.patterns if not p.isDone()]
+        self.patterns = [p for p in self.patterns if not p.isDone(time)]
 
-    def setReferenceTime(self, new_reference_time):
+    def setEventReference(self, new_reference_time):
         self.reference_time = new_reference_time
 
     def controlMillis(self):
@@ -36,28 +36,30 @@ class FakeFlower:
         millis_since_epoch = int(round(time.time() * 1000))
         # Reference time behaves just like in the real flowers.
         return millis_since_epoch - self.reference_time
-
-    def parseStartTime(self, startTimeParameter: str) -> int:
-        if startTimeParameter.startswith("+"):
-            offset = int(startTimeParameter[1:])
-            return self.controlMillis() + offset
-        else:
-            return int(startTimeParameter)
     
     def addPattern(self, pattern_name, str_params):
         if pattern_name == "HuePulse":
-            self.patterns += HuePulse(str_params)
+            self.patterns.append(HuePulse(self.controlMillis(), str_params))
             print(f"Flower {self.id} added HuePulse({str_params})")
 
     def clearPatterns(self):
         self.patterns = []
 
-
+def parseStartTime(controlTime: int, startTimeParameter: str) -> int:
+    if startTimeParameter.startswith("+"):
+        offset = int(startTimeParameter[1:])
+        return controlTime + offset
+    else:
+        return int(startTimeParameter)
 
 def hueToPyGameColor(hue:int):
     hueOn360Scale = int(round((360 * hue/255)))
     color = pygame.Color(0, 0, 0, 0)
-    color.hsva = (hueOn360Scale, 100, 100, 100)
+    try:
+        color.hsva = (hueOn360Scale, 100, 100, 100)
+    except ValueError:
+        print(f"Tried to set with 360-scale hue of {hueOn360Scale} based on hue={hue}")
+        raise
     return color
 
 
@@ -95,13 +97,13 @@ class FlowerPattern:
    pass
 
 class HuePulse(FlowerPattern):
-    def __init__(self, str_params):
+    def __init__(self, control_time, str_params):
         params = str_params.split(',')
         self.hue = 160 if len(params) < 1 else int(params[0])
-        self.startTime = self.parseStartTime("+0") if len(params) < 2 else self.parseStartTime(params[1])
+        self.startTime = parseStartTime(control_time, "+0") if len(params) < 2 else parseStartTime(control_time, params[1])
         self.rampDuration = 300 if len(params) < 3 else int(params[2])
         self.peakDuration = 600 if len(params) < 4 else int(params[3])
-        self.brightness = 200 if len(params < 5) else int(params[4])
+        self.brightness = 200 if len(params) < 5 else int(params[4])
 
     def isDone(self, time: int):
         return time > (self.startTime + 2*self.rampDuration + self.peakDuration + 100)
@@ -110,7 +112,6 @@ class HuePulse(FlowerPattern):
         if time < self.startTime:
             return prevState
         # Full pattern has finished; don't do any unnecessary work.
-        #  TODO: replace 60, which is hard-coded as the max delayDueToHeight
         if time > self.startTime + 2*self.rampDuration + self.peakDuration:
             return prevState
 
@@ -124,7 +125,7 @@ class HuePulse(FlowerPattern):
         elif patternTime < self.rampDuration:
             alpha = patternTime / self.rampDuration
         elif patternTime < self.rampDuration + self.peakDuration:
-            alpha = self.brightness
+            alpha = 1  # During the peak
         elif patternTime < self.rampDuration + self.peakDuration + self.rampDuration:
             # Ramp the blossom back down to black
             timeIntoRamp = patternTime - self.rampDuration - self.peakDuration

@@ -48,22 +48,23 @@ def send_commands_to_flowers(mqtt_message, flowers):
     # commands received by the real flowers.
     if mqtt_message.topic.startswith("flower-control"):
         unused_flower_control, which_flower, command = mqtt_message.topic.split("/", maxsplit=2)
+        payload = mqtt_message.payload.decode('utf-8')
 
-        if command == "time/setReferenceTime":
-            # "flower-control/*/time/setReferenceTime" has a single integer parameter
-            new_reference_time = int(mqtt_message.payload)
+        if command == "time/setEventReference":
+            # "flower-control/*/time/setEventReference" has a single integer parameter
+            new_reference_time = int(payload)
             for flower in flowers:
                 if flower.id == which_flower or which_flower == "all":
-                    flower.setReferenceTime(new_reference_time)
+                    flower.setEventReference(new_reference_time)
 
-        if command == "leds/clearPatterns":
+        elif command == "leds/clearPatterns":
             for flower in flowers:
                 if flower.id == which_flower or which_flower == "all":
                     flower.clearPatterns()
 
-        if command.startswith("leds/addPattern"):
-            unused_leds_addPattern, pattern_name = command.split('/')
-            pattern_params = mqtt_message.payload
+        elif command.startswith("leds/addPattern"):
+            unused_leds, unused_addPattern, pattern_name = command.split('/')
+            pattern_params = payload
             for flower in flowers:
                 if flower.id == which_flower or which_flower == "all":
                     flower.addPattern(pattern_name, pattern_params)
