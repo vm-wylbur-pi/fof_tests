@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import time
 
 import pygame
 
@@ -8,21 +9,54 @@ class FakeFlower:
     y: int
     # MAC-address id for the flower, e.g. "AB:03:5D"
     id: str
+    reference_time = 0
     patterns = []
 
     def draw(self, screen):
-        time = pygame.time.get_ticks()  # stand in for control timer
-        hue = 0
+        time = self.controlMillis()
+        led_state = LEDState(blossom_hue=0, leaf_hue=100);
         for pattern in self.patterns:
-            hue = pattern.modifyHue(time, hue)
+            led_state = pattern.modifyHue(time, led_state)
 
-        # TODO: make the leaf and blossom colors a state variable. 
-        pygame.draw.circle(screen, "green", pygame.Vector2(self.x+3, self.y+3), radius=20)
-        pygame.draw.circle(screen, "red", pygame.Vector2(self.x, self.y), radius=20)
+        pygame.draw.circle(screen, hueToPyGameColor(led_state.leaf_hue),
+                           pygame.Vector2(self.x+4, self.y+4), radius=20)
+        pygame.draw.circle(screen, hueToPyGameColor(led_state.blossom_hue),
+                           pygame.Vector2(self.x, self.y), radius=20)
 
         # clear out finished patterns
         self.patterns = [p for p in self.patterns if not p.isDone()]
 
+    def setReferenceTime(self, new_reference_time):
+        self.reference_time = new_reference_time
+
+    def controlMillis(self):
+        # System time is used as a stand-in for NTP-synced time
+        millis_since_epoch = int(round(time.time() * 1000))
+        # Reference time behaves just like in the real flowers.
+        return millis_since_epoch - self.reference_time
+
+    def parseStartTime(self, startTimeParameter: str) -> int:
+        if startTimeParameter.startswith("+"):
+            offset = int(startTimeParameter[1:])
+            return self.controlMillis() + offset
+        else:
+            return int(startTimeParameter)
+    
+    def addPattern(self, pattern_name, str_params):
+        if pattern_name == "HuePulse":
+            self.patterns += HuePulse(str_params)
+            print(f"Flower {self.id} added HuePulse({str_params})")
+
+    def clearPatterns(self):
+        self.patterns = []
+
+
+
+def hueToPyGameColor(hue:int):
+    hueOn360Scale = int(round((360 * hue/255)))
+    color = pygame.Color(0, 0, 0, 0)
+    color.hsva = (hueOn360Scale, 100, 100, 100)
+    return color
 
 
 # Simplified representation of the colors of a flower's LEDs at a single point
@@ -43,22 +77,21 @@ def makeFakeField():
         FakeFlower(600, 250, "e"),
     ]
 
-
 # An LED pattern within a single flower.  Analagous to the led_patterns::Pattern class
 # in the flower microcontroler code, but simplified.
-@dataclass
 class FlowerPattern:
    pass
 
-@dataclass
 class HuePulse(FlowerPattern):
-    startTime: int
-    hue: int
-    rampDuration: int
-    peakDuration: int
-    brightness: int
+    def __init__(self, str_params):
+        params = str_params.split(',')
+        self.hue = 160 if len(params) < 1 else int(params[0])
+        self.startTime = self.parseStartTime("+0") if len(params) < 2 else self.parseStartTime(params[1])
+        self.rampDuration = 300 if len(params) < 3 else int(params[2])
+        self.peakDuration = 600 if len(params) < 4 else int(params[3])
+        self.brightness = 200 if len(params < 5) else int(params[4])
 
-    def isDone(self, time):
+    def isDone(self, time: int):
         return time > (self.startTime + 2*self.rampDuration + self.peakDuration + 100)
 
     def modifyHue(self, time: int, prevState: LEDState) -> LEDState:
