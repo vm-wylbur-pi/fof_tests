@@ -256,7 +256,7 @@ std::unique_ptr<Pattern> makePattern(const String& patternName, const String& pa
     //               at the blossom is rampDuration + TODO ms (time for the pulse)
     //               to rise up the stem.
     // peakDuration: ms to hold the flower at beak brightness
-    // peakBrightness: how bright to get 0-255
+    // brightness: how bright to get 0-255
     if (patternName == "HuePulse") {
         uint8_t hue = 160;
         uint32_t startTime = parseStartTime("+0");
@@ -264,10 +264,10 @@ std::unique_ptr<Pattern> makePattern(const String& patternName, const String& pa
         uint32_t peakDuration = 600;
         uint8_t brightness = 200;
         if (params.size() >= 1) { hue = params[0].toInt(); }
-        if (params.size() >= 2) { brightness = params[1].toInt(); }
-        if (params.size() >= 3) { startTime = parseStartTime(params[2]); }
-        if (params.size() >= 4) { rampDuration = params[3].toInt(); }
-        if (params.size() >= 5) { peakDuration = params[4].toInt(); }
+        if (params.size() >= 2) { startTime = parseStartTime(params[1]); }
+        if (params.size() >= 3) { rampDuration = params[2].toInt(); }
+        if (params.size() >= 4) { peakDuration = params[3].toInt(); }
+        if (params.size() >= 5) { brightness = params[4].toInt(); }
         return std::unique_ptr<Pattern>(new HuePulse(hue, brightness, startTime, rampDuration, peakDuration));
     }
     if (patternName == "IndependentIdle") {
