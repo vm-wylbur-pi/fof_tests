@@ -1,0 +1,21 @@
+name: "Default Test Field"
+description: "This deployment is used for internal testing or when no deployment is specified"
+flowers:
+  "F0:6D:8C":
+    x: 450
+    y: 100
+  "F0:70:1C":
+    x: 550
+    y: 200
+  "F0:6F:04":
+    x: 650
+    y: 300
+  "DA:E7:10":
+    x: 550
+    y: 400
+  "F0:5F:EC":
+    x: 600
+    y: 250
+  "F0:70:AC":
+    x: 470
+    y: 450

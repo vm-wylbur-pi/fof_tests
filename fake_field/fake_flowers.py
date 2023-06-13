@@ -1,5 +1,7 @@
 from dataclasses import dataclass
+import os.path
 import time
+import yaml
 
 import pygame
 
@@ -68,7 +70,6 @@ class LEDState:
 
 
 def makeFakeField():
-    # TODO: Read these coordinates from a deployment file.
     return [
         FakeFlower(450, 100, "a"),
         FakeFlower(550, 200, "b"),
@@ -76,6 +77,17 @@ def makeFakeField():
         FakeFlower(550, 400, "d"),
         FakeFlower(600, 250, "e"),
     ]
+
+# yaml_file_path must be relative to fake_field/
+def makeFakeFieldFromDeploymentYAML(yaml_file_name):
+    field = []
+    yaml_file_path = os.path.join(os.path.dirname(__file__), yaml_file_name)
+    with open(yaml_file_path, 'r') as yaml_file:
+        config = yaml.safe_load(yaml_file)
+        print(config['flowers'])
+        for flower_id, flower in config['flowers'].items():
+            field.append(FakeFlower(x=flower['x'], y=flower['y'], id=flower_id))
+    return field
 
 # An LED pattern within a single flower.  Analagous to the led_patterns::Pattern class
 # in the flower microcontroler code, but simplified.
