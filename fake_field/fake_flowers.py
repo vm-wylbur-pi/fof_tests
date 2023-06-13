@@ -16,13 +16,14 @@ class FakeFlower:
 
     def draw(self, screen):
         time = self.controlMillis()
-        led_state = LEDState(blossom_hue=0, leaf_hue=100);
+        led_state = LEDState(blossom_color=pygame.Color("red"),
+                             leaf_color=pygame.Color("green"));
         for pattern in self.patterns:
-            led_state = pattern.modifyHue(time, led_state)
+            led_state = pattern.modifyLEDState(time, led_state)
 
-        pygame.draw.circle(screen, hueToPyGameColor(led_state.leaf_hue),
+        pygame.draw.circle(screen, led_state.leaf_color,
                            pygame.Vector2(self.x+4, self.y+4), radius=20)
-        pygame.draw.circle(screen, hueToPyGameColor(led_state.blossom_hue),
+        pygame.draw.circle(screen, led_state.blossom_color,
                            pygame.Vector2(self.x, self.y), radius=20)
 
         # clear out finished patterns
@@ -52,24 +53,24 @@ def parseStartTime(controlTime: int, startTimeParameter: str) -> int:
     else:
         return int(startTimeParameter)
 
-def hueToPyGameColor(hue:int):
+
+# Simplified representation of the colors of a flower's LEDs at a single point in time
+@dataclass
+class LEDState:
+    blossom_color: pygame.Color
+    leaf_color: pygame.Color
+
+
+def hueToPyGameColor(hue: int):
     hueOn360Scale = int(round((360 * hue/255)))
     color = pygame.Color(0, 0, 0, 0)
     try:
         color.hsva = (hueOn360Scale, 100, 100, 100)
     except ValueError:
-        print(f"Tried to set with 360-scale hue of {hueOn360Scale} based on hue={hue}")
+        print(
+            f"Tried to set with 360-scale hue of {hueOn360Scale} based on hue={hue}")
         raise
     return color
-
-
-# Simplified representation of the colors of a flower's LEDs at a single point
-# in time.  Uses the 0-255 hue scale of FastLED
-@dataclass
-class LEDState:
-    blossom_hue: int
-    leaf_hue: int
-
 
 def makeFakeField():
     return [
@@ -105,10 +106,13 @@ class HuePulse(FlowerPattern):
         self.peakDuration = 600 if len(params) < 4 else int(params[3])
         self.brightness = 200 if len(params) < 5 else int(params[4])
 
+        # Convert to pygame representation for interpolation support.
+        self.color = hueToPyGameColor(self.hue)
+
     def isDone(self, time: int):
         return time > (self.startTime + 2*self.rampDuration + self.peakDuration + 100)
 
-    def modifyHue(self, time: int, prevState: LEDState) -> LEDState:
+    def modifyLEDState(self, time: int, prevState: LEDState) -> LEDState:
         if time < self.startTime:
             return prevState
         # Full pattern has finished; don't do any unnecessary work.
@@ -132,6 +136,6 @@ class HuePulse(FlowerPattern):
             alpha = 1 - timeIntoRamp / self.rampDuration
 
         return LEDState(
-            blossom_hue=alpha * self.hue + (1-alpha) * prevState.blossom_hue,
-            leaf_hue=alpha * self.hue + (1-alpha) * prevState.leaf_hue,
+            blossom_color=prevState.blossom_color.lerp(self.color, alpha),
+            leaf_color=prevState.leaf_color.lerp(self.color, alpha),
         )
