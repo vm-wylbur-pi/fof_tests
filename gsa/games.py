@@ -77,7 +77,9 @@ class Fairy(StatefulGame):
             next_flower = random.choice(candidates)
             visitDuration = random.normalvariate(self.secsPerVisitMean, self.secsPerVisitStDev)
             visitDuration = max(visitDuration, self.secsPerVisitMinimum)
-            next_flower.FairyVisit(visitDuration)
+            # Visit duration is expected on the flower in milliseconds
+            visitDurationMillis = int(round(visitDuration * 1000))
+            next_flower.FairyVisit(visitDurationMillis)
             self.next_visit_time = now + visitDuration
         
     def isDone(self):
