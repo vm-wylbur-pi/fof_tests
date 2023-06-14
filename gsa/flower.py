@@ -17,9 +17,21 @@ class Flower:
         topic = f"flower-control/{self.id}/{command}"
         self.mqtt_client.publish(topic, payload=params)
 
+    # Setting n = 1 returns the closest flower to self.
+    def findNClosestFlowers(self, flowers, n):
+        others = [(f.location.diff(self.location).magnitude(), f) for f in flowers]
+        others.sort()
+        min_index = 1  # exclude self, which is always the closest flower to self.
+        max_index = min(1+n, len(flowers))
+        return [f for (_, f) in others[min_index:max_index]]
+
     def HuePulse(self, hue, startTime, rampDuration, peakDuration, brightness):
         params = f"{hue},{startTime},{rampDuration},{peakDuration},{brightness}"
         self.sendMQTTCommand(command="leds/addPattern/HuePulse", params=params)
+
+    def FairyVisit(self, visitDuration):
+        params = str(visitDuration)
+        self.sendMQTTCommand(command="leds/addPattern/FairyVisit", params=params)
 
 
 def readFieldFromDeploymentYAML(yaml_file_name):
