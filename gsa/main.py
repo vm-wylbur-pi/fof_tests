@@ -1,5 +1,6 @@
 # TODO: docs, what is the GSA?
 import time
+import threading
 
 import flower
 import mqtt
@@ -16,10 +17,19 @@ for flower in flowers:
 
 stateful_games = []
 
-# Interaction/game loop
-while True:
-    # at first, keyboard control.  This will generalize to received MQTT commands later.
-    command = input("Next command? ")
+# For monitoring keyborad commands without blocking the main game loop
+class KeyboardInputThread(threading.Thread):
+    def __init__(self, callback):
+        self.callback = callback
+        super(KeyboardInputThread, self).__init__(name='gsa-input-thread')
+        self.start()
+
+    def run(self):
+        while True:
+            self.callback(input("Next command? "))
+
+def handle_keyboard_input(command):
+    global stateful_games
     if command == "x":
         # Clear all current-running games
         stateful_games = []
@@ -32,6 +42,11 @@ while True:
         games.StraightColorWave(200, start_loc=Point(100, 100), velocity=Vector(0, 400)).run(flowers)
     elif command == "c":
         stateful_games.append(games.Fairy())
+
+input_thread = KeyboardInputThread(handle_keyboard_input)
+
+# Interaction/game loop
+while True:
 
     # Update the current set of stateful games
     stateful_games = [g for g in stateful_games if not g.isDone()]
