@@ -62,7 +62,8 @@ while running:
 
     # Block for up to 1/3 of frame time to handle MQTT messages. Do this before callying
     # the pygame clock.tick(), because clock.tick() will block.
-    # TODO: maybe call mqtt_client.reconnect() here, or if not connected: reconnect
+    if not mqtt_client.is_connected():
+        mqtt_client.reconnect()
     mqtt_client.loop(timeout= (1/FPS) / 3) # timeout is in seconds
 
     # Advance the pygame clock sufficiently to get 60 FPS display.  This will block
