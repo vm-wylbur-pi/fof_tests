@@ -42,6 +42,9 @@ class FakeFlower:
         if pattern_name == "HuePulse":
             self.patterns.append(HuePulse(self.controlMillis(), str_params))
             print(f"Flower {self.id} added HuePulse({str_params})")
+        if pattern_name == "FairyVisit":
+            self.patterns.append(FairyVisit(self.controlMillis(), str_params))
+            print(f"Flower {self.id} added FairyVisit({str_params})")
 
     def clearPatterns(self):
         self.patterns = []
@@ -139,3 +142,29 @@ class HuePulse(FlowerPattern):
             blossom_color=prevState.blossom_color.lerp(self.color, alpha),
             leaf_color=prevState.leaf_color.lerp(self.color, alpha),
         )
+
+class FairyVisit(FlowerPattern):
+    def __init__(self, control_time, str_params):
+        # Params is expected to be a single integer giving the fairy visit duration in millis.
+        visitDuration = int(str_params)
+        self.visitEndTime = control_time + visitDuration
+
+    def isDone(self, time: int):
+        return time > self.visitEndTime
+
+    def modifyLEDState(self, time: int, prevState: LEDState) -> LEDState:
+        # In the real flower, "fairy" means lighting up a handful of LEDs at a
+        # random spot on the flower, moving that spot around slowly, maybe pulsing
+        # the spot's brightness, and playing a giggle noise on the speaker.
+        #
+        # In this simplified fake flower, "fairy" means the blossom and leaf
+        # take turns flashing white for as long as the fairy is visiting.
+        inFlash = (time // 50) % 2 == 0   # alternate every 50 ms
+        onBlossom = (time // 510) % 2 == 0  # alternate every 510 ms
+        newState = LEDState(prevState.blossom_color, prevState.leaf_color)
+        if inFlash:
+            if onBlossom:
+                newState.blossom_color = pygame.Color("white")
+            else:
+                newState.leaf_color = pygame.Color("white")
+        return newState
