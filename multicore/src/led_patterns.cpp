@@ -1,6 +1,8 @@
 #include "led_patterns.h"
 
 #include <vector>
+#include <cmath>
+#include <cstdint>
 
 #include "comms.h"
 #include "music_sync.h"
@@ -150,6 +152,65 @@ void HuePulse::run(uint32_t time, CRGB leds[NUM_LEDS]) {
     }
 }
 
+String FairyVisit::name() {
+    return "FairyVisit(visitDuration=" + String(_visitDuration) + ")";
+}
+
+bool FairyVisit::isDone(uint32_t time) {
+    return time > _startTime + _visitDuration;
+}
+
+void FairyVisit::run(uint32_t time, CRGB leds[NUM_LEDS]) {
+    if (_lastUpdateTime == 0) {
+        // First time running. Initialize state.
+        _startTime = time;
+        _lastUpdateTime = time;  // so the first fairy location update is a no-op.
+        _fairyLocation = random8(NUM_LEDS);
+    }
+    if (time > _startTime + _visitDuration) {
+        // Fairy is gone from this flower, so draw nothing.
+        // We're just waiting for this pattern to get unloaded via isDone
+        return;
+    }
+
+    // Rendering
+    //   Fairy is a bright white area with dim edges that fade away spatially from
+    //   its logical (floating point) location.
+    const int8_t fairyDiameter = 2;
+    const CRGB FAIRY_COLOR(255,255,255);  // We could make this a parameter if needed.
+    for (int offset=-fairyDiameter; offset<fairyDiameter; offset++) {
+        uint8_t led_index = std::round(_fairyLocation) + offset;
+        if (led_index >= 0 & led_index < NUM_LEDS) {
+            // Fall-off linearly from fairy center
+            float distanceFromFairy = abs(led_index - _fairyLocation);
+            fract8 alpha = std::round(255 * distanceFromFairy / fairyDiameter);
+            leds[led_index].r = lerp8by8(leds[led_index].r, FAIRY_COLOR.r, alpha);
+            leds[led_index].g = lerp8by8(leds[led_index].g, FAIRY_COLOR.g, alpha);
+            leds[led_index].b = lerp8by8(leds[led_index].b, FAIRY_COLOR.b, alpha);
+        }
+    }
+
+    // Update fairy location. This runs in every loop so that the fairy
+    // can have smooth motion at any speed.
+    float secsSinceLastUpdate = (time - _lastUpdateTime) / 1000.0;
+    _fairyLocation += _fairySpeed * secsSinceLastUpdate;
+
+    // Bounce the fairy of each end of the LED strip if it went out of bounds.
+    if (_fairyLocation < 0 || _fairyLocation > NUM_LEDS - 1) {
+        _fairySpeed = -_fairySpeed;
+    }
+
+    EVERY_N_MILLISECONDS(100) {
+        // Reverse direction at random a few times per second.
+        // Faries are unpredictable and playful.
+        if (random8() % 3 == 0) {
+            _fairySpeed = -_fairySpeed;
+        }
+    }
+
+    _lastUpdateTime = time;
+}
+
 IndependentIdle::IndependentIdle() {
     _blossomHue = 0;
     // Start each point in each leaf at a random spot in the palette; each led
@@ -269,6 +330,11 @@ std::unique_ptr<Pattern> makePattern(const String& patternName, const String& pa
         if (params.size() >= 4) { peakDuration = params[3].toInt(); }
         if (params.size() >= 5) { brightness = params[4].toInt(); }
         return std::unique_ptr<Pattern>(new HuePulse(hue, startTime, rampDuration, peakDuration, brightness));
+    }
+    if (patternName == "FairyVisit") {
+        uint32_t visitDuration = 3000;
+        if (params.size() >= 1) { visitDuration = params[0].toInt(); }
+        return std::unique_ptr<Pattern>(new FairyVisit(visitDuration));
     }
     if (patternName == "IndependentIdle") {
         return std::unique_ptr<Pattern>(new IndependentIdle());

@@ -1,6 +1,7 @@
 #ifndef LED_PATTERNS_H
 #define LED_PATTERNS_H
 
+#include <cstdint>
 #include <memory>
 #include <FastLED.h>
 
@@ -118,6 +119,23 @@ class HuePulse : public Pattern {
     uint32_t _peakDuration;
     uint8_t _brightness;
     fract8 _alpha[NUM_LEDS];
+};
+
+class FairyVisit : public Pattern {
+  public:
+    FairyVisit(uint32_t visitDuration) : _visitDuration(visitDuration) {};
+    void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
+    bool isDone(uint32_t time) override;
+    String name();
+  private:
+    uint32_t _visitDuration;
+    uint32_t _startTime = 0;
+    uint32_t _lastUpdateTime = 0;
+    // With respect to the LED array indexes, but the logical position of the
+    // fairy can be between LEDs, to support smooth motion around the flower.
+    float _fairyLocation = 70.0;
+    // LEDs per second.  Positive means toward the blossom, negative toward the leaves.
+    float _fairySpeed = 130.0;
 };
 
 // Interpret a string parameter as a moment in time. There are two formats:
