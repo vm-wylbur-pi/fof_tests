@@ -1,14 +1,14 @@
 # FCC
 Flask==2.3.2
-Response
 paho-mqtt
 
 # viz system
-opencv-python
-numpy
+# holding off on installation, these take a long time
+#  to build ond the rpi and aren't necessary at this time.
+# opencv-python
+# numpy
 
 # CDC
-redis
 pyyaml
 openpyxl
 
