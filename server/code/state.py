@@ -12,14 +12,9 @@ import ntplib
 from datetime import datetime
 
 # redis tests
-import redis
 import traceback
 
-from preconfig import PreConfig
-
 RESULT_TRACKER = {}
-
-pc = PreConfig()
 
 def addResult(suite, test, status, response):
     state_report.append({'suite':suite,'test': test, 'status': status, 'response': response})
@@ -32,10 +27,6 @@ class a_localProcessTestCases(unittest.TestCase):
     process_list = {
         'fcc': {
             'name': ['/usr/local/bin/python3', '/app/code/fcc.py'],
-            'state': ['sleeping', 'running']
-        },
-        'fda': {
-            'name': ['python3', 'code/fda.py'],
             'state': ['sleeping', 'running']
         },
         'mosquitto': {
@@ -103,55 +94,6 @@ class b_fccTestCases(unittest.TestCase):
 
         addResult('fcc', 'index.html is working', res, test_result)
         self.assertIn(expected_text, response.text)
-
-class c_redisTestCases(unittest.TestCase):
-    redisHost = "redis"
-    redisPort = 6379
-    suite = 'redis'
-    rc = None
-
-    rcCommon = ['config','deployment','inventory']
-
-    @classmethod
-    def setUpClass(cls):
-        cls.rc = redis.Redis(host=cls.redisHost, port=cls.redisPort)
-
-    def test_1_redis_ping(self):
-        # Make a GET request to the web server
-        response = None
-        try:
-            response = self.rc.ping()
-            if response:
-                test_result = "Pinged the redis host '%s' on port '%d'" % (self.redisHost, self.redisPort)
-            else:
-                test_result = "Ping failed to the redis host '%s' on port '%d'" % (self.redisHost, self.redisPort)
-        except Exception as e:
-            test_result = "Ping threw an exception: %s" % (str(e))
-
-        addResult(self.suite, 'Redis Ping', response, test_result)
-        self.assertTrue(response)
-
-    def test_2_redis_values(self):
-        # Make a GET request to the web server
-        response = None
-        overallResult = True
-        for cv in self.rcCommon:
-            result = True
-            try:
-                response = self.rc.get(cv)
-                if response:
-                    test_result = "%s is available and has %d total" % (cv, len(json.loads(response)))
-                else:
-                    test_result = "%s list is MISSING??!?!?!" % cv
-                    result = False
-                    overallResult = False
-            except Exception as e:
-                test_result = "GET calls threw an exception: %s" % (str(e))
-
-            addResult(self.suite, 'Redis Get %s' % cv, result, test_result)
-
-        self.assertTrue(overallResult)
-
 
 class d_mosquittoTestCases(unittest.TestCase):
     suite = 'mosquitto'
@@ -248,14 +190,6 @@ class d_chronydTestCases(unittest.TestCase):
 
         addResult(self.suite,'Time Check', test_end, test_result)
         self.assertTrue(test_end)
-
-
-#class d_fdaTestCases(unittest.TestCase):
-#    def test_1_queue_check(self):
-
-
-
-
 
 
 # MQTT connect function that blows up if I put it inside the test class

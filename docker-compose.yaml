@@ -16,12 +16,5 @@ services:
       - ./server/flower_control_center:/app/flower_control_center
       - ./server/config:/app/config
       - ./deployments:/app/deployments
-    depends_on:
-      - redis
     command: ./startup.sh
 
-  redis:
-    image: redis/redis-stack-server:latest
-    ports:
-      - 6379:6379
-      - 8001:8001

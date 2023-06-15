@@ -23,7 +23,6 @@ RUN apt-get update && apt-get install -y \
     mosquitto \
     mosquitto-clients \
     wget \
-    redis-tools \
     gcc \
     python3-dev \
     chrony \
@@ -31,12 +30,16 @@ RUN apt-get update && apt-get install -y \
     procps \
     lsof \
     screen \
-    iputils-ping
+    iputils-ping \
+    vim
+    # To be added back in once viz system is up.
+    #   These are easier to add via apt than requirements.txt on the rpi
+    #   since it doesn't require them to be compiled on the host
+    # python3-numpy
+    # python3-opencv
 
 # install our ntp server config
 COPY ./config/chrony.conf /etc/chrony/chrony.conf
-# RUN update-rc.d chrony defaults
-# RUN rm /tmp/chrony.pid
 
 #COPY ./requirements.txt /app/requirements.txt
 # Install any needed packages specified in requirements.txt
