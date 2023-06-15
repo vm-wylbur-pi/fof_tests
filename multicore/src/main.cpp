@@ -7,6 +7,7 @@
 #include "screen.h"
 #include "storage.h"
 #include "time_sync.h"
+#include "version.h"
 
 // When I tried this the other way around (LEDs isolated on core 1),
 // The LEDs stalled every 5-10 seconds. I think there might be some
@@ -79,6 +80,8 @@ void setup()
 
   // All boot-time setup is complete.
   screen::commands::setText("Hello, JOBI.\nI am flower " + comms::flowerID() + "\n");
+  screen::commands::appendText("Version: " + version::Name + "\n");
+  screen::commands::appendText("Built \n" + version::getBuildTime() + "\n");
 
   startTask(TaskLED, "LED Control", CORE_FOR_LED_CONTROL);
   startTask(TaskOTA, "OTA", CORE_FOR_EVERYTHING_ELSE);
