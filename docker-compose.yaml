@@ -1,0 +1,20 @@
+version: '3'
+services:
+  server:
+    privileged: true
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+      - 1883:1883
+      - 9001:9001
+      - 123:123
+      - 123:123/udp
+    volumes:
+      - ./server/code:/app/code
+      - ./server/flower_control_center:/app/flower_control_center
+      - ./server/config:/app/config
+      - ./deployments:/app/deployments
+    command: ./startup.sh
+
