@@ -64,7 +64,7 @@ class Heartbeat {
             .append('<td heartbeat_timestamp="' + this.creation_timestamp + '">:00</td>')
             .append("<td>" + this.uptime + "</td>")
             .append("<td>" + this.version_name + " (built " + this.build_timestamp + ")</td>")
-            .append("<td>" + this.IP + "</td>")
+            .append("<td class='ip'>" + this.IP + "</td>")
             .append("<td>" + this.wifi_signal + "</td>")
             .append("<td>" + this.sd_card + "</td>")
             .append("<td>" + this.volume + "</td>")
@@ -148,6 +148,9 @@ function insertOrUpdateFlowerRow(heartbeat) {
     if (row.length == 0) {
         //console.log("Adding new flower: " + heartbeat.flower_id);
         $("#flower-table").append(heartbeat.toRow());
+
+        // Account for this new flower in the Mass OTA command tool
+        updateMassOTACommand();
     } else {
         //console.log("updating flower " + heartbeat.flower_id);
         row.replaceWith(heartbeat.toRow());

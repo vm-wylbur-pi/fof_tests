@@ -13,6 +13,7 @@
 
     <script src="lib/paho-mqtt.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/ota_flash.js"></script>
 
     <script src="lib/cytoscape-3.25.min.js"></script>
     <script src="lib/cytoscape-grid-guide.js"></script>
@@ -81,6 +82,26 @@
             </div>
         </div>
 
+    </div>
+
+    <button id="flash-all-flowers">OTA flash all flowers</button>
+    <div id="flash-all-flowers-popup">
+        <table>
+            <tr>
+                <td>Path to platformio binary</td>
+                <td><input name="pio_binary_path" class="ota_command_param"
+                     value="/Users/jeff/.platformio/penv/bin/pio"/></td>
+                <td rowspan=3><pre id="ota-command-content">Command will appear here.</pre></td>
+            </tr>
+            <tr>
+                <td>Path to flower code</td>
+                <td><input name="flower_code_path" class="ota_command_param"
+                    value="/Users/jeff/GitHub/fof_tests/multicore"/></td>
+            </tr>
+            <tr>
+                <td colspan="2"><button id="ota_copy_to_clipboard">Copy the shown OTA command to clipboard</button></td>
+            </tr>
+        </table>
     </div>
 
 
