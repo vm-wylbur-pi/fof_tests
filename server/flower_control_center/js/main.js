@@ -203,6 +203,7 @@ function populateCommandChoices() {
         "leds/listPatterns",
         "leds/clearPatterns",
         "leds/addPattern/HuePulse",
+        "leds/addPattern/FairyVisit",
         "leds/addPattern/IndependentIdle",
         "leds/addPattern/Raindrops",
         "leds/addPattern/SolidHue",
