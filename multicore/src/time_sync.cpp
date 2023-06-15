@@ -32,7 +32,7 @@ namespace time_sync
         comms::sendDebugMessage("Getting NTP Time...");
         while (ntpClient.update() != 1)
         {
-            delay(2000);
+            delay(500);
             ntpClient.forceUpdate();
             if (++num_attempts > 3) {
                 break;
