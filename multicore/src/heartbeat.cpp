@@ -5,6 +5,7 @@
 #include "networking.h"
 #include "storage.h"
 #include "time_sync.h"
+#include "version.h"
 
 #include <Arduino.h>
 
@@ -28,6 +29,8 @@ String Heartbeat::_makeHeartbeatMessage() {
     String msg = "{";
     msg += "  \"flower_id\": \"" + comms::flowerID() + "\",\n";
     msg += "  \"uptime\": \"" + _uptime.Formatted() + "\",\n";
+    msg += "  \"version_name\": \"" + version::Name + "\",\n";
+    msg += "  \"build_timestamp\": \"" + version::getBuildTime() + "\",\n";
     msg += "  \"IP\": \"" + WiFi.localIP().toString() + "\",\n";
     msg += "  \"wifi_signal\": \"" + networking::signalStrength() + "\",\n";
     msg += "  \"sd_card\": \"" + storage::formatStorageUsage() + "\",\n";
