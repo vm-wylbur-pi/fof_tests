@@ -20,7 +20,11 @@ namespace time_sync
     const uint16_t NTP_OFFSET = 0;
     const uint16_t NTP_TIMEOUT_MILLIS = 800;
 
+    // State used for flower syncing
     uint32_t eventReferenceTimeSec = 0;
+
+    // Whether we have ever synced successfully with NTP NTPClient.isTimeSet() doesn't work for this.
+    bool haveSyncedWithNTP = false;
 
     WiFiUDP ntpUDP;
     NTPClient ntpClient(ntpUDP, config::CONTROLLER_IP_ADDRESS,
@@ -29,16 +33,15 @@ namespace time_sync
     void syncWithNTP() {
         uint8_t num_attempts = 0;
         Serial.println("Getting NTP Time...");
-        while (ntpClient.update() != 1) {
+        while (num_attempts++ < 3) {
             delay(2000);
             comms::sendDebugMessage("Attempting NTP sync...");
-            ntpClient.forceUpdate();
-            if (++num_attempts > 3) {
-                comms::sendDebugMessage("Giving up on NTP Sync.");
+            haveSyncedWithNTP = ntpClient.forceUpdate();
+            if (haveSyncedWithNTP) {
                 break;
             }
         }
-        if (ntpClient.isTimeSet()) {
+        if (haveSyncedWithNTP) {
             comms::sendDebugMessage("Time from NTP: " + ntpClient.getFormattedTime());
             screen::commands::appendText("Got global time from NTP\n");
         } else {
@@ -59,7 +62,7 @@ namespace time_sync
     }
 
     String getFormattedNTPTime() {
-        if (ntpClient.isTimeSet()) {
+        if (haveSyncedWithNTP) {
             return ntpClient.getFormattedTime() + "." + String((int)ntpClient.get_millis());
         } else {
             return "NTP has not synced.";
@@ -69,16 +72,12 @@ namespace time_sync
     // Number of milliseconds since the event reference time.
     uint32_t controlMillis()
     {
-        // This is initialized to zero above, so if it's still zero, that means
-        // We've never set a reference time, and 
-        if (!eventReferenceTimeSec) {
-            return 0;
-        }
-
-        // If NTP sync has never run, then we can't work out the time since
-        // the 
-        if (!ntpClient.isTimeSet()) {
-            return 0;
+        // Unless we have both an NTP sync and an eventReferenceTime, the
+        // controlMillis return value is meaningless.  As a fall-back, we
+        // can use the system millis(). This lets many sync-independent
+        // flower behaviors still be reasonable.
+        if (!eventReferenceTimeSec || !haveSyncedWithNTP) {
+            return millis();
         }
 
         // The assumption is that eventReferenceTimeSec is in the relatively recent
