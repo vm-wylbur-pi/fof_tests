@@ -36,14 +36,15 @@ namespace storage
         // pulling SCK and COPI low, and SS high.
         SPI.begin(SPI_SCK, SPI_CIPO, SPI_COPI);
         SPI.setFrequency(1000000);
-        if (!SD.begin(SD_CS, SPI))
-        {
-            Serial.println("Card Mount Failed");
+        if (!SD.begin(SD_CS, SPI)) {
+            Serial.println("SD card Mount Failed");
             comms::sendDebugMessage("SD card filesystem mount failed.");
+            screen::commands::appendText("SD Card mount failed\n");
+        } else {
+            Serial.println("SD card filesystem mount succedded.");
+            comms::sendDebugMessage("SD card filesystem mount succeeded.");
+            screen::commands::appendText("SD Card mounted\n");
         }
-        Serial.println("SD card filesystem mount succedded.");
-        comms::sendDebugMessage("SD card filesystem mount succeeded.");
-        screen::commands::appendText("SD Card mounted\n");
     }
 
     void setupFTP() {
