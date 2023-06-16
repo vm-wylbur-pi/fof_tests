@@ -124,7 +124,7 @@ class Fairy(StatefulGame):
     def runLoop(self, flowers):
         now = time.time()
         if now > self.next_visit_time:
-            candidates = flowers if self.current_flower is None else self.current_flower.findNClosestFlowers(2)
+            candidates = flowers if self.current_flower is None else self.current_flower.findNClosestFlowers(flowers, 2)
             next_flower = random.choice(candidates)
             visitDuration = random.normalvariate(self.secsPerVisitMean, self.secsPerVisitStDev)
             visitDuration = max(visitDuration, self.secsPerVisitMinimum)
@@ -133,6 +133,7 @@ class Fairy(StatefulGame):
             next_flower.FairyVisit(visitDurationMillis)
             next_flower.PlaySoundFile(self.nextGiggleFilename())
             self.next_visit_time = now + visitDuration
+            self.current_flower = next_flower
         
     def isDone(self):
         # TODO: we could specify a duration. For now, the only way to end the game
