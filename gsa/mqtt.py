@@ -1,10 +1,12 @@
 import paho.mqtt.client as paho_mqtt
+import games
+from geometry import Point, Vector
 
 # Used during development.
 # TODO: Read this from config
 MQTT_BROKER_IP = "127.0.0.1"
 
-def SetupMQTTClient():
+def SetupMQTTClient(gameState):
     # Required by paho, but unused
     def on_pre_connect(unused_arg1, unused_arg2):
         pass
@@ -18,7 +20,7 @@ def SetupMQTTClient():
 
     def on_message(unused_client, unused_userdata, message):
         print(f"Received message, topic='{message.topic}', content='{message.payload}'")
-        print("TODO: add message handling code.")
+        HandleMQTTMessage(message, gameState)
 
     def on_disconnect(unused_client, unused_userdata, result_code):
         if result_code != 0:
@@ -37,3 +39,29 @@ def SetupMQTTClient():
     return client
 
 
+def HandleMQTTMessage(message, gameState):
+    _, command = message.topic.split('/', maxsplit=1)
+    params = message.payload.decode().split(',')
+
+    if command == "clearGames":
+        gameState.clearStatefulGames()
+        return
+
+    if command == "runGame/StraightHueWave":
+        hue = 160 if len(params) < 1 else int(params[0])
+        startX = 500 if len(params) < 2 else int(params[1])
+        startY = 500 if len(params) < 3 else int(params[2])
+        velocityX = 300 if len(params) < 4 else int(params[3])
+        velocityY = 0 if len(params) < 5 else int(params[4])
+        wave = games.StraightColorWave(hue,
+                                    start_loc=Point(startX, startY),
+                                    velocity=Vector(velocityX, velocityY))
+        gameState.runStatelessGame(wave)
+        return
+
+    if command == "runGame/Fairy":
+        # No parameters (yet) for the fairy game.  It runs indefinitely.
+        gameState.runStatefulGame(games.Fairy())
+        return
+
+    print(f"Unhandled command: {command}({message.payload.decode()})")
