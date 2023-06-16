@@ -15,6 +15,9 @@
 
 namespace time_sync
 {
+    // Customized in our NTP server, so it doesn't need to run with priviliges
+    // default NTP port is 123
+    // const uint16_t NTP_SERVER_PORT = 10123;
     const uint16_t NTP_UPDATE_PERIOD_MILLIS = 60 * 1000;
     // Could be used for time zones.  We'll just use UTC.
     const uint16_t NTP_OFFSET = 0;
@@ -31,6 +34,7 @@ namespace time_sync
                         NTP_OFFSET, NTP_UPDATE_PERIOD_MILLIS);
 
     void syncWithNTP() {
+        // ntpClient.setServerPort(NTP_SERVER_PORT);
         uint8_t num_attempts = 0;
         Serial.println("Getting NTP Time...");
         while (num_attempts++ < 3) {
