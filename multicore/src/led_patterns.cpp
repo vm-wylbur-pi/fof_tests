@@ -177,7 +177,8 @@ void FairyVisit::run(uint32_t time, CRGB leds[NUM_LEDS]) {
     //   Fairy is a bright white area with dim edges that fade away spatially from
     //   its logical (floating point) location.
     const int8_t fairyDiameter = 2;
-    const CRGB FAIRY_COLOR(255,255,255);  // We could make this a parameter if needed.
+    // Rose says that fairies are golden yellow. We could make this a parameter if desired.
+    const CRGB FAIRY_COLOR(255,255,50);  
     for (int offset=-fairyDiameter; offset<fairyDiameter; offset++) {
         uint8_t led_index = std::round(_fairyLocation) + offset;
         if (led_index >= 0 & led_index < NUM_LEDS) {
