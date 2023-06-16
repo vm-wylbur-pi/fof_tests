@@ -7,8 +7,10 @@
 
 // https://github.com/earlephilhower/ESP8266Audio
 #include "AudioFileSourceSD.h"
+#include "AudioFileSourceFunction.h"
 #include "AudioGeneratorWAV.h"
 #include "AudioOutputI2S.h"
+#include "AudioOutputMixer.h"
 
 #include <cstdint>
 
@@ -28,9 +30,26 @@
 
 namespace audio
 {
-    //  The main audio objects
+    //  The main audio objects.
+    //
+    // Audio Input (WAV-file data from the SD card)
     AudioFileSourceSD *sdAudioSource = nullptr;
     AudioGeneratorWAV *wavGenerator = nullptr;
+    // When the input is WAV-data only, there is an audible pop at the beginning of
+    // playback. To avoid this, we have a 2nd input which generates continuous
+    // silence, we mix the silence with the WAV data, and send it to the output.
+    // This means sound is always flower, so the pop happens once on audio initializiton,
+    // instead of every time we play a new WAV file.
+    AudioFileSourceFunction *silenceSource = nullptr;
+    AudioGeneratorWAV *silenceGenerator = nullptr;
+
+    // Mixing.  The mixer takes the data from wavGenerater (which starts and stops) and
+    // the data from silenceGenerator, and combines them, sending the mix to i2sAudioOutput
+    AudioOutputMixer *mixer;
+    AudioOutputMixerStub *wavMixerStub;
+    AudioOutputMixerStub *silenceMixerStub;
+
+    // Audio Output (sent over the I2S bus to the audio shield)
     AudioOutputI2S *i2sAudioOutput = nullptr;
 
     // Volume goes from 0.0 to 11.0
@@ -45,14 +64,42 @@ namespace audio
     const float MAX_GAIN = 4.0 * 255.0/256.0;
 
     void setupAudio() {
-        // Audio(I2S)
+        // Audio Input (WAV-file data from the SD card)
         sdAudioSource = new AudioFileSourceSD();
         wavGenerator = new AudioGeneratorWAV();
-        //wavGenerator->SetBufferSize(2048);
-        i2sAudioOutput = new AudioOutputI2S();
 
+        // Silence Generator (2nd input, will be mixed with the WAV data)
+        // See https://github.com/earlephilhower/ESP8266Audio/blob/master/examples/PlayWAVFromFunction/PlayWAVFromFunction.ino
+        silenceSource = new AudioFileSourceFunction(
+            10.0,  // Duration of audio in seconds.
+            1,     // num channels. 1=mono
+            8000,  // sample rate in hz. Minimum, since this need to be high for silence. :)
+            16     // bits/sample
+        );
+        // Define the function the specifies the silence audio.  Only one function is needed for mono.
+        silenceSource->addAudioGenerators([&](const float time) {
+            // Expected amplitude return is between -1.f and +1.f. 
+            // Constant zero is detected by the DAC as "silence", causing it to shut off,
+            // so return a non-zero constant.
+            return 1;
+         });
+        // Data from the silenceSource is used by silenceGenerator (all sound sources are Generators)
+        silenceGenerator = new AudioGeneratorWAV();
+
+        // Audio Output
+        i2sAudioOutput = new AudioOutputI2S();
         // params are int bclkPin, int wclkPin, int doutPin
         i2sAudioOutput->SetPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
+
+        // Set up mixing of wav data with Silence
+        // See https://github.com/earlephilhower/ESP8266Audio/blob/master/examples/MixerSample/MixerSample.ino
+        mixer = new AudioOutputMixer(32, i2sAudioOutput);   // 32 is the mixer buffsize, copied from example.
+        wavMixerStub = mixer->NewInput();
+        silenceMixerStub = mixer->NewInput();
+        
+        // Begin the slience. It should never stop.
+        silenceGenerator->begin(silenceSource, silenceMixerStub);
+
         commands::setVolume(5.0);  // out of 11
 
         comms::sendDebugMessage("Audio initialized");
@@ -62,9 +109,19 @@ namespace audio
     void mainLoop() {
         if (wavGenerator->isRunning()) {
             if (!wavGenerator->loop()) {
-                wavGenerator->stop();
+                wavGenerator->stop();  // TODO: Try with outh this. Maybe this isn't needed anymore?
+                wavMixerStub->stop();
             }
         }
+
+        // Monitor the silence Generator. If it gets near its logical end (it's
+        // configured with a finite duration), then seek back to its beginning.
+        // Thus the silence never ends.
+        silenceGenerator->loop();
+        if (silenceSource->getPos() > silenceSource->getSize() > 0.5) {
+            comms::sendDebugMessage("looping silence");
+            silenceSource->seek(0, SEEK_SET);
+        } 
 
         // This is where I could put code for tracking progress through
         // the current sound, notifications for when sounds finish, etc.
@@ -97,7 +154,7 @@ namespace audio
             stopSoundFile();
             const String filePath = "/" + filename;
             if (sdAudioSource->open(filePath.c_str())) {
-                wavGenerator->begin(sdAudioSource, i2sAudioOutput);
+                wavGenerator->begin(sdAudioSource, wavMixerStub);
             } else {
                 Serial.println("Error playing file: " + filePath);
                 comms::sendDebugMessage("Error playing file: " + filePath);
@@ -106,6 +163,7 @@ namespace audio
 
         void stopSoundFile() {
             wavGenerator->stop();
+            wavMixerStub->stop();
             sdAudioSource->close();
         }
 
