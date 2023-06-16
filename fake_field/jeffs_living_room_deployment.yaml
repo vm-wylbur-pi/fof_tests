@@ -1,0 +1,15 @@
+name: "Jeff's living room"
+description: "Hazardous to walk around in."
+flowers:
+  "F0:6F:00":
+    x: 450
+    y: 100
+  "F0:6D:8C":
+    x: 550
+    y: 200
+  "F0:6D:80":
+    x: 650
+    y: 300
+  "F0:70:1C":
+    x: 550
+    y: 400

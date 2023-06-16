@@ -9,7 +9,7 @@ from geometry import Point, Vector
 
 mqtt_client = mqtt.SetupMQTTClient()
 
-flowers = flower.readFieldFromDeploymentYAML("../fake_field/test_deployment.yaml")
+flowers = flower.readFieldFromDeploymentYAML("../fake_field/jeffs_living_room_deployment.yaml")
 
 # TODO: There is probably better way to share the mqtt client handle
 for flower in flowers:
