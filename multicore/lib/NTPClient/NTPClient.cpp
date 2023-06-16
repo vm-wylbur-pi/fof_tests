@@ -338,11 +338,11 @@ void NTPClient::sendNTPPacket()
     // you can send a packet requesting a timestamp:
     if (this->_poolServerName)
     {
-        this->_udp->beginPacket(this->_poolServerName, 123);
+        this->_udp->beginPacket(this->_poolServerName, this->_serverPort);
     }
     else
     {
-        this->_udp->beginPacket(this->_poolServerIP, 123);
+        this->_udp->beginPacket(this->_poolServerIP, this->_serverPort);
     }
     this->_udp->write(this->_packetBuffer, NTP_PACKET_SIZE);
     this->_udp->endPacket();
@@ -352,4 +352,8 @@ void NTPClient::setRandomPort(unsigned int minValue, unsigned int maxValue)
 {
     randomSeed(analogRead(0));
     this->_port = random(minValue, maxValue);
+}
+
+void NTPClient::setServerPort(unsigned int serverPort) {
+    this->_serverPort = serverPort;
 }

@@ -7,6 +7,7 @@
 #define SEVENZYYEARS 2208988800UL
 #define NTP_PACKET_SIZE 48
 #define NTP_DEFAULT_LOCAL_PORT 1337
+#define NTP_DEFAULT_SERVER_PORT 123
 // #define DEBUG_NTPClient
 
 class NTPClient
@@ -18,6 +19,7 @@ private:
     const char *_poolServerName = "pool.ntp.org"; // Default time server
     IPAddress _poolServerIP;
     unsigned int _port = NTP_DEFAULT_LOCAL_PORT;
+    unsigned int _serverPort = NTP_DEFAULT_SERVER_PORT;
     long _timeOffset = 0;
 
     unsigned long _updateInterval = 60000; // In ms
@@ -42,6 +44,8 @@ public:
     NTPClient(UDP &udp, IPAddress poolServerIP);
     NTPClient(UDP &udp, IPAddress poolServerIP, long timeOffset);
     NTPClient(UDP &udp, IPAddress poolServerIP, long timeOffset, unsigned long updateInterval);
+
+    void setServerPort(unsigned int serverPort);
 
     /**
      * Set time server name
