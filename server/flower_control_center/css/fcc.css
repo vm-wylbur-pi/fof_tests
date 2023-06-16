@@ -16,12 +16,16 @@ table td {
     padding: 5px;
 }
 
-#command-form {
+#command-form,#field-level-controls {
     background-color: rgb(118, 232, 255);
     border: 3px solid black;
     border-radius: 3px;
     max-width: fit-content;
     margin: 10px;
+}
+
+ #field-level-controls {
+    background-color: rgb(232, 201, 255);
 }
 
 table th {
