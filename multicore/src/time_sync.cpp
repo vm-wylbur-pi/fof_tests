@@ -29,12 +29,12 @@ namespace time_sync
     void syncWithNTP() {
         uint8_t num_attempts = 0;
         Serial.println("Getting NTP Time...");
-        comms::sendDebugMessage("Getting NTP Time...");
-        while (ntpClient.update() != 1)
-        {
-            delay(500);
+        while (ntpClient.update() != 1) {
+            delay(2000);
+            comms::sendDebugMessage("Attempting NTP sync...");
             ntpClient.forceUpdate();
             if (++num_attempts > 3) {
+                comms::sendDebugMessage("Giving up on NTP Sync.");
                 break;
             }
         }
@@ -94,5 +94,9 @@ namespace time_sync
         void setEventReferenceTime(uint32_t referenceTimeSec) {
             eventReferenceTimeSec = referenceTimeSec;
         }
+
+        // void forceSetClockFromMQTT(uint32_t secsSinceEpoch, uint32_t additional_millis) {
+        //    
+        // }
     }
 }
