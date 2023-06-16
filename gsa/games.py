@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import random
 import time
+import os
 
 from flower import Flower
 import geometry
@@ -60,15 +61,65 @@ class StraightColorWave(StatelessGame):
 # the speed of drift within the flower, the number of LEDs lit at a time.
 @dataclass
 class Fairy(StatefulGame):
-    # Behavior variables.  Constant for any game instance.
-    secsPerVisitMean: float = 3
-    secsPerVisitStDev: float = 2
-    secsPerVisitMinimum: float = 0.5
-    # Possible extension: add a specified color to the fairy. For now, it's white.
+    giggle_filenames = [
+        "FoF_LilyGiggle1.WAV",
+        "FoF_LilyGiggle2.wav",
+        "FoF_LilyGiggle3.wav",
+        "FoF_MikaylaCantCatch.wav",
+        "FoF_MikaylaGiggle1.wav",
+        "FoF_MikaylaGiggle2.wav",
+        "FoF_MikaylaGiggle3.wav",
+        "FoF_MikaylaGiggle4.wav",
+        "FoF_MikaylaGiggle5.wav",
+        "FoF_MikaylaGiggle6.wav",
+        "FoF_MikaylaGiggle7.wav",
+        "FoF_MikaylaOverHere1.wav",
+        "FoF_MikaylaOverHere2.wav",
+        "FoF_MikaylaOverHere_DOUBLE.wav",
+        "FoF_MikaylaThisWay1.wav",
+        "FoF_MikaylaThisWay_DOUBLE.wav",
+        "FoF_PamMMgiggles.wav",
+        "FoF_TaliaCantCatch1.wav",
+        "FoF_TaliaCmonThisWay.wav",
+        "FoF_TaliaGiggle1.wav",
+        "FoF_TaliaGiggle2.wav",
+        "FoF_TaliaGiggle3.wav",
+        "FoF_TaliaGiggle4.wav",
+        "FoF_TaliaOverHere.wav",
+        "FoF_TaliaOverHere2.wav",
+    ]
+    giggles = {
+        'Lily': [f for f in giggle_filenames if 'Lily' in f],
+        'Talia': [f for f in giggle_filenames if 'Talia' in f],
+    }
 
-    # State variables
-    current_flower: Flower = None
-    next_visit_time: int = 0
+    def __init__(self, fairyName=None):
+        # Behavior variables.  Constant for any game instance.
+        self.secsPerVisitMean: float = 3.0
+        self.secsPerVisitStDev: float = 2.0
+        self.secsPerVisitMinimum: float = 0.5
+        # Possible extension: add a specified color to the fairy. For now, it's gold.
+
+        # State variables
+        self.current_flower: Flower = None
+        self.next_visit_time: int = 0
+        if fairyName and fairyName in Fairy.giggles:
+            self.fairyName = fairyName
+        else:
+            self.fairyName = random.choice(list(Fairy.giggles.keys()))
+        self.giggle_sequence = list(Fairy.giggles[self.fairyName])
+        random.shuffle(self.giggle_sequence)
+        self.next_giggle_idx = 0
+
+    def nextGiggleFilename(self):
+        giggle_filename = self.giggle_sequence[self.next_giggle_idx]
+        self.next_giggle_idx += 1
+        if self.next_giggle_idx >= len(self.giggle_sequence):
+            self.next_giggle_idx = 0
+            # Change up the order of giggles for the next time we use each of them.
+            random.shuffle(self.giggle_sequence)
+        return giggle_filename
+
 
     def runLoop(self, flowers):
         now = time.time()
@@ -80,6 +131,7 @@ class Fairy(StatefulGame):
             # Visit duration is expected on the flower in milliseconds
             visitDurationMillis = int(round(visitDuration * 1000))
             next_flower.FairyVisit(visitDurationMillis)
+            next_flower.PlaySoundFile(self.nextGiggleFilename())
             self.next_visit_time = now + visitDuration
         
     def isDone(self):

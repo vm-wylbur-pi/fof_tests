@@ -25,6 +25,10 @@ class Flower:
         max_index = min(1+n, len(flowers))
         return [f for (_, f) in others[min_index:max_index]]
 
+    def PlaySoundFile(self, filename):
+        print(f"{self.id} playing sound file {filename}")
+        self.sendMQTTCommand(command="audio/playSoundFile", params=filename)
+
     def HuePulse(self, hue, startTime, rampDuration, peakDuration, brightness):
         params = f"{hue},{startTime},{rampDuration},{peakDuration},{brightness}"
         self.sendMQTTCommand(command="leds/addPattern/HuePulse", params=params)
