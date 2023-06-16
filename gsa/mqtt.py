@@ -59,6 +59,17 @@ def HandleMQTTMessage(message, gameState):
         gameState.runStatelessGame(wave)
         return
 
+    if command == "runGame/CircularColorWave":
+        hue = 160 if len(params) < 1 else int(params[0])
+        centerX = 500 if len(params) < 2 else int(params[1])
+        centerY = 500 if len(params) < 3 else int(params[2])
+        startRadius = 0 if len(params) < 4 else int(params[3])
+        speed = 300 if len(params) < 5 else int(params[4])
+        wave = games.CircularColorWave(hue, center=Point(centerX, centerY),
+                                       startRadius=startRadius, speed=speed)
+        gameState.runStatelessGame(wave)
+        return
+
     if command == "runGame/Fairy":
         # No parameters (yet) for the fairy game.  It runs indefinitely.
         gameState.runStatefulGame(games.Fairy())

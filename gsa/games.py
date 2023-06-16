@@ -27,7 +27,7 @@ class StatefulGame(Game):
 
 # A straight line of color that propagates perpendicular to itself.
 # This is cool in itself and a useful building block for other effects.
-#    velocity units are per second
+#    velocity units are cm per second
 @dataclass
 class StraightColorWave(StatelessGame):
     hue: int
@@ -53,6 +53,30 @@ class StraightColorWave(StatelessGame):
                 brightness = 200
                 flower.HuePulse(hue=self.hue, startTime=f"+{millisToReachFlower}", rampDuration=rampDuration,
                                 peakDuration=peakDuration, brightness=brightness)
+
+
+# A circle of color that expands outward from (or contracts inward toward) a specified point.
+# You can use this in various ways:
+#    startRadius=0, positive velocity around 200: classic expanding wave of color after a step
+#    startRadius non zero, 
+@dataclass
+class CircularColorWave(StatelessGame):
+    hue: int
+    center: geometry.Point
+    startRadius: float
+    speed: float  # Positive is growing, Negative is Shrinking. units are cm/sec
+
+    def run(self, flowers):
+        for flower in flowers:
+            distanceFromCenter = self.center.diff(flower.location).magnitude()
+            distanceFromStart = distanceFromCenter - self.startRadius
+            timeToReachFlower = distanceFromStart / self.speed;
+            if timeToReachFlower >= 0:
+                millisToReachFlower = int(round(1000 * timeToReachFlower))
+                # TODO: consider exposing hue pulse parameters as part of CircularColorWave, or maybe
+                #       just make each pulse shorter the faster the wave speed.
+                flower.HuePulse(hue=self.hue, startTime=f"+{millisToReachFlower}", rampDuration=200,
+                                peakDuration=400, brightness=200)
 
 
 # A moving spot of light on a flower, which jumps from flower to flower.
