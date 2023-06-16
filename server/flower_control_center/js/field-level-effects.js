@@ -30,9 +30,13 @@ $( document ).ready(function() {
         $('input[name="field_command"]').val("runGame/StraightHueWave");
         $('input[name="field_params"]').val("200,500,1000,0,-600");
     });
-    $( "button#topToBottom" ).click(function (event) {
-        $('input[name="field_command"]').val("runGame/StraightHueWave");
-        $('input[name="field_params"]').val("40,500,0,0,600");
+    $( "button#expandingCircle" ).click(function (event) {
+        $('input[name="field_command"]').val("runGame/CircularColorWave");
+        $('input[name="field_params"]').val("180,500,500,0,600");
+    });
+    $( "button#contractingCircle" ).click(function (event) {
+        $('input[name="field_command"]').val("runGame/CircularColorWave");
+        $('input[name="field_params"]').val("20,500,500,500,-600");
     });
 
 });
