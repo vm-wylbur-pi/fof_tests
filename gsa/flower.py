@@ -19,14 +19,15 @@ class Flower:
 
     # Setting n = 1 returns the closest flower to self.
     def findNClosestFlowers(self, flowers, n):
-        others = [(f.location.diff(self.location).magnitude(), f) for f in flowers]
-        others.sort()
-        min_index = 1  # exclude self, which is always the closest flower to self.
-        max_index = min(1+n, len(flowers))
-        return [f for (_, f) in others[min_index:max_index]]
+        others = [f for f in flowers if f is not self]
+        others.sort(key=lambda f: f.location.diff(self.location).magnitude())
+        max_index = min(n, len(flowers))  # Can't return more neighbors than there are other flowers.
+        n_closest = others[:max_index]
+        print(f"{n} closest flowers to {self.id} are {[f.id for f in n_closest]}")
+        return n_closest
 
     def PlaySoundFile(self, filename):
-        print(f"{self.id} playing sound file {filename}")
+        # print(f"{self.id} playing sound file {filename}")
         self.sendMQTTCommand(command="audio/playSoundFile", params=filename)
 
     def HuePulse(self, hue, startTime, rampDuration, peakDuration, brightness):
