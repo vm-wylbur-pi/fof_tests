@@ -18,5 +18,21 @@ $( document ).ready(function() {
         $('input[name="field_command"]').val("clearGames");
         $('input[name="field_params"]').val("");
     });
+    $( "button#leftToRight" ).click(function (event) {
+        $('input[name="field_command"]').val("runGame/StraightHueWave");
+        $('input[name="field_params"]').val("160,0,500,600,0");
+    });
+    $( "button#rightToLeft" ).click(function (event) {
+        $('input[name="field_command"]').val("runGame/StraightHueWave");
+        $('input[name="field_params"]').val("110,1000,500,-600,0");
+    });
+    $( "button#bottomToTop" ).click(function (event) {
+        $('input[name="field_command"]').val("runGame/StraightHueWave");
+        $('input[name="field_params"]').val("200,500,1000,0,-600");
+    });
+    $( "button#topToBottom" ).click(function (event) {
+        $('input[name="field_command"]').val("runGame/StraightHueWave");
+        $('input[name="field_params"]').val("40,500,0,0,600");
+    });
 
 });
