@@ -14,6 +14,7 @@
     <script src="lib/paho-mqtt.js"></script>
     <script src="js/main.js"></script>
     <script src="js/ota_flash.js"></script>
+    <script src="js/field-level-effects.js"></script>
 
     <script src="lib/cytoscape-3.25.min.js"></script>
     <script src="lib/cytoscape-grid-guide.js"></script>
@@ -29,6 +30,33 @@
         <div class="row" id="fieldRow">
             <div class="col d-flex justify-content-center" >
                 <div id="field"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col d-flex justify-content-center">
+                <div id="field-level-controls">
+                    <table>
+                        <tr><td>Field-level Effects</td></tr>
+                        <!-- Buttons for populating field-level command strings -->
+                        <tr>
+                            <td>
+                                Presets:
+                                <button id="addFairy">Add Fairy</button>
+                                <button id="clearFairies">Clear Fairies</button>
+                            </td>
+                        </tr>
+                        
+                        <!-- The actual command form. Everything goes through here.  -->
+                        <tr>
+                            <td>
+                                Command: <input name="field_command" />
+                                Parameters: <input name="field_params" />
+                                <button id="field-level-send">Send</button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
 

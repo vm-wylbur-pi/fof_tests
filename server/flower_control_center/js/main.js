@@ -224,6 +224,13 @@ function populateCommandChoices() {
     })
 }
 
+function sendMQTTMessage(topic, payload) {
+    message = new Paho.MQTT.Message(payload);
+    message.destinationName = topic;
+    console.log(`Sending command: ${message.destinationName}: ${message.payloadString}`);
+    mqtt.publish(message);
+}
+
 $( document ).ready(function() {
     connectToMQTT();
 
@@ -237,10 +244,7 @@ $( document ).ready(function() {
         let targetFlower = $('input[name="flower"]').val();
         let command = $('select[name="command"]').val();
         let payload = $('input[name="parameters"]').val();
-        message = new Paho.MQTT.Message(payload);
-        message.destinationName = `flower-control/${targetFlower}/${command}`;
-        console.log(`Sending command: ${message.destinationName}: ${message.payloadString}`);
-        mqtt.publish(message);
+        sendMQTTMessage(`flower-control/${targetFlower}/${command}`, payload)
     });
 
     $( "#mqtt-reconnect" ).click(function( event ) {
