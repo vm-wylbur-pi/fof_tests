@@ -11,7 +11,7 @@ from geometry import Point, Vector
 class GameState:
     def __init__(self):
         self.flowers = flower.readFieldFromDeploymentYAML(
-            "../fake_field/jeffs_living_room_deployment.yaml")
+            "../fake_field/patricks_backyard_party_deployment.yaml")
         self.stateful_games = []
 
     def runStatelessGame(self, game):

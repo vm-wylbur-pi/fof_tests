@@ -30,7 +30,7 @@ clock = pygame.time.Clock()
 running = True
 FPS = 60
 
-flowers = fake_flowers.makeFakeFieldFromDeploymentYAML("jeffs_living_room_deployment.yaml")
+flowers = fake_flowers.makeFakeFieldFromDeploymentYAML("patricks_backyard_party_deployment.yaml")
 
 # Pass a handle to the set of flowers to the MQTT-handling module, so that
 # they can be sent commands when MQTT messages are received from the GSA.
