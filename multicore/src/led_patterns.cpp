@@ -182,10 +182,11 @@ void FairyVisit::run(uint32_t time, CRGB leds[NUM_LEDS]) {
     const CRGB FAIRY_COLOR(255,255,50);  
     for (int offset=-fairyDiameter; offset<fairyDiameter; offset++) {
         uint8_t led_index = std::round(_fairyLocation) + offset;
-        if (led_index >= 0 & led_index < NUM_LEDS) {
+        if (led_index >= 0 && led_index < NUM_LEDS) {
             // Fall-off linearly from fairy center
             float distanceFromFairy = abs(led_index - _fairyLocation);
-            fract8 alpha = std::round(255 * distanceFromFairy / fairyDiameter);
+            float exactAlpha = 255 * max((1.0 - distanceFromFairy / fairyDiameter), 0.0);
+            fract8 alpha = std::round(exactAlpha);
             leds[led_index].r = lerp8by8(leds[led_index].r, FAIRY_COLOR.r, alpha);
             leds[led_index].g = lerp8by8(leds[led_index].g, FAIRY_COLOR.g, alpha);
             leds[led_index].b = lerp8by8(leds[led_index].b, FAIRY_COLOR.b, alpha);
