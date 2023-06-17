@@ -61,12 +61,11 @@ std::map<String, flower_info::FlowerInfo> FlowerInventory = {
 
 namespace flower_info {
     String flowerID() {
-        // The MAC address is not guaranteed stable until WiFi is connected.
-        if (WiFi.status() != WL_CONNECTED) {
-            return "ID-unavailable-WiFi-not-connected";
-        } else {
-            return WiFi.macAddress().substring(9);
-        }
+        // According to the docs, The MAC address is not guaranteed stable until WiFi
+        // is connected.  But we want it sooner, right at boot time, so the LED control
+        // task doesn't need to wait for networking to come up.  So just return it
+        // without checking WiFi.status() == WL_CONNECTED.  This seems to work fine.
+        return WiFi.macAddress().substring(9);
     }
 
     FlowerInfo flowerInfo() {
