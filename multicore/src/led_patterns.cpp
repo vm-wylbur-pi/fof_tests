@@ -5,6 +5,7 @@
 #include <cstdint>
 
 #include "comms.h"
+#include "flower_info.h"
 #include "music_sync.h"
 #include "time_sync.h"
 #include "util.h"
@@ -215,7 +216,14 @@ void FairyVisit::run(uint32_t time, CRGB leds[NUM_LEDS]) {
 }
 
 IndependentIdle::IndependentIdle() {
-    _blossomHue = 0;
+    Species mySpecies = flower_info::flowerInfo().species;
+    switch (mySpecies) {
+        case unknown:  _blossomHue = 64;  break;  // yellow, for no particular reason.
+        case poppy:    _blossomHue = 32;  break;  // California Golden Poppy!!
+        case geranium: _blossomHue = 0;   break;  // Geraniums are red.
+        case aster:    _blossomHue = 200; break;  // Asters are purple.
+    }
+    
     // Start each point in each leaf at a random spot in the palette; each led
     // will rotate through the palette independently, to avoid spatial coherence.
     for (uint8_t i=0; i<LEAF_SIZE; i++) {
