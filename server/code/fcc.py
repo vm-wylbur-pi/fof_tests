@@ -11,6 +11,7 @@ import ntplib
 from datetime import datetime
 
 FCC_PATH = '/app/flower_control_center'
+DEPLOYMENT_PATH = '/app/fake_field/'
 
 app = Flask(__name__)
 
