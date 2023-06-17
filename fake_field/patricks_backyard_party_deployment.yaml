@@ -9,7 +9,7 @@ poi:
     height: 200
     ptype: "rectangle"
     x: 400
-    y: 100
+    y: 1100
 flowers:
   "C0:2B:44":
     x: 252

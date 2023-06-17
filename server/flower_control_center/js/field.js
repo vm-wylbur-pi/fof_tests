@@ -82,6 +82,7 @@ $(document).ready(function() {
     });
     // demo your core ext
     cy.gridGuide({
+        gridSpacing: 100, // Distance between the lines of the grid.
         snapToGridOnRelease: false,
         snapToGridCenter: false,
         guidelinesStyle: {
@@ -96,8 +97,8 @@ $(document).ready(function() {
         .then( res => {
             let field = cy.add({
                 position: {
-                  x: res.field.y/2,
-                  y: res.field.x/2
+                  x: res.field.y/-2,
+                  y: res.field.x/-2
                 },
                 group: 'nodes',
                 data: {
@@ -118,8 +119,8 @@ $(document).ready(function() {
 
                 let p = cy.add({
                     position: {
-                        x: poi.x,
-                        y: poi.y
+                        x: parseInt(poi.x) * -1,
+                        y: parseInt(poi.y) * -1
                     },
                     locked: false,
                     group: 'nodes',
@@ -140,8 +141,8 @@ $(document).ready(function() {
 
                 let f = cy.add({
                     position: {
-                        x: flower['y'],
-                        y: flower['x']
+                        x: parseInt(flower['y']) * -1,
+                        y: parseInt(flower['x']) * -1
                     },
                     locked: true,
                     group: 'nodes',
