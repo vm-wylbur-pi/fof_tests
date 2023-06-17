@@ -20,6 +20,9 @@ namespace screen
     const uint8_t MAKEPYTHON_ESP32_SCL = 5;
     const uint8_t SCREEN_I2C_ADDRESS = 0x3C;
 
+    // https://learn.adafruit.com/adafruit-gfx-graphics-library/rotating-the-display
+    const uint8_t PORTRAIT_SCREEN_ROTATION = 3;
+
     Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET_PIN);
 
     bool initialized = false;
@@ -33,6 +36,7 @@ namespace screen
             comms::sendDebugMessage("Screen initialization failed");
         } else {
             initialized = true;
+            display.setRotation(PORTRAIT_SCREEN_ROTATION);
             Serial.println("Screen initialized");
             comms::sendDebugMessage("Screen initialized");
             display.clearDisplay();
