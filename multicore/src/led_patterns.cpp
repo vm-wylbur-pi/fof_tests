@@ -255,7 +255,7 @@ void IndependentIdle::run(uint32_t time, CRGB leds[NUM_LEDS]) {
     }
     for (uint8_t i=BLOSSOM_START; i<BLOSSOM_END; i++) {
         // Simple hue for now. TODO: add some variation, probably with palette cycling
-        leds[i] = CHSV(_blossomHue, 255, 100);
+        leds[i] = CHSV(_blossomHue, 255, 80);
     }
 
     // Palette cycling for each point in each leaf.
@@ -267,7 +267,7 @@ void IndependentIdle::run(uint32_t time, CRGB leds[NUM_LEDS]) {
 }
 
 void RunningDot::run(uint32_t time, CRGB leds[NUM_LEDS]) {
-    leds[_dotLocation] = CRGB(100, 100, 100);
+    leds[_dotLocation] = CRGB(100, 100, 80);
     EVERY_N_MILLISECONDS(10) {
         if (_dotLocation == 0) {
             _dotDelta = 1;  // Bounce off bottom 
