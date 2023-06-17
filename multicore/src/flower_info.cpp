@@ -17,7 +17,7 @@ std::map<String, flower_info::FlowerInfo> FlowerInventory = {
   { "F0:70:AC",  {6, "F0:70:AC", geranium, -1}  },
   { "F0:5F:E8",  {7, "F0:5F:E8", aster, -1}  },
   { "F0:70:48",  {8, "F0:70:48", poppy, -1}  },
-  { "F0:6F:00",  {9, "F0:6F:00", poppy, -1}  },
+  { "F0:6F:00",  {9, "F0:6F:00", geranium, -1}  },
   { "F0:6E:D4",  {10, "F0:6E:D4", geranium, -1}  },
   { "F0:6D:80",  {11, "F0:6D:80", poppy, -1}  },
   { "C0:30:24",  {12, "C0:30:24", geranium, -1}  },
