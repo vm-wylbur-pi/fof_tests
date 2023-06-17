@@ -1,5 +1,6 @@
 from flask import Flask, send_from_directory, Response
 import os
+import csv
 
 # config parsing
 import json
@@ -11,7 +12,8 @@ import ntplib
 from datetime import datetime
 
 FCC_PATH = '/app/flower_control_center'
-DEPLOYMENT_PATH = '/app/fake_field/'
+DEPLOYMENT_PATH = '/app/fake_field/patricks_backyard_party_deployment.yaml'
+INVENTORY_PATH = '/app/config/inventory.csv'
 
 app = Flask(__name__)
 
@@ -37,17 +39,44 @@ def status_report(dtype):
     else:
         return Response("Unknown data type, your options are json or text")
 
-# Returns contents of the redis cache, read-only right now.
-@app.route('/api/state/cache/<dtype>')
+@app.route('/api/config/<dtype>')
 def status_cache(dtype):
     if dtype == 'deployment':
-        return Response({}, content_type='application/json')
+        inventory_data = {}
+        with open(INVENTORY_PATH, 'r') as file:
+            csv_reader = csv.DictReader(file)
+
+            # Iterate over each row in the CSV file
+            for row in csv_reader:
+                # Append the row to the data array
+                inventory_data[row['mac']] = row
+
+            # Load the YAML data
+        with open(DEPLOYMENT_PATH, 'r') as file:
+            deployment_data = yaml.safe_load(file)
+
+        for fid in deployment_data['flowers']:
+            print(fid)
+            if fid in inventory_data:
+                deployment_data['flowers'][fid].update(inventory_data[fid])
+
+        return Response(json.dumps(deployment_data), content_type='application/json')
     elif dtype == 'inventory':
-        return Response({}, content_type='application/json')
+        data = {}
+        with open(INVENTORY_PATH, 'r') as file:
+            # Create a CSV reader
+            csv_reader = csv.DictReader(file)
+
+            # Iterate over each row in the CSV file
+            for row in csv_reader:
+                # Append the row to the data array
+                data[row['FoF Mac']] = row
+
+            return Response(json.dumps(data), content_type='application/json')
     elif dtype == 'flowers':
         return Response({}, content_type='application/json')
     else:
-        return Response("Unknown cache type")
+        return Response("Unknown config type")
 
 @app.route('/api/state/time')
 def time_check():

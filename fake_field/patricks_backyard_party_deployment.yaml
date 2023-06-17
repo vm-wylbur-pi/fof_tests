@@ -3,6 +3,13 @@ description: "Make it work!!!"
 field:
   x: 1200
   y: 800
+poi:
+  "Stage":
+    width: 800
+    height: 200
+    ptype: "rectangle"
+    x: 400
+    y: 100
 flowers:
   "C0:2B:44":
     x: 252
@@ -22,6 +29,7 @@ flowers:
   "C0:20:FC":
     x: 828
     y: 32
+    note: "may be CO:38:FC"
   "C0:39:CC":
     x: 898
     y: 93
@@ -37,6 +45,7 @@ flowers:
   "C0:10:54":
     x: 124
     y: 388
+    note: "may be CD:10:54"
   "C0:38:FC":
     x: 332
     y: 416
