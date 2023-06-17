@@ -2,6 +2,7 @@
 
 #include "audio.h"
 #include "buttons.h"
+#include "flower_info.h"
 #include "heartbeat.h"
 #include "led_control.h"
 #include "networking.h"
@@ -11,7 +12,6 @@
 #include "music_sync.h"
 
 #include <Arduino.h>  // For String type
-#include <WiFi.h> // For macAddress used in flowerID
 
 #include <cstdint>
 
@@ -41,18 +41,8 @@ namespace comms
         storage::handleFTP();
     }
 
-    String flowerID() {
-        // The MAC address is not guaranteed stable until WiFi is connected.
-        if (WiFi.status() != WL_CONNECTED) {
-            return "ID-unavailable-WiFi-not-connected";
-        }
-        else {
-            return WiFi.macAddress().substring(9);
-        }
-    }
-
     void sendDebugMessage(const String& msg) {
-        String topic = "flower-debug/" + flowerID();
+        String topic = "flower-debug/" + flower_info::flowerID();
         networking::publishMQTTMessage(topic, msg);
     }
 

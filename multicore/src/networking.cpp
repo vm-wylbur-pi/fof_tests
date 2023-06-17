@@ -1,6 +1,7 @@
 #include "networking.h"
 #include "comms.h"  // For dispatching Server commands
 #include "config.h" // For Wifi name/password and the server IP address
+#include "flower_info.h"
 #include "screen.h"
 
 #include <Arduino.h> // For String type.
@@ -116,7 +117,7 @@ namespace networking {
         Serial.print(mqttAttemptMessage);
         screen::commands::appendText(mqttAttemptMessage);
 
-        String client_name = "flower-" + comms::flowerID();
+        String client_name = "flower-" + flower_info::flowerID();
         // connect() is where we can supply username/password if we want.
         uint8_t num_attempts = 0;
         while (!mqtt_client.connected() && num_attempts++ <= 3) {
@@ -131,7 +132,7 @@ namespace networking {
             // Control commands directed at all flowers.
             mqtt_client.subscribe("flower-control/all/#");
             // Control commands directed at just this flower.
-            mqtt_client.subscribe("flower-control/" + comms::flowerID() + "/#");
+            mqtt_client.subscribe("flower-control/" + flower_info::flowerID() + "/#");
         } else {
             String mqttFailureMessage = "\nFailed to connect to MQTT broker at\n"
                 + config::CONTROLLER_IP_ADDRESS.toString() + "\n";

@@ -2,6 +2,7 @@
 #include "audio.h"
 #include "buttons.h"
 #include "comms.h"
+#include "flower_info.h"
 #include "networking.h"
 #include "led_control.h"
 #include "screen.h"
@@ -81,7 +82,8 @@ void setup()
   // All boot-time setup is complete.
   // Extra newlines at the start to push the text low enough to be readable
   // without bending down too low.
-  screen::commands::setText("\n\nHello JOBI\n\nI'm flower\n" + comms::flowerID() + "\n\n");
+  screen::commands::setText("\n\nHello JOBI\n\n");
+  screen::commands::appendText("I'm " + flower_info::description() + "\n\n");
   screen::commands::appendText("Version:\n" + version::Name + "\n");
   screen::commands::appendText("Built\n" + version::getBuildTime() + "\n");
 

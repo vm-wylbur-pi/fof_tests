@@ -1,7 +1,7 @@
 #include "heartbeat.h"
 
 #include "audio.h"
-#include "comms.h"
+#include "flower_info.h"
 #include "networking.h"
 #include "storage.h"
 #include "time_sync.h"
@@ -17,7 +17,7 @@ void Heartbeat::BeatIfItsTime() {
     uint32_t currentMillis = millis();
     if (currentMillis - _last_heartbeat_millis > HEARTBEAT_PERIOD_MILLIS) {
         Serial.println("sending heartbeat");
-        String topic = "flower-heartbeats/" + comms::flowerID();
+        String topic = "flower-heartbeats/" + flower_info::flowerID();
         networking::publishMQTTMessage(topic, _makeHeartbeatMessage());
         _last_heartbeat_millis = currentMillis;
     }
@@ -27,7 +27,7 @@ String Heartbeat::_makeHeartbeatMessage() {
     // Makes a JSON heartbeat message that will be interpreted by the flower control center
     // See flower_control_center/main.js:Heartbeat.toRow for the expected field names
     String msg = "{";
-    msg += "  \"flower_id\": \"" + comms::flowerID() + "\",\n";
+    msg += "  \"flower_id\": \"" + flower_info::flowerID() + "\",\n";
     msg += "  \"uptime\": \"" + _uptime.Formatted() + "\",\n";
     msg += "  \"version_name\": \"" + version::Name + "\",\n";
     msg += "  \"build_timestamp\": \"" + version::getBuildTime() + "\",\n";
