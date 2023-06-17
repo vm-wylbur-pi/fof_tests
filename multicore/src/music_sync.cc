@@ -1,4 +1,6 @@
 #include "music_sync.h"
+
+#include "comms.h"
 #include "time_sync.h"
 
 #include <cstdint>
@@ -29,6 +31,12 @@ uint32_t MusicBeat::checkForBeat() {
 
 namespace commands {
     void setBPM(uint16_t newBPM){
+        if (newBPM == 0) {
+            comms::sendDebugMessage("Can't set BPM to zero. BPM is still "
+                                    + String(60000.f / millisPerBeat, 1));
+            return;
+        }
+
         // millis per beat = 1000 * seconds per beat
         //                 = 1000 / (Beats/sec)
         //                 = 1000 / (BPM/60)
