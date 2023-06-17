@@ -323,7 +323,7 @@ std::unique_ptr<Pattern> makePattern(const String& patternName, const String& pa
         uint8_t hue = 160;
         uint32_t startTime = parseStartTime("+0");
         uint32_t rampDuration = 300;
-        uint32_t peakDuration = 600;
+        uint32_t peakDuration = 200;
         uint8_t brightness = 200;
         if (params.size() >= 1) { hue = params[0].toInt(); }
         if (params.size() >= 2) { startTime = parseStartTime(params[1]); }
