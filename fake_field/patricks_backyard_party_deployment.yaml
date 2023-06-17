@@ -5,11 +5,11 @@ field:
   y: 800
 poi:
   "Stage":
-    width: 800
+    width: 1200
     height: 200
     ptype: "rectangle"
-    x: 400
-    y: 1100
+    x: 600
+    y: 700
 flowers:
   "C0:2B:44":
     x: 252

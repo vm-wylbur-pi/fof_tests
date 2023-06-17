@@ -97,14 +97,14 @@ $(document).ready(function() {
         .then( res => {
             let field = cy.add({
                 position: {
-                  x: res.field.y/-2,
-                  y: res.field.x/-2
+                  x: res.field.x/2,
+                  y: res.field.y/2 * -1
                 },
                 group: 'nodes',
                 data: {
                     id: 'field',
-                    width: res.field.y,
-                    height: res.field.x,
+                    width: res.field.x,
+                    height: res.field.y,
                     atype:'field'
                 },
                 locked: true,
@@ -114,12 +114,10 @@ $(document).ready(function() {
             });
 
             for (var pid in res.poi) {
-                console.log(pid)
                 let poi = res.poi[pid]
-
                 let p = cy.add({
                     position: {
-                        x: parseInt(poi.x) * -1,
+                        x: parseInt(poi.x),
                         y: parseInt(poi.y) * -1
                     },
                     locked: false,
@@ -141,22 +139,27 @@ $(document).ready(function() {
 
                 let f = cy.add({
                     position: {
-                        x: parseInt(flower['y']) * -1,
-                        y: parseInt(flower['x']) * -1
+                        x: parseInt(flower['x']),
+                        y: parseInt(flower['y'])* -1
                     },
-                    locked: true,
+                    locked: false,
                     group: 'nodes',
                     data: {
                         id: fid,
                         sid: flower['sequence'],
                         ftype: flower['type'],
                         height: flower['height'],
-                        atype: 'flower'
+                        atype: 'flower',
+                        x: flower['x'],
+                        y: flower['y']
                     },
                 })
 
                 f.on('click', (evt) => {
-                    console.log( evt.target.data())
+                    d = evt.target.data()
+                    d['px'] = evt.target.position('x')
+                    d['py'] = evt.target.position('y')
+                    console.log(d)
                     $('input[name="flower"]').val(evt.target.data('id'));
                 })
             }
