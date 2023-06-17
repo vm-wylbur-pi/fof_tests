@@ -22,32 +22,32 @@ $( document ).ready(function() {
     });
     $( "button#leftToRight" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/StraightHueWave");
-        $('input[name="field_params"]').val("160,0,500,600,0");
+        $('input[name="field_params"]').val("160,0,450,600,0");
         $('#field_command_param_explanation').text("A wave specified by a point and a direction.  hue, startX, startY, velocityX, velocityY");
     });
     $( "button#rightToLeft" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/StraightHueWave");
-        $('input[name="field_params"]').val("110,1000,500,-600,0");
+        $('input[name="field_params"]').val("110,700,450,-600,0");
         $('#field_command_param_explanation').text("A wave specified by a point and a direction.  hue, startX, startY, velocityX, velocityY");
     });
     $( "button#bottomToTop" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/StraightHueWave");
-        $('input[name="field_params"]').val("200,500,1000,0,-600");
+        $('input[name="field_params"]').val("200,350,1000,0,-600");
         $('#field_command_param_explanation').text("A wave specified by a point and a direction.  hue, startX, startY, velocityX, velocityY");
     });
     $( "button#topToBottom" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/StraightHueWave");
-        $('input[name="field_params"]').val("200,500,0,0,600");
+        $('input[name="field_params"]').val("40,350,0,0,600");
         $('#field_command_param_explanation').text("A wave specified by a point and a direction.  hue, startX, startY, velocityX, velocityY");
     });
     $( "button#expandingCircle" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/CircularColorWave");
-        $('input[name="field_params"]').val("180,500,500,0,600");
+        $('input[name="field_params"]').val("180,300,450,0,600");
         $('#field_command_param_explanation').text("A circle that grows or shrinks.  hue, centerX, centerY, startRadius, radiusSpeed");
     });
     $( "button#contractingCircle" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/CircularColorWave");
-        $('input[name="field_params"]').val("20,500,500,500,-600");
+        $('input[name="field_params"]').val("20,300,450,500,-600");
         $('#field_command_param_explanation').text("A circle that grows or shrinks.  hue, centerX, centerY, startRadius, radiusSpeed");
     });
 
