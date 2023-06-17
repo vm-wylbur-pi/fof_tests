@@ -4,14 +4,12 @@ import random
 import string
 import paho.mqtt.client as mqtt
 import sys
-
-from preconfig import PreConfig
-
-pc = PreConfig()
+import yaml
 
 broker_address = '127.0.0.1'
 broker_port = 1883
 topic = 'flower-heartbeats/'
+DEPLOYMENT_PATH = '/app/fake_field/patricks_backyard_party_deployment.yaml'
 
 
 if len(sys.argv) > 1:
@@ -19,8 +17,13 @@ if len(sys.argv) > 1:
 else:
     flowerCount = 1
 
-def get_fid(id):
-    return list(pc.inventory)[int(id)]
+def get_fid(deployment, id):
+    return list(deployment['flowers'])[int(id)]
+
+def get_deployment():
+    with open(DEPLOYMENT_PATH, 'r') as file:
+        deployment_data = yaml.safe_load(file)
+    return deployment_data
 
 def on_connect(client, userdata, flags, rc):
     print('Connected to MQTT broker')
@@ -43,9 +46,11 @@ def main():
         client.connect(broker_address, broker_port)
         client.loop_start()
 
+    deployment = get_deployment()
+
     while True:
         for client in clients:
-            flower_id = get_fid(client.id)
+            flower_id = get_fid(deployment, client.id)
             payload = json.dumps({
                 'flower_id': flower_id,
                 'uptime': 1,

@@ -16,5 +16,6 @@ services:
       - ./server/flower_control_center:/app/flower_control_center
       - ./server/config:/app/config
       - ./deployments:/app/deployments
+      - ./fake_field:/app/fake_field
     command: ./startup.sh
 
