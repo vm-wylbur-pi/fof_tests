@@ -79,9 +79,11 @@ void setup()
   time_sync::setupNTPClientAndSync();
 
   // All boot-time setup is complete.
-  screen::commands::setText("Hello, JOBI.\nI am flower " + comms::flowerID() + "\n");
-  screen::commands::appendText("Version: " + version::Name + "\n");
-  screen::commands::appendText("Built \n" + version::getBuildTime() + "\n");
+  // Extra newlines at the start to push the text low enough to be readable
+  // without bending down too low.
+  screen::commands::setText("\n\nHello JOBI\n\nI'm flower\n" + comms::flowerID() + "\n\n");
+  screen::commands::appendText("Version:\n" + version::Name + "\n");
+  screen::commands::appendText("Built\n" + version::getBuildTime() + "\n");
 
   startTask(TaskLED, "LED Control", CORE_FOR_LED_CONTROL);
   startTask(TaskOTA, "OTA", CORE_FOR_EVERYTHING_ELSE);

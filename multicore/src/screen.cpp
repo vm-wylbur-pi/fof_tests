@@ -55,7 +55,11 @@ namespace screen
                 display.setCursor(0, 0);             // Start at top-left corner
                 display.cp437(true);                 // Use full 256 char 'Code Page 437' font
 
-                display.println(newScreenText);
+                // Add a newline at the beginning because the screen is set back a little bit from
+                // the hole in the birdhouse, so when viewed from a little above, the top line or
+                // two is occulded by the edge of the birdhouse wall.
+                String paddedText = "\n" + newScreenText;
+                display.println(paddedText);
                 display.display();
             }
         }
