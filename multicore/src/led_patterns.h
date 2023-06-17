@@ -123,7 +123,8 @@ class HuePulse : public Pattern {
 
 class FairyVisit : public Pattern {
   public:
-    FairyVisit(uint32_t visitDuration) : _visitDuration(visitDuration) {};
+    FairyVisit(uint32_t visitDuration, float fairySpeed)
+        : _visitDuration(visitDuration), _fairySpeed(fairySpeed) {};
     void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
     bool isDone(uint32_t time) override;
     String name();

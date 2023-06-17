@@ -153,7 +153,8 @@ void HuePulse::run(uint32_t time, CRGB leds[NUM_LEDS]) {
 }
 
 String FairyVisit::name() {
-    return "FairyVisit(visitDuration=" + String(_visitDuration) + ")";
+    return "FairyVisit(visitDuration=" + String(_visitDuration) + 
+        ", fairySpeed=" + String(_fairySpeed, 1) + ")";
 }
 
 bool FairyVisit::isDone(uint32_t time) {
@@ -332,10 +333,15 @@ std::unique_ptr<Pattern> makePattern(const String& patternName, const String& pa
         if (params.size() >= 5) { brightness = params[4].toInt(); }
         return std::unique_ptr<Pattern>(new HuePulse(hue, startTime, rampDuration, peakDuration, brightness));
     }
+    // Parameters
+    //    visitDuration; How long the fairy effect lasts, in milliseconds
+    //    fairySpeed: speed of the fairy, in LEDs per second
     if (patternName == "FairyVisit") {
         uint32_t visitDuration = 3000;
+        float fairySpeed = 80.0;
         if (params.size() >= 1) { visitDuration = params[0].toInt(); }
-        return std::unique_ptr<Pattern>(new FairyVisit(visitDuration));
+        if (params.size() >= 2) { fairySpeed = params[1].toFloat(); }
+        return std::unique_ptr<Pattern>(new FairyVisit(visitDuration, fairySpeed));
     }
     if (patternName == "IndependentIdle") {
         return std::unique_ptr<Pattern>(new IndependentIdle());
