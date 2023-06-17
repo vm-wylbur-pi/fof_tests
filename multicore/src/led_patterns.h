@@ -135,7 +135,7 @@ class FairyVisit : public Pattern {
     // fairy can be between LEDs, to support smooth motion around the flower.
     float _fairyLocation = 70.0;
     // LEDs per second.  Positive means toward the blossom, negative toward the leaves.
-    float _fairySpeed = 130.0;
+    float _fairySpeed = 80.0;
 };
 
 // Interpret a string parameter as a moment in time. There are two formats:
