@@ -148,7 +148,7 @@ class Fairy(StatefulGame):
     def runLoop(self, flowers):
         now = time.time()
         if now > self.next_visit_time:
-            candidates = flowers if self.current_flower is None else self.current_flower.findNClosestFlowers(flowers, 2)
+            candidates = flowers if self.current_flower is None else self.current_flower.findNClosestFlowers(flowers, 3)
             next_flower = random.choice(candidates)
             visitDuration = random.normalvariate(self.secsPerVisitMean, self.secsPerVisitStDev)
             visitDuration = max(visitDuration, self.secsPerVisitMinimum)
