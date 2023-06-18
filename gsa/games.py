@@ -113,7 +113,7 @@ class Fairy(StatefulGame):
         "FoF_TaliaOverHere2.wav",
     ]
     giggles = {
-        'Lily': [f for f in giggle_filenames if 'Lily' in f],
+        'Mikayla': [f for f in giggle_filenames if 'Mikayla' in f],
         'Talia': [f for f in giggle_filenames if 'Talia' in f],
     }
 
