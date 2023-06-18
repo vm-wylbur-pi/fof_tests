@@ -15,9 +15,6 @@ namespace comms
   // messages, and heartbeats.
   void mainLoop();
 
-  // Unique identifier for this flower, last 3 octets of the MAC address.
-  String flowerID();
-
   // Publish a general-purpose debug message.  We can set up various ways
   // to monitor these.  To avoid deadlock, this only sends messages at QoS == 0.
   // (To avoid deadlock, publish() should generally not be called from a message
