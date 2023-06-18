@@ -133,6 +133,7 @@ namespace networking {
             mqtt_client.subscribe("flower-control/all/#");
             // Control commands directed at just this flower.
             mqtt_client.subscribe("flower-control/" + flower_info::flowerID() + "/#");
+            mqtt_client.subscribe("flower-control/" + String(flower_info::flowerInfo().sequenceNum) + "/#");
         } else {
             String mqttFailureMessage = "\nFailed to connect to MQTT broker at\n"
                 + config::CONTROLLER_IP_ADDRESS.toString() + "\n";
