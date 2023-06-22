@@ -229,6 +229,8 @@ function populateCommandChoices() {
         "Random spots of light appear then fade away. Two parameters: dropsPerSecond, dropFadeTime(ms)"],
         ["leds/addPattern/SolidHue",
         "Make the whole flower (leaves+blossom) one color.  Two params: hue (0-255), startTime ('+0' for right now)"],
+        ["leds/addPattern/MaxBrightnessWhite",
+        "Full white (255,255,255) with no temporal dithering. leds/setBrightness has no effect when this pattern is active."],
         ["leds/addPattern/RunningDot",
         "A white spot of light that moves up and down the flower. No parameters."],
         ["leds/addPattern/BeatFlash",

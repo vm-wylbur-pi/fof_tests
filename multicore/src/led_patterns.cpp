@@ -71,6 +71,11 @@ void SolidHue::run(uint32_t time, CRGB leds[NUM_LEDS]) {
     }
 }
 
+void MaxBrightnessWhite::run(uint32_t time, CRGB leds[NUM_LEDS]) {
+    fill_solid(leds, NUM_LEDS, CRGB(255,255,255));
+    FastLED.setBrightness(255);
+}
+
 String HuePulse::name() {
     return "HuePulse(hue=" + String(_hue) + ", brightness=" + String(_brightness) + 
            ", startTime=" + String(_startTime) + ", rampDuration=" + String(_rampDuration) +
@@ -320,6 +325,9 @@ std::unique_ptr<Pattern> makePattern(const String& patternName, const String& pa
         if (params.size() >= 1) { hue = params[0].toInt(); }
         if (params.size() >= 2) { start_time = parseStartTime(params[1]); }
         return std::unique_ptr<Pattern>(new SolidHue(hue, start_time));
+    }
+    if (patternName == "MaxBrightnessWhite") {
+        return std::unique_ptr<Pattern>(new MaxBrightnessWhite());
     }
     // hue: What color the pulse consists off 0-255
     // startTime: control timer value to begin the pulse

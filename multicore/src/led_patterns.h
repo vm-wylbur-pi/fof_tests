@@ -45,6 +45,15 @@ class SolidHue : public Pattern {
     uint32_t _start_time;
 };
 
+// Full white (255,255,255) at maximum brightness (no temporal dithering).
+// If this pattern is running, then led_control::setBrightness commands 
+// will have no effect.
+class MaxBrightnessWhite : public Pattern {
+  public:
+    String name() {return "MaxBrightnessWhite"; };
+    void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
+};
+
 // Idle pattern not related to a flower's position and not synced.
 // Gently varying greens in the leaves, and gently varying color in
 // the blossom centered around a random main hue.
