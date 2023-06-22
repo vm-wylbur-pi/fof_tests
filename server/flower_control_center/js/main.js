@@ -62,8 +62,8 @@ class Heartbeat {
 
     toRow () {
         return $("<tr>")
-            .append("<td>" + this.flower_id + "</td>")
-            .append("<td>" + this.sequence_num + "</td>")
+            .append('<td class="flower_id">' + this.flower_id + "</td>")
+            .append('<td class="flower_num">' + this.sequence_num + "</td>")
             .append("<td><button>show</button></td>")
             .append('<td heartbeat_timestamp="' + this.creation_timestamp + '">:00</td>')
             .append("<td>" + this.uptime + "</td>")
@@ -165,9 +165,12 @@ function insertOrUpdateFlowerRow(heartbeat) {
         .css( { backgroundColor: "#0f0" } )
         .animate( { backgroundColor: "#eee" }, 500 );
 
-    // Click handler for populating command form
-    $( "#"+heartbeat.id ).children().first().click(function (event) {
+    // Click handler for populating command form with flower number or ID
+    $( "#"+heartbeat.id ).children(".flower_id").click(function (event) {
         $( 'input[name="flower"]' ).val(heartbeat.flower_id);
+    });
+    $( "#"+heartbeat.id ).children(".flower_num").click(function (event) {
+        $( 'input[name="flower"]' ).val(heartbeat.sequence_num);
     });
 
     // Click handler for showing debug messages from this flower.
