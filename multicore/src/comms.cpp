@@ -94,6 +94,14 @@ namespace comms
             led_control::commands::addPattern(patternName, parameters);
             return;
         }
+        if (command == "leds/setBrightness") {
+            uint8_t newBrightness = led_control::DEFAULT_BRIGHTNESS;
+            if (parameters != "") {
+                newBrightness = parameters.toInt();
+            }
+            led_control::commands::setBrightness(newBrightness);
+            return;
+        }
         if (command == "audio/setVolume") {
             // Range is 0.0 - 11.0.  Minimum audible volume is 0.05.
             float newVolume = parameters.toFloat();

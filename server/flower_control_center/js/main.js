@@ -217,6 +217,8 @@ function populateCommandChoices() {
         "Echo the sequence of currently-active LED patterns to the flower's debug stream."],
         ["leds/clearPatterns",
         "Drop all currentlny-acive LED patterns. Turns the LEDs off.  No parameters."],
+        ["leds/setBrightness",
+        "Set the global brightness of FastLED (via temporal dithering) (0-255). Affects all other patterns."],
         ["leds/addPattern/HuePulse",
         "A surge of color that moves up the flower. Params: hue (0-255), startTime ('+0' for right now), fadeInTime (ms), holdTime (ms), brightness (0-255)"],
         ["leds/addPattern/FairyVisit",

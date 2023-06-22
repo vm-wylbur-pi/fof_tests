@@ -7,6 +7,10 @@
 
 namespace led_control
 {
+    // global FastLED brightness, used when clearing all patterns and when
+    // receiving a setBrigtness command with no brightness parameter specified.
+    const uint8_t DEFAULT_BRIGHTNESS = 100;
+
     // Should be run during setup()
     void setupFastLED();
 
@@ -26,7 +30,14 @@ namespace led_control
         void listPatterns();
 
         // Remove all currently active LED patterns, even if they're not done yet.
+        // Resets the global brightness to its boot-time default.
         void clearPatterns();
+
+        // Set the global FastLED brightness, which is implemented via time dithering.
+        // Most LED patterns do not adjust this value, so it's useful as an overall
+        // control to madulate or boost other patterns. Values below 10 can cause 
+        // color artifacts and break smooth patterns.
+        void setBrightness(uint8_t brightness);
     }
 }
 

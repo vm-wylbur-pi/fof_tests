@@ -22,7 +22,7 @@ namespace led_control {
 
         // This turns on temporal dithering, which can only work
         // if FastLED.show() is called as often as possible.
-        FastLED.setBrightness(100);
+        FastLED.setBrightness(DEFAULT_BRIGHTNESS);
 
         // Default pattern is an independent idle, which will look OK in the absence
         // of any field coordination, and/or if the sync timer is not set.
@@ -83,8 +83,14 @@ namespace led_control {
         void clearPatterns() {
             // TODO: why is the beatflash callback not getting unregistered at this point,
             // I expect all the patterns' destructors to be called.
-            comms::sendDebugMessage("Clearing all LED patterns.");
+            comms::sendDebugMessage("Clearing all LED patterns and resetting global brightness to "
+                                    + String(DEFAULT_BRIGHTNESS));
             patterns.clear();
+            FastLED.setBrightness(DEFAULT_BRIGHTNESS);
+        }
+
+        void setBrightness(uint8_t brightness) {
+            FastLED.setBrightness(brightness);
         }
     }
 }
