@@ -10,7 +10,9 @@ function connectToMQTT() {
     $( "#mqtt-status" ).text("");
     let brokerIP = $( "#mqtt-ip" ).val();
     $( "#mqtt-status" ).append("Connecting to MQTT Broker at " + brokerIP + ":" + MQTT_BROKER_PORT + "...<br/>");
-    mqtt = new Paho.MQTT.Client(brokerIP, MQTT_BROKER_PORT, "Flower_Control_Center");
+    let randomClientNameSuffix = Math.floor(Math.random() * 10000);
+    mqtt = new Paho.MQTT.Client(brokerIP, MQTT_BROKER_PORT,
+                                `Flower_Control_Center_${randomClientNameSuffix}`);
 
     mqtt.onConnectionLost = function(context) {
         $( "#mqtt-status" ).append(`MQTT connection lost: ${context.errorMessage}<br/>`);
