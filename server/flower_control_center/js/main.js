@@ -46,6 +46,7 @@ class Heartbeat {
     static headerRow() {
         return $("<tr>")
             .append("<th>Flower ID</th>")
+            .append("<th>Flower Num</th>")
             .append("<th>Debug Messages</th>")
             .append("<th>Heartbeat age</th>")
             .append("<th>Uptime</th>")
@@ -62,6 +63,7 @@ class Heartbeat {
     toRow () {
         return $("<tr>")
             .append("<td>" + this.flower_id + "</td>")
+            .append("<td>" + this.sequence_num + "</td>")
             .append("<td><button>show</button></td>")
             .append('<td heartbeat_timestamp="' + this.creation_timestamp + '">:00</td>')
             .append("<td>" + this.uptime + "</td>")

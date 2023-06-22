@@ -28,6 +28,7 @@ String Heartbeat::_makeHeartbeatMessage() {
     // See flower_control_center/main.js:Heartbeat.toRow for the expected field names
     String msg = "{";
     msg += "  \"flower_id\": \"" + flower_info::flowerID() + "\",\n";
+    msg += "  \"sequence_num\": \"" + String(flower_info::flowerInfo().sequenceNum) + "\",\n";
     msg += "  \"uptime\": \"" + _uptime.Formatted() + "\",\n";
     msg += "  \"version_name\": \"" + version::Name + "\",\n";
     msg += "  \"build_timestamp\": \"" + version::getBuildTime() + "\",\n";
