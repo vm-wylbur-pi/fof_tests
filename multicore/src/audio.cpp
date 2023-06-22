@@ -96,9 +96,6 @@ namespace audio
         mixer = new AudioOutputMixer(32, i2sAudioOutput);   // 32 is the mixer buffsize, copied from example.
         wavMixerStub = mixer->NewInput();
         silenceMixerStub = mixer->NewInput();
-        
-        // Begin the slience. It should never stop.
-        silenceGenerator->begin(silenceSource, silenceMixerStub);
 
         commands::setVolume(5.0);  // out of 11
 
@@ -109,7 +106,7 @@ namespace audio
     void mainLoop() {
         if (wavGenerator->isRunning()) {
             if (!wavGenerator->loop()) {
-                wavGenerator->stop();  // TODO: Try with outh this. Maybe this isn't needed anymore?
+                wavGenerator->stop();  // TODO: Try without this. Maybe this isn't needed anymore?
                 wavMixerStub->stop();
             }
         }
@@ -117,11 +114,13 @@ namespace audio
         // Monitor the silence Generator. If it gets near its logical end (it's
         // configured with a finite duration), then seek back to its beginning.
         // Thus the silence never ends.
-        silenceGenerator->loop();
-        if (silenceSource->getPos() > silenceSource->getSize() > 0.5) {
-            comms::sendDebugMessage("looping silence");
-            silenceSource->seek(0, SEEK_SET);
-        } 
+        if (silenceGenerator->isRunning()) {
+            silenceGenerator->loop();
+            if (silenceSource->getPos() > silenceSource->getSize() > 0.5) {
+                comms::sendDebugMessage("looping silence");
+                silenceSource->seek(0, SEEK_SET);
+            } 
+        }
 
         // This is where I could put code for tracking progress through
         // the current sound, notifications for when sounds finish, etc.
@@ -184,6 +183,16 @@ namespace audio
             }
             Serial.println(fileListDebugMsg);
             comms::sendDebugMessage(fileListDebugMsg);
+        }
+
+        void toggleMixWithSilence() {
+            if (silenceGenerator->isRunning()) {
+                silenceGenerator->stop();
+                silenceMixerStub->stop();
+            } else {
+                silenceGenerator->begin(silenceSource, silenceMixerStub);
+            }
+            comms::sendDebugMessage("silenceGenerator isRunning: "+ String(silenceGenerator->isRunning()));
         }
 
     } // namespace commands

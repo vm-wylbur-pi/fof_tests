@@ -243,6 +243,8 @@ function populateCommandChoices() {
         "Stops any on-going sound playback. No parameters."],
         ["audio/listSoundFiles",
         "Echo the first 30 sound files available on the flower to its debug stream."],
+        ["audio/toggleMixWithSilence",
+        "Whether or not silence data is sent to the audio output in addition to WAV data."],
         ["screen/setText",
         "One string parameter (no commas). Show the given text on the tiny screen in the birdhouse."],
         ["screen/appendText",

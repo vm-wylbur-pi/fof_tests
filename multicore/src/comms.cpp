@@ -120,6 +120,10 @@ namespace comms
             audio::commands::listSoundFiles();
             return;
         }
+        if (command == "audio/toggleMixWithSilence") {
+            audio::commands::toggleMixWithSilence();
+            return;
+        }
         if (command == "screen/setText") {
             screen::commands::setText(parameters);
             return;

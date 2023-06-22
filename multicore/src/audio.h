@@ -25,6 +25,11 @@ namespace audio
         // Send a listing of files in the SD card over the MQTT debug channel
         // Any of these files ending in .wav is probably playable.
         void listSoundFiles();
+
+        // The audio output from wav files can be mixed with never-ending silence
+        // in order to reduce the effect of stat-of-play pop. But it may cause
+        // speaker hissing. This command lets us experiment with it.
+        void toggleMixWithSilence();
     } // namespace commands
 } // namespace audio
 
