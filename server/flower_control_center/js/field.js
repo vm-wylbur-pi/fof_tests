@@ -1,6 +1,10 @@
 var cy;
 
 $(document).ready(function() {
+
+    // default for people topic
+    var people_topic = "people-locations/"
+
     // Identify the div element for the field
     var fieldDiv = $('#field');
 
@@ -24,6 +28,15 @@ $(document).ready(function() {
                     width: '40px',
                     height: '40px'
                 }
+            },
+            {
+              selector: 'node[atype="person"]',
+              style: {
+                  'label': 'data(id)',
+                  'shape': 'square',
+                  width: '30px',
+                  height: '30px'
+              }
             },
             {
                 selector: 'node[ftype="poppy"]',
@@ -169,4 +182,65 @@ $(document).ready(function() {
             cy.maxZoom(cy.zoom()+1)
             return res
         })
+
+    function subscribeToPeopleMessages() {
+       mqtt.subscribe(people_topic, {
+           onSuccess: () => {
+               console.log('Field Subscribed to people topic')
+           },
+           onFailure: (res) => {
+               console.log('Field lost subscription' + res.errorMessage)
+           }
+       })
+    }
+
+    function handleMQTTMessage(message) {
+        if (message.destinationName.startsWith(people_topic)) {
+            handlePeople(JSON.parse(message.payloadString)['people'])
+        }
+    }
+
+    function handlePeople(plist){
+        for (var pid in plist){
+            // lol json parse doesn't go deep.
+            var pobj = JSON.parse(plist[pid])
+            var pele = cy.$id('p-' + pid)
+            if(pele.length == 0){
+                pele = cy.add({
+                    data: {
+                        id: 'p-' + pid,
+                        atype: 'person'
+                    }
+                })
+            }
+            pele.position({x: pobj['x'], y: -1 * pobj['y']})
+        }
+    }
+
+    function connectToMQTT() {
+        let brokerIP = $( "#mqtt-ip" ).val();
+        let randomClientNameSuffix = Math.floor(Math.random() * 10000);
+        mqtt = new Paho.MQTT.Client(brokerIP, MQTT_BROKER_PORT,
+            `Flower_Control_Center_Field_${randomClientNameSuffix}`);
+
+        mqtt.onConnectionLost = function(context) {
+            console.log(`MQTT connection lost: ${context.errorMessage}`)
+        };
+
+        mqtt.onMessageArrived = handleMQTTMessage;
+
+        var connect_options = {
+            timeout: 15,  // seconds
+            onSuccess: function() {
+                console.log("Field - Conncted to MQTT Broker.");
+                subscribeToPeopleMessages();
+            },
+            onFailure: function(context) {
+                console.log(`MQTT connection failed: ${context.errorMessage}`);
+            }
+        }
+        mqtt.connect(connect_options);
+    }
+
+    connectToMQTT()
 });
