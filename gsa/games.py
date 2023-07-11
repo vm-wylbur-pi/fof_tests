@@ -28,7 +28,7 @@ class StatefulGame(Game):
     # This method is called to end the game. It gives the game a chance to
     # clean up any external state, such as retained MQTT messages, and/or
     # sending commands to flowers to end indefinitely-running patterns.
-    def stop(self):
+    def stop(self, flowers):
         raise NotImplementedError
 
 # A straight line of color that propagates perpendicular to itself.
@@ -83,6 +83,37 @@ class CircularColorWave(StatelessGame):
                 #       just make each pulse shorter the faster the wave speed.
                 flower.HuePulse(hue=self.hue, startTime=f"+{millisToReachFlower}", rampDuration=200,
                                 peakDuration=400, brightness=200)
+
+
+class WholeFieldSleep(StatefulGame):
+    def __init__(self, sleepIntervalSecs=5):
+        self.hasSetRetainedSleepCommand = False
+        self.sleepIntervalSecs = 5 * 60
+
+    def runLoop(self, flowers):
+        if not self.hasSetRetainedSleepCommand:
+            print("Setting retained sleep mode commands.")
+            for flower in flowers:
+                # This is a "Retained" MQTT message, which means the flowers will get it
+                # right away, and will get it again every time they subscribe. Since they
+                # re-subscribe to their MQTT command topic after waking from sleep, this
+                # has the effect of keeping them asleep until the retained message is removed.
+                flower.sendMQTTCommand(command="enterSleepMode",
+                                       params=f'{self.sleepIntervalSecs * 1000}',
+                                       retained=True)
+        self.hasSetRetainedSleepCommand = True
+
+    def isDone(self):
+        # Keep the field asleep until this game is force-ended via the clearGames command
+        return False
+    
+    def stop(self, flowers):
+        print("Clearing retained sleep commands.")
+        for flower in flowers:
+            # You clear a retained MQTT message by sending a new one with an empty payload
+            # If any flowers are currently awake (unlikely), this will cause them to sleep
+            # one more time, for the default sleep duration (10 seconds)
+            flower.sendMQTTCommand(command="enterSleepMode", params='', retained=True)
 
 
 # A moving spot of light on a flower, which jumps from flower to flower.
