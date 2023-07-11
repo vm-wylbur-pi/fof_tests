@@ -3,6 +3,7 @@
 #include "comms.h"  // not a good idea?
 #include "config.h" // for LED_DATA_PIN
 #include "led_patterns.h"
+#include "sleep.h"
 #include "time_sync.h"
 #include "music_sync.h"
 
@@ -24,10 +25,22 @@ namespace led_control {
         // if FastLED.show() is called as often as possible.
         FastLED.setBrightness(DEFAULT_BRIGHTNESS);
 
-        // Default pattern is an independent idle, which will look OK in the absence
-        // of any field coordination, and/or if the sync timer is not set.
-        patterns.emplace_back(new led_patterns::IndependentIdle());
-        patterns.emplace_back(new led_patterns::Raindrops(6, 3));
+        // Set up the LEDs patterns to run before receiving any commands from
+        // the control server.
+        //
+        // When waking from sleep, the common case is that we check in with the
+        // command server and are told to go back to sleep right away. In this
+        // case we want to leave the LEDs off. We don't want them to come on briefly
+        // every time we wake and check.
+        //
+        // If we're not waking from sleep (i.e. we just booted because the flower
+        // was plugged into power), then we want a nice-looking default.
+        if (!sleep_mode::wokeFromSleep()) {
+            // Default pattern is an independent idle, which will look OK in the absence
+            // of any field coordination, and/or if the sync timer is not set.
+            patterns.emplace_back(new led_patterns::IndependentIdle());
+            patterns.emplace_back(new led_patterns::Raindrops(6, 3));
+        }
     }
 
     void mainLoop() {
