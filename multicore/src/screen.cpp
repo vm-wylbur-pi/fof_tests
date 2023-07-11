@@ -44,6 +44,10 @@ namespace screen
         }
     }
 
+    void powerDown() {
+        display.ssd1306_command(SSD1306_DISPLAYOFF);
+    }
+
     namespace {
         void drawText(const String &newScreenText) {
             if (initialized)
