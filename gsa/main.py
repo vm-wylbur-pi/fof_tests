@@ -21,6 +21,8 @@ class GameState:
         self.stateful_games.append(game)
 
     def clearStatefulGames(self):
+        for game in self.stateful_games:
+            game.stop()
         self.stateful_games = []
 
     def updateStatefulGames(self):
@@ -65,9 +67,10 @@ def handle_keyboard_input(command):
         # An expanding circle wave.
         wave = games.CircularColorWave(120, center=Point(400,400), startRadius=0, speed=250)
         gameState.runStatelessGame(wave)
-
     elif command == "f":
         gameState.runStatefulGame(games.Fairy())
+    elif command == "s":
+        gameState.runStatefulGame(games.WholeFieldSleep())
 
 input_thread = KeyboardInputThread(handle_keyboard_input)
 
@@ -81,5 +84,5 @@ while True:
         mqtt_client.reconnect()
     mqtt_client.loop()
 
-    # We may want something like this later. For now, the input() call at the top stalls the loop.
+    # Stall the loop.
     time.sleep(1/60)  # seconds

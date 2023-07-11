@@ -24,6 +24,12 @@ class StatefulGame(Game):
     # is stopped, and runLoop will never be called again.
     def isDone(self):
         raise NotImplementedError
+    
+    # This method is called to end the game. It gives the game a chance to
+    # clean up any external state, such as retained MQTT messages, and/or
+    # sending commands to flowers to end indefinitely-running patterns.
+    def stop(self):
+        raise NotImplementedError
 
 # A straight line of color that propagates perpendicular to itself.
 # This is cool in itself and a useful building block for other effects.
@@ -159,6 +165,11 @@ class Fairy(StatefulGame):
             self.next_visit_time = now + visitDuration
             self.current_flower = next_flower
         
+    def stop(self):
+        # The Fairy game only uses finite-duration patterns and audio clips, so
+        # there is nothing that needs to be cleaned up when it stops.
+        pass
+    
     def isDone(self):
         # TODO: we could specify a duration. For now, the only way to end the game
         #       is to clear all games.
