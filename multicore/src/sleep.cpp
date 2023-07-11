@@ -2,6 +2,7 @@
 
 #include "audio.h"
 #include "comms.h"
+#include "led_control.h"
 #include "networking.h"
 #include "screen.h"
 
@@ -27,7 +28,7 @@ namespace sleep_mode {
             comms::sendDebugMessage(sleepMsg);
             // Need to call this proactively, rather than wait for the next program loop,
             // because there will be no next program loop.
-            //networking::mqttSendReceive();
+            networking::mqttSendReceive();
 
             wakeFromSleepCounter++;
 
@@ -36,6 +37,15 @@ namespace sleep_mode {
             // board: the screen and the audio controller.
             screen::powerDown();
             audio::shutdownAudio();
+
+            // Set all LEDs to black; if this is not done; they'll stay lit during
+            // esp32 deep sleep mode.
+            led_control::commands::clearPatterns();
+            led_control::commands::setBrightness(0);
+            // Brief pause (in the comms task) to allow the LED task to run (on the
+            // other core), so that the LED shutdown specified above will take effect
+            // before we enter sleep mode.
+            delay(200);  // milliseconds
 
             uint32_t microsToSleep = millisToSleep * 1000;
             // The sole wake-up condition is the RTC (real-time clock) timer. By not
