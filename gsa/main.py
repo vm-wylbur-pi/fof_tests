@@ -22,7 +22,7 @@ class GameState:
 
     def clearStatefulGames(self):
         for game in self.stateful_games:
-            game.stop()
+            game.stop(self.flowers)
         self.stateful_games = []
 
     def updateStatefulGames(self):
