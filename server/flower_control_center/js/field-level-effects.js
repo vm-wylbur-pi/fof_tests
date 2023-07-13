@@ -10,6 +10,11 @@ $( document ).ready(function() {
 
     // Buttons to pre-popluate the command form
     // Game command names and parameters are from gsa/mqtt.py
+    $( "button#clearEffects" ).click(function (event) {
+        $('input[name="field_command"]').val("clearGames");
+        $('input[name="field_params"]').val("");
+        $('#field_command_param_explanation').text("Removes all stateful field-level effects (Fairies and RandomIdle)");
+    });
     $( "button#randomIdle" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/RandomIdle");
         $('input[name="field_params"]').val("");
@@ -19,11 +24,6 @@ $( document ).ready(function() {
         $('input[name="field_command"]').val("runGame/Fairy");
         $('input[name="field_params"]').val("");
         $('#field_command_param_explanation').text("Adds one fairy. You can have many. Each is independent of the othres.");
-    });
-    $( "button#clearFairies" ).click(function (event) {
-        $('input[name="field_command"]').val("clearGames");
-        $('input[name="field_params"]').val("");
-        $('#field_command_param_explanation').text("Removes all stateful effects (currently that's just Fairy instances.)");
     });
     $( "button#leftToRight" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/StraightColorWave");
