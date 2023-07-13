@@ -67,6 +67,8 @@ def handle_keyboard_input(command):
         gameState.runStatelessGame(games.CircularColorWave.randomInstance())
     elif command == "f":
         gameState.runStatefulGame(games.Fairy())
+    elif command == "i":
+        gameState.runStatefulGame(games.RandomIdle())
     elif command == "s":
         gameState.runStatefulGame(games.WholeFieldSleep())
 

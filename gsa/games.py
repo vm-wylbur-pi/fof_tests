@@ -236,3 +236,38 @@ class Fairy(StatefulGame):
         # TODO: we could specify a duration. For now, the only way to end the game
         #       is to clear all games.
         return False
+
+# Showcase field-level effects by running through several of them with randomized parameters.
+@dataclass
+class RandomIdle(StatefulGame):
+    # The set of field-level effects available for use
+    field_effects_menu = (
+        StraightColorWave,
+        CircularColorWave,
+    )
+
+    def __init__(self):
+        # Constants controlling the frequency of field-level effects.
+        self.effectGapSecsMean: float = 4.0
+        self.effectGapSecsStDev: float = 3.0
+        self.effectGapSecsMinimum: float = 2.0
+        # State variables
+        self.next_effect_time: int = 0
+
+    def runLoop(self, flowers):
+        now = time.time()
+        if now > self.next_effect_time:
+            effect = random.choice(RandomIdle.field_effects_menu).randomInstance()
+            effect.run(flowers)
+            delay = random.normalvariate(self.effectGapSecsMean, self.effectGapSecsStDev)
+            delay = max(delay, self.effectGapSecsMinimum)
+            self.next_effect_time = now + delay
+
+    def isDone(self):
+        # Runs indefinitely, until explicitly stopped, usually through a
+        # clearGames command sent to the GSA
+        return False
+
+    def stop(self, flowers):
+        # We're only running short-duration effects, so there's nothing to do when stopping
+        pass
