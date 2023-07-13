@@ -84,4 +84,8 @@ def HandleMQTTMessage(message, gameState):
         gameState.runStatefulGame(games.Fairy())
         return
 
+    if command == "runGame/RandomIdle":
+        gameState.runStatefulGame(games.RandomIdle())
+        return
+
     print(f"Unhandled command: {command}({message.payload.decode()})")

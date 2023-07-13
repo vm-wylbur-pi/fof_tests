@@ -10,6 +10,11 @@ $( document ).ready(function() {
 
     // Buttons to pre-popluate the command form
     // Game command names and parameters are from gsa/mqtt.py
+    $( "button#randomIdle" ).click(function (event) {
+        $('input[name="field_command"]').val("runGame/RandomIdle");
+        $('input[name="field_params"]').val("");
+        $('#field_command_param_explanation').text("Randomized color waves at randomized intervals, indefinitely.");
+    });
     $( "button#addFairy" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/Fairy");
         $('input[name="field_params"]').val("");
