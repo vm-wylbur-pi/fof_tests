@@ -49,7 +49,7 @@ def HandleMQTTMessage(message, gameState):
         gameState.clearStatefulGames()
         return
 
-    if command == "runGame/StraightHueWave":
+    if command == "runGame/StraightColorWave":
         wave = games.StraightColorWave.randomInstance()
         if len(params) >= 1:
             wave.hue = int(params[0])
