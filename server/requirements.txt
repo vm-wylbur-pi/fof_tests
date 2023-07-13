@@ -16,3 +16,6 @@ openpyxl
 psutil
 requests
 ntplib
+
+# pytools
+ipython
