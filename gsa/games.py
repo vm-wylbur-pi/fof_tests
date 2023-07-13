@@ -7,7 +7,10 @@ from flower import Flower
 import geometry
 
 class Game:
-    pass
+    # Factory method to construct a randomized instance of a game.
+    @classmethod
+    def randomInstance(cls):
+        raise NotImplementedError
 
 class StatelessGame(Game):
     def run(self, flowers):
@@ -40,7 +43,23 @@ class StraightColorWave(StatelessGame):
     start_loc: geometry.Point
     velocity: geometry.Vector
 
+    @classmethod
+    def randomInstance(cls):
+        # Assume the field is around 1000 x 1000.
+        # TODO: we could use some utility functions that know about the size of the field.
+        startPoint = geometry.Point(random.randint(0,1000), random.randint(0,1000))
+        # Head toward the middle of the field, so the wave doesn't just start
+        # near the edge and head outward, which would not be noticeable as a wave.
+        # TODO: this should be a utility function to find the center of the field.
+        target = geometry.Point(500,500)
+        waveSpeed = random.randint(300,700)
+        waveVelocity = target.diff(startPoint).norm().scale(waveSpeed);
+        return StraightColorWave(hue=random.randint(0,255),
+                                 start_loc=startPoint,
+                                 velocity=waveVelocity)
+
     def run(self, flowers):
+        print(f"Running wave: {self}")
         speed = self.velocity.magnitude()
 
         # slope is perpendicular to propagation direction, so invert x vs y
@@ -50,7 +69,7 @@ class StraightColorWave(StatelessGame):
         for flower in flowers:
             perpVectorToFlower = line.perpendicularVectorTo(flower.location)
             inFrontOfLine = not perpVectorToFlower.contraryTo(self.velocity)
-            print(f"Vector to flower {flower.id} {flower.location}: {perpVectorToFlower} (inFrontOfLine={inFrontOfLine})")
+            #print(f"Vector to flower {flower.id} {flower.location}: {perpVectorToFlower} (inFrontOfLine={inFrontOfLine})")
             if inFrontOfLine:
                 millisToReachFlower = int(round(1000 * perpVectorToFlower.magnitude() / speed))
                 # ramp and peak time could be parameters of this Game, or computed based on speed
@@ -72,7 +91,19 @@ class CircularColorWave(StatelessGame):
     startRadius: float
     speed: float  # Positive is growing, Negative is Shrinking. units are cm/sec
 
+    @classmethod
+    def randomInstance(cls):
+        # Assume the field is around 1000 x 1000.
+        # TODO: we could use some utility functions that know about the size of the field.
+        center = geometry.Point(random.randint(0,1000), random.randint(0,1000))
+        # We want to grow or shrink, but neither too fast nor noo slow.
+        speed = random.randint(400, 700) * random.choice((1, -1))
+        startRadius = 0 if speed > 0 else 700
+        return CircularColorWave(hue=random.randint(0,255),
+                                 center=center, startRadius=startRadius, speed=speed)
+
     def run(self, flowers):
+        print(f"Running wave: {self}")
         for flower in flowers:
             distanceFromCenter = self.center.diff(flower.location).magnitude()
             distanceFromStart = distanceFromCenter - self.startRadius
@@ -101,7 +132,7 @@ class WholeFieldSleep(StatefulGame):
                 flower.sendMQTTCommand(command="enterSleepMode",
                                        params=f'{self.sleepIntervalSecs * 1000}',
                                        retained=True)
-        self.hasSetRetainedSleepCommand = True
+            self.hasSetRetainedSleepCommand = True
 
     def isDone(self):
         # Keep the field asleep until this game is force-ended via the clearGames command
