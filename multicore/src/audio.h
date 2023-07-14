@@ -8,6 +8,11 @@ namespace audio
     // Should be called from the main app's setup()
     void setupAudio();
 
+    // For use with sleep mode. After calling shutdownAudio, you need to
+    // call setupAudio before any calls to mainLoop() or other methods
+    // in this module.
+    void shutdownAudio();
+
     // Should be called from the main app's loop(), or a tasks forever-loop
     void mainLoop();
 

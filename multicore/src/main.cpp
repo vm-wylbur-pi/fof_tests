@@ -6,9 +6,12 @@
 #include "networking.h"
 #include "led_control.h"
 #include "screen.h"
+#include "sleep.h"
 #include "storage.h"
 #include "time_sync.h"
 #include "version.h"
+
+#include <Arduino.h>
 
 // When I tried this the other way around (LEDs isolated on core 1),
 // The LEDs stalled every 5-10 seconds. I think there might be some
@@ -64,6 +67,9 @@ void setup()
 
   screen::setupScreen();
   screen::commands::setText("Booting\n");
+  if (sleep_mode::wokeFromSleep()) {
+    screen::commands::appendText("(woke from sleep)\n");
+  }
   led_control::setupFastLED();
   networking::setupWiFi();
   networking::setupOTA();
@@ -74,7 +80,7 @@ void setup()
   buttons::setupButtons();
 
   // We want to give this a non-contended shot at the CPU, so we run
-  // one sync here, before starting up all the sepaate tasks. For now,
+  // one sync here, before starting up all the separate tasks. For now,
   // this is the only NTP sync that runs, since we trust later NTP sync
   // runs less (because of the other running tasks).
   time_sync::setupNTPClientAndSync();

@@ -126,6 +126,13 @@ namespace audio
         // the current sound, notifications for when sounds finish, etc.
     }
 
+    void shutdownAudio() {
+        commands::stopSoundFile();
+        silenceGenerator->stop();
+        silenceMixerStub->stop();
+        i2sAudioOutput->stop();
+    }
+
     String formattedVolume() {
         const static int DECIMAL_PLACES = 1;
         return String(volume, DECIMAL_PLACES) + "/11";

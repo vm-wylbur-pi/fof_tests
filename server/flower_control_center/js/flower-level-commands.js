@@ -3,6 +3,8 @@ function populateCommandChoices() {
         // From multicore/src/comms.cpp
         ["reboot",
          "Reboot this flower. No parameters."],
+        ["enterSleepMode",
+         "Put this flower into sleep mode. One parameter: milliseconds to sleep"],
         // Hide this one during Patrick's party; running it with a bad or no params could break syncing.
         // ["time/setEventReference",
         // "one integer parameter, seconds since the Unix epoch. Should be in the last couple weeks."],

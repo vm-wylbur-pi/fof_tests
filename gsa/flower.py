@@ -13,9 +13,9 @@ class Flower:
         self.location = location
         self.mqtt_client = mqtt_client
 
-    def sendMQTTCommand(self, command: str, params: str):
+    def sendMQTTCommand(self, command: str, params: str, retained: bool = False):
         topic = f"flower-control/{self.id}/{command}"
-        self.mqtt_client.publish(topic, payload=params)
+        self.mqtt_client.publish(topic, payload=params, retain=retained)
 
     # Setting n = 1 returns the closest flower to self.
     def findNClosestFlowers(self, flowers, n):

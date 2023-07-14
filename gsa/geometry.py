@@ -23,7 +23,9 @@ class Vector:
     def norm(self):
         return self.scale(1/self.magnitude())
 
-    # Whether v added self has a smaller magnitude than self
+    # Whether v added self has a smaller magnitude than self, or roughly
+    # whether v is pointing "against" (anywhere in the 180-degrees opposite)
+    # the direction of self.
     def contraryTo(self, v):
         return self.sum(v).magnitude() < self.magnitude()
 

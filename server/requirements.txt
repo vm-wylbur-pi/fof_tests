@@ -21,3 +21,6 @@ ntplib
 numpy
 dlib
 opencv-python
+
+# pytools
+ipython

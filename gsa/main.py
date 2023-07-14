@@ -21,6 +21,8 @@ class GameState:
         self.stateful_games.append(game)
 
     def clearStatefulGames(self):
+        for game in self.stateful_games:
+            game.stop(self.flowers)
         self.stateful_games = []
 
     def updateStatefulGames(self):
@@ -51,10 +53,9 @@ def handle_keyboard_input(command):
     if command == "x":
         # Clear all current-running games
         gameState.clearStatefulGames()
-    elif command == "a":
-        # A single left-to-right wave
-        wave = games.StraightColorWave(120, start_loc=Point(100,100), velocity=Vector(500,0))
-        gameState.runStatelessGame(wave)
+    elif command == "w":
+        # A randomized straight-line wave.
+        gameState.runStatelessGame(games.StraightColorWave.randomInstance())
     elif command == "b":
         # Left-to-right wave superimposed on top-to-bottom wave
         wave1 = games.StraightColorWave(120, start_loc=Point(100, 100), velocity=Vector(500, 0))
@@ -62,12 +63,14 @@ def handle_keyboard_input(command):
         gameState.runStatelessGame(wave1)
         gameState.runStatelessGame(wave2)
     elif command == "c":
-        # An expanding circle wave.
-        wave = games.CircularColorWave(120, center=Point(400,400), startRadius=0, speed=250)
-        gameState.runStatelessGame(wave)
-
+        # A randomized circular wave
+        gameState.runStatelessGame(games.CircularColorWave.randomInstance())
     elif command == "f":
         gameState.runStatefulGame(games.Fairy())
+    elif command == "i":
+        gameState.runStatefulGame(games.RandomIdle())
+    elif command == "s":
+        gameState.runStatefulGame(games.WholeFieldSleep())
 
 input_thread = KeyboardInputThread(handle_keyboard_input)
 
@@ -81,5 +84,5 @@ while True:
         mqtt_client.reconnect()
     mqtt_client.loop()
 
-    # We may want something like this later. For now, the input() call at the top stalls the loop.
+    # Stall the loop.
     time.sleep(1/60)  # seconds

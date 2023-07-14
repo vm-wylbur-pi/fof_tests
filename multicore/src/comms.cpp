@@ -7,6 +7,7 @@
 #include "led_control.h"
 #include "networking.h"
 #include "screen.h"
+#include "sleep.h"
 #include "storage.h"
 #include "time_sync.h"
 #include "music_sync.h"
@@ -64,6 +65,16 @@ namespace comms
     void dispatchFlowerControlCommand(String &command, String &parameters) {
         if (command == "reboot") {
             ESP.restart();
+        }
+        if (command == "enterSleepMode") {
+            // Default to sleeping for 10 seconds. This is relatively short, to make
+            // recovery fast during testing and accidental use. 
+            uint32_t millisToSleep = 10 * 1000;
+            if (parameters != "") {
+                // Parameter parse failure will result in a sleep time of zero.
+                millisToSleep = parameters.toInt();
+            }
+            sleep_mode::commands::enterDeepSleep(millisToSleep);
         }
         // Reference time for flower events, in seconds since unix epoch.
         // # This command should generally be "retained", so flowers will pick it up on reboot. 

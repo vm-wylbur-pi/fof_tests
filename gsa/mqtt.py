@@ -41,38 +41,51 @@ def SetupMQTTClient(gameState):
 
 def HandleMQTTMessage(message, gameState):
     _, command = message.topic.split('/', maxsplit=1)
-    params = message.payload.decode().split(',')
+    raw_param_string = message.payload.decode()
+    params = raw_param_string.split(',') if raw_param_string else []
+    print(f"Command is {command}{params}")
 
     if command == "clearGames":
         gameState.clearStatefulGames()
         return
 
-    if command == "runGame/StraightHueWave":
-        hue = 160 if len(params) < 1 else int(params[0])
-        startX = 500 if len(params) < 2 else int(params[1])
-        startY = 500 if len(params) < 3 else int(params[2])
-        velocityX = 300 if len(params) < 4 else int(params[3])
-        velocityY = 0 if len(params) < 5 else int(params[4])
-        wave = games.StraightColorWave(hue,
-                                    start_loc=Point(startX, startY),
-                                    velocity=Vector(velocityX, velocityY))
+    if command == "runGame/StraightColorWave":
+        wave = games.StraightColorWave.randomInstance()
+        if len(params) >= 1:
+            wave.hue = int(params[0])
+        if len(params) >= 2:
+            wave.startX = int(params[1])
+        if len(params) >= 3:
+            wave.startY = int(params[2])
+        if len(params) >= 4:
+            wave.velocityX = int(params[3])
+        if len(params) >= 5:
+            wave.velocityY = int(params[4])
         gameState.runStatelessGame(wave)
         return
 
     if command == "runGame/CircularColorWave":
-        hue = 160 if len(params) < 1 else int(params[0])
-        centerX = 500 if len(params) < 2 else int(params[1])
-        centerY = 500 if len(params) < 3 else int(params[2])
-        startRadius = 0 if len(params) < 4 else int(params[3])
-        speed = 300 if len(params) < 5 else int(params[4])
-        wave = games.CircularColorWave(hue, center=Point(centerX, centerY),
-                                       startRadius=startRadius, speed=speed)
+        wave = games.CircularColorWave.randomInstance()
+        if len(params) >= 1:
+            wave.hue = int(params[0])
+        if len(params) >= 2:
+            wave.centerX = int(params[1])
+        if len(params) >= 3:
+            wave.centerY = int(params[2])
+        if len(params) >= 4:
+            wave.startRadius = int(params[3])
+        if len(params) >= 5:
+            wave.speed = int(params[4])
         gameState.runStatelessGame(wave)
         return
 
     if command == "runGame/Fairy":
         # No parameters (yet) for the fairy game.  It runs indefinitely.
         gameState.runStatefulGame(games.Fairy())
+        return
+
+    if command == "runGame/RandomIdle":
+        gameState.runStatefulGame(games.RandomIdle())
         return
 
     print(f"Unhandled command: {command}({message.payload.decode()})")
