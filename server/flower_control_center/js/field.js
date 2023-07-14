@@ -10,7 +10,7 @@ $(document).ready(function() {
 
     // Configure the height and width of the visualization box
     var boxWidth = 700;
-    var boxHeight = 700;
+    var boxHeight = 400;
 
     // Set the dimensions of the visualization box
     fieldDiv.width(boxWidth);
