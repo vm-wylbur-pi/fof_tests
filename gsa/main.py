@@ -10,7 +10,7 @@ from geometry import Point, Vector
 # Wrapper for references to the game state.
 class GameState:
     def __init__(self):
-        self.flowers = flower.readFieldFromDeploymentYAML(
+        self.flowers = flower.readFlowersFromDeploymentYAML(
             "../fake_field/patricks_backyard_party_deployment.yaml")
         self.stateful_games = []
 
