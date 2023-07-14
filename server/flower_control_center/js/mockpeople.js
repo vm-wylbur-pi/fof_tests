@@ -118,9 +118,9 @@ function clearField(){
 }
 
 function displayTracks(){
-    if (Object.keys(tracks).length === 0){
+    /*if (Object.keys(tracks).length === 0){
         return
-    }
+    }*/
 
     trackTable = new Tabulator("#trackTable", {
         //height:"400px",
