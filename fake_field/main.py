@@ -18,6 +18,7 @@ import pygame
 import paho.mqtt.client as mqtt
 
 import fake_flowers
+import fake_people
 import mqtt_handling
 
 # Initialize the graphics window in which the fake field is rendered.
@@ -31,10 +32,11 @@ running = True
 FPS = 60
 
 flowers = fake_flowers.makeFakeFieldFromDeploymentYAML("patricks_backyard_party_deployment.yaml")
+people = fake_people.FakePeople()
 
-# Pass a handle to the set of flowers to the MQTT-handling module, so that
-# they can be sent commands when MQTT messages are received from the GSA.
-mqtt_client = mqtt_handling.SetupMQTTClient(flowers)
+# Pass a handle to the set of flowers and people to the MQTT-handling module, so that
+# they can be sent commands and updated when MQTT messages are received from the GSA.
+mqtt_client = mqtt_handling.SetupMQTTClient(flowers, people)
 
 while running:
     # poll for events.  We get events from both the keyboard/mouse, and from MQTT.
@@ -56,6 +58,10 @@ while running:
     # Flower rendering. This is dependent on any commands they have received so far.
     for flower in flowers:
         flower.draw(screen)
+
+    # Person rendering.  They will be draw wherever the most recent update placed them.
+    # There's no smoothing applied between locations.
+    people.draw(screen)
 
     # double buffering
     pygame.display.flip()
