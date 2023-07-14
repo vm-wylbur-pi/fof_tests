@@ -14,3 +14,6 @@ class Field:
             self.width = config['field']['x']
             self.height = config['field']['y']
         print(f"Read {self.width}x{self.height} field dimensions from {yaml_filename}")
+
+    def center(self):
+        return geometry.Point(self.width/2, self.height/2)

@@ -4,12 +4,13 @@ import time
 import os
 
 from flower import Flower
+from field import Field
 import geometry
 
 class Game:
     # Factory method to construct a randomized instance of a game.
     @classmethod
-    def randomInstance(cls):
+    def randomInstance(cls, field: Field):
         raise NotImplementedError
 
 class StatelessGame(Game):
@@ -20,7 +21,7 @@ class StatelessGame(Game):
 
 class StatefulGame(Game):
     # This method is called repeatedly, every time through the main game loop
-    def runLoop(self, flowers):
+    def runLoop(self, flowers, field):
         raise NotImplementedError
 
     # This method is called once per game loop. When it returns true, the game
@@ -44,14 +45,13 @@ class StraightColorWave(StatelessGame):
     velocity: geometry.Vector
 
     @classmethod
-    def randomInstance(cls):
+    def randomInstance(cls, field: Field):
         # Assume the field is around 1000 x 1000.
         # TODO: we could use some utility functions that know about the size of the field.
         startPoint = geometry.Point(random.randint(0,1000), random.randint(0,1000))
         # Head toward the middle of the field, so the wave doesn't just start
         # near the edge and head outward, which would not be noticeable as a wave.
-        # TODO: this should be a utility function to find the center of the field.
-        target = geometry.Point(500,500)
+        target = field.center()
         waveSpeed = random.randint(300,700)
         waveVelocity = target.diff(startPoint).norm().scale(waveSpeed);
         return StraightColorWave(hue=random.randint(0,255),
@@ -92,7 +92,7 @@ class CircularColorWave(StatelessGame):
     speed: float  # Positive is growing, Negative is Shrinking. units are cm/sec
 
     @classmethod
-    def randomInstance(cls):
+    def randomInstance(cls, field: Field):
         # Assume the field is around 1000 x 1000.
         # TODO: we could use some utility functions that know about the size of the field.
         center = geometry.Point(random.randint(0,1000), random.randint(0,1000))
@@ -121,7 +121,7 @@ class WholeFieldSleep(StatefulGame):
         self.hasSetRetainedSleepCommand = False
         self.sleepIntervalSecs = 5 * 60
 
-    def runLoop(self, flowers):
+    def runLoop(self, flowers, unused_field):
         if not self.hasSetRetainedSleepCommand:
             print("Setting retained sleep mode commands.")
             for flower in flowers:
@@ -213,7 +213,7 @@ class Fairy(StatefulGame):
         return giggle_filename
 
 
-    def runLoop(self, flowers):
+    def runLoop(self, flowers, unused_field):
         now = time.time()
         if now > self.next_visit_time:
             candidates = flowers if self.current_flower is None else self.current_flower.findNClosestFlowers(flowers, 3)
@@ -254,10 +254,10 @@ class RandomIdle(StatefulGame):
         # State variables
         self.next_effect_time: int = 0
 
-    def runLoop(self, flowers):
+    def runLoop(self, flowers, field):
         now = time.time()
         if now > self.next_effect_time:
-            effect = random.choice(RandomIdle.field_effects_menu).randomInstance()
+            effect = random.choice(RandomIdle.field_effects_menu).randomInstance(field)
             effect.run(flowers)
             delay = random.normalvariate(self.effectGapSecsMean, self.effectGapSecsStDev)
             delay = max(delay, self.effectGapSecsMinimum)
