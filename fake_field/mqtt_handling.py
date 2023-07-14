@@ -6,7 +6,7 @@ import fake_flowers
 # TODO: Read this from config
 MQTT_BROKER_IP = "127.0.0.1"
 
-def SetupMQTTClient(flowers):
+def SetupMQTTClient(flowers, people):
     # Required by paho, but unused
     def on_pre_connect(unused_arg1, unused_arg2):
         pass
@@ -19,10 +19,17 @@ def SetupMQTTClient(flowers):
         # which will be relayed to a single flower.
         print('Subscribing to flower control messages.')
         client.subscribe("flower-control/#")
+        print('Subscribing to people location updates.')
+        client.subscribe("people-locations/#")
 
     def on_message(unused_client, unused_userdata, message):
-        print(f"Received message, topic='{message.topic}', content='{message.payload}'")
-        send_commands_to_flowers(message, flowers)
+        # print(f"Received message, topic='{message.topic}', content='{message.payload}'")
+        if message.topic.startswith("flower-control"):
+            send_commands_to_flowers(message, flowers)
+        elif message.topic.startswith("people-locations"):
+            people.updateLocations(message)
+        else:
+            print(f"Unhandled MQTT message topic: {message.topic}")
 
     def on_disconnect(unused_client, unused_userdata, result_code):
         if result_code != 0:
@@ -45,34 +52,28 @@ def send_commands_to_flowers(mqtt_message, flowers):
     # Here, I see which flower(s) are the recipent based on the message topic, 
     # then I make method calls to the fake flowers that are analogous to MQTT
     # commands received by the real flowers.
-    if mqtt_message.topic.startswith("flower-control"):
-        unused_flower_control, which_flower, command = mqtt_message.topic.split("/", maxsplit=2)
-        payload = mqtt_message.payload.decode('utf-8')
+    unused_flower_control, which_flower, command = mqtt_message.topic.split("/", maxsplit=2)
+    payload = mqtt_message.payload.decode('utf-8')
 
-        if command == "time/setEventReference":
-            # "flower-control/*/time/setEventReference" has a single integer parameter
-            new_reference_time = int(payload)
-            for flower in flowers:
-                if flower.id == which_flower or which_flower == "all":
-                    flower.setEventReference(new_reference_time)
+    if command == "time/setEventReference":
+        # "flower-control/*/time/setEventReference" has a single integer parameter
+        new_reference_time = int(payload)
+        for flower in flowers:
+            if flower.id == which_flower or which_flower == "all":
+                flower.setEventReference(new_reference_time)
 
-        elif command == "leds/clearPatterns":
-            for flower in flowers:
-                if flower.id == which_flower or which_flower == "all":
-                    flower.clearPatterns()
+    elif command == "leds/clearPatterns":
+        for flower in flowers:
+            if flower.id == which_flower or which_flower == "all":
+                flower.clearPatterns()
 
-        elif command.startswith("leds/addPattern"):
-            unused_leds, unused_addPattern, pattern_name = command.split('/')
-            pattern_params = payload
-            for flower in flowers:
-                if flower.id == which_flower or which_flower == "all":
-                    flower.addPattern(pattern_name, pattern_params)
+    elif command.startswith("leds/addPattern"):
+        unused_leds, unused_addPattern, pattern_name = command.split('/')
+        pattern_params = payload
+        for flower in flowers:
+            if flower.id == which_flower or which_flower == "all":
+                flower.addPattern(pattern_name, pattern_params)
 
-        else:
-            print(f"Command {command} isn't implemented by fake_field.")
-            return
-
-        
-        
     else:
-        print(f"Unhandled MQTT message topic: {mqtt_message.topic}")
+        print(f"Flower command {command} isn't implemented by fake_field.")
+        return
