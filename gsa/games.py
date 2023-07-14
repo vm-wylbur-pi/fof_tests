@@ -46,9 +46,7 @@ class StraightColorWave(StatelessGame):
 
     @classmethod
     def randomInstance(cls, field: Field):
-        # Assume the field is around 1000 x 1000.
-        # TODO: we could use some utility functions that know about the size of the field.
-        startPoint = geometry.Point(random.randint(0,1000), random.randint(0,1000))
+        startPoint = field.randomPointNearEdge()
         # Head toward the middle of the field, so the wave doesn't just start
         # near the edge and head outward, which would not be noticeable as a wave.
         target = field.center()
@@ -93,9 +91,7 @@ class CircularColorWave(StatelessGame):
 
     @classmethod
     def randomInstance(cls, field: Field):
-        # Assume the field is around 1000 x 1000.
-        # TODO: we could use some utility functions that know about the size of the field.
-        center = geometry.Point(random.randint(0,1000), random.randint(0,1000))
+        center = field.randomPoint()
         # We want to grow or shrink, but neither too fast nor noo slow.
         speed = random.randint(400, 700) * random.choice((1, -1))
         startRadius = 0 if speed > 0 else 700
