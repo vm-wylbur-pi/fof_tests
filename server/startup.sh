@@ -11,6 +11,8 @@ mosquitto -c config/mosquitto.conf &
 # Start flask webserver
 python3 code/fcc.py &
 
+python3 gsa/main.py &
+
 # Set up a retained MQTT message containing the flower control reference time.
 # This will be read by each flower when it boots.
 # See time_sync.h in the flower firmware source code for details.

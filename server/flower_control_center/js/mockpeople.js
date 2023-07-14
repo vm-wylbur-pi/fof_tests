@@ -205,7 +205,7 @@ function connectToMQTT() {
 
     let randomClientNameSuffix = Math.floor(Math.random() * 10000);
     mqttmock = new Paho.MQTT.Client(brokerIP, 9001,
-        `Flower_Control_Center_Field_${randomClientNameSuffix}`);
+        `Flower_Control_Center_MockPeople_${randomClientNameSuffix}`);
 
     mqttmock.onConnectionLost = function(context) {
         console.log(`MQTT connection lost: ${context.errorMessage}`)

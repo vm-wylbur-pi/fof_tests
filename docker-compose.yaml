@@ -17,5 +17,6 @@ services:
       - ./server/config:/app/config
       - ./deployments:/app/deployments
       - ./fake_field:/app/fake_field
+      - ./gsa:/app/gsa
     command: ./startup.sh
 
