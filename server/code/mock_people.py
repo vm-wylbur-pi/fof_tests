@@ -39,7 +39,7 @@ class Person:
         self.y = 0
 
     def move(self):
-        self.x = self.x +1
+        self.x = self.x + 1
         self.y = self.y + 1
 
     def dump(self):
@@ -79,8 +79,6 @@ def main():
     client.loop_start()
 
     deployment = get_deployment()
-
-
 
     m = Mob()
     peeps = [m.add(x) for x in range(peopleCount)]

@@ -9,8 +9,8 @@ $(document).ready(function() {
     var fieldDiv = $('#field');
 
     // Configure the height and width of the visualization box
-    var boxWidth = 800;
-    var boxHeight = 600;
+    var boxWidth = 700;
+    var boxHeight = 700;
 
     // Set the dimensions of the visualization box
     fieldDiv.width(boxWidth);
@@ -25,8 +25,8 @@ $(document).ready(function() {
                 style: {
                     'label': '???',
                     'background-color': 'white',
-                    width: '40px',
-                    height: '40px'
+                    width: '75px',
+                    height: '75px'
                 }
             },
             {
@@ -34,8 +34,9 @@ $(document).ready(function() {
               style: {
                   'label': 'data(id)',
                   'shape': 'square',
-                  width: '30px',
-                  height: '30px'
+                  'font-size': '50px',
+                  width: '75px',
+                  height: '75px'
               }
             },
             {
@@ -44,8 +45,8 @@ $(document).ready(function() {
                     'background-image': 'url(/img/crocus.png)',
                     'background-fit': 'cover',
                     'background-color': '#4286f4',
-                    width: '40px',
-                    height: '40px'
+                    width: '75px',
+                    height: '75px'
                 }
             },
             {
@@ -54,8 +55,8 @@ $(document).ready(function() {
                     'background-image': 'url(/img/buttercup.png)',
                     'background-fit': 'cover',
                     'background-color': '#4286f4',
-                    width: '40px',
-                    height: '40px'
+                    width: '75px',
+                    height: '75px'
                 }
             },
             {
@@ -64,8 +65,8 @@ $(document).ready(function() {
                     'background-image': 'url(/img/daisy.png)',
                     'background-fit': 'cover',
                     'background-color': '#4286f4',
-                    width: '40px',
-                    height: '40px'
+                    width: '75px',
+                    height: '75px'
                 }
             },
             {
@@ -110,14 +111,14 @@ $(document).ready(function() {
         .then( res => {
             let field = cy.add({
                 position: {
-                  x: res.field.x/2,
-                  y: res.field.y/2 * -1
+                  x: res.field.dimensions.w/2,
+                  y: res.field.dimensions.h/2
                 },
                 group: 'nodes',
                 data: {
                     id: 'field',
-                    width: res.field.x,
-                    height: res.field.y,
+                    width: res.field.dimensions.w,
+                    height: res.field.dimensions.h,
                     atype:'field'
                 },
                 locked: true,
@@ -131,9 +132,9 @@ $(document).ready(function() {
                 let p = cy.add({
                     position: {
                         x: parseInt(poi.x),
-                        y: parseInt(poi.y) * -1
+                        y: parseInt(poi.y)
                     },
-                    locked: false,
+                    locked: true,
                     group: 'nodes',
                     data: {
                         name: pid,
@@ -153,7 +154,7 @@ $(document).ready(function() {
                 let f = cy.add({
                     position: {
                         x: parseInt(flower['x']),
-                        y: parseInt(flower['y'])* -1
+                        y: parseInt(flower['y'])
                     },
                     locked: false,
                     group: 'nodes',
@@ -179,48 +180,50 @@ $(document).ready(function() {
 
             cy.fit(padding = 30)
             cy.minZoom(cy.zoom())
-            cy.maxZoom(cy.zoom()+1)
+            cy.maxZoom(cy.zoom()+5)
             return res
         })
 
     function subscribeToPeopleMessages() {
        mqtt.subscribe(people_topic, {
            onSuccess: () => {
-               console.log('Field Subscribed to people topic')
+               console.log('Field - Subscribed to people topic')
            },
            onFailure: (res) => {
-               console.log('Field lost subscription' + res.errorMessage)
+               console.log('Field - lost subscription' + res.errorMessage)
            }
        })
     }
 
     function handleMQTTMessage(message) {
         if (message.destinationName.startsWith(people_topic)) {
-            handlePeople(JSON.parse(message.payloadString)['people'])
+            let mparse = JSON.parse(message.payloadString)
+            handlePeople(mparse['people'])
         }
     }
 
     function handlePeople(plist){
         for (var pid in plist){
-            // lol json parse doesn't go deep.
-            var pobj = JSON.parse(plist[pid])
-            var pele = cy.$id('p-' + pid)
+            var pobj = plist[pid]
+            var pele = cy.$id(pid)
             if(pele.length == 0){
                 pele = cy.add({
+                    id: pid,
                     data: {
-                        id: 'p-' + pid,
+                        id: pid,
                         atype: 'person'
                     }
                 })
             }
-            pele.position({x: pobj['x'], y: -1 * pobj['y']})
+            pele.position({x: pobj['x'], y: pobj['y']})
         }
     }
 
     function connectToMQTT() {
         let brokerIP = $( "#mqtt-ip" ).val();
+
         let randomClientNameSuffix = Math.floor(Math.random() * 10000);
-        mqtt = new Paho.MQTT.Client(brokerIP, MQTT_BROKER_PORT,
+        mqtt = new Paho.MQTT.Client(brokerIP, 9001,
             `Flower_Control_Center_Field_${randomClientNameSuffix}`);
 
         mqtt.onConnectionLost = function(context) {

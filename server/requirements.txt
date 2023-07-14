@@ -16,3 +16,8 @@ openpyxl
 psutil
 requests
 ntplib
+
+# VA
+numpy
+dlib
+opencv-python
