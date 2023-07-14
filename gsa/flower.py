@@ -38,15 +38,14 @@ class Flower:
         params = str(visitDuration)
         self.sendMQTTCommand(command="leds/addPattern/FairyVisit", params=params)
 
-
-def readFieldFromDeploymentYAML(yaml_file_name):
-    field = []
+def readFlowersFromDeploymentYAML(yaml_file_name):
+    flowers = []
     yaml_file_path = os.path.join(os.path.dirname(__file__), yaml_file_name)
     with open(yaml_file_path, 'r') as yaml_file:
         config = yaml.safe_load(yaml_file)
         for flower_id, flower in config['flowers'].items():
-            field.append(Flower(id=flower_id,
-                                location=geometry.Point(flower['x'], flower['y']),
-                                mqtt_client=None))
-    print(f"Read {len(field)} flowers from {yaml_file_path}")
-    return field
+            flowers.append(Flower(id=flower_id,
+                                  location=geometry.Point(flower['x'], flower['y']),
+                                  mqtt_client=None))
+    print(f"Read {len(flowers)} flowers from {yaml_file_path}")
+    return flowers

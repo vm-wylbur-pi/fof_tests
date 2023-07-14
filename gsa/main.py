@@ -3,15 +3,18 @@ import time
 import threading
 
 import flower
+import field
 import mqtt
 import games
 from geometry import Point, Vector
 
+DEPLOYMENT_FILE = "../fake_field/patricks_backyard_party_deployment.yaml"
+
 # Wrapper for references to the game state.
 class GameState:
     def __init__(self):
-        self.flowers = flower.readFieldFromDeploymentYAML(
-            "../fake_field/patricks_backyard_party_deployment.yaml")
+        self.flowers = flower.readFlowersFromDeploymentYAML(DEPLOYMENT_FILE)
+        self.field = field.Field(DEPLOYMENT_FILE)
         self.stateful_games = []
 
     def runStatelessGame(self, game):
@@ -28,7 +31,7 @@ class GameState:
     def updateStatefulGames(self):
         self.stateful_games = [g for g in self.stateful_games if not g.isDone()]
         for game in self.stateful_games:
-            game.runLoop(self.flowers)
+            game.runLoop(self.flowers, self.field)
 
 gameState = GameState()
 mqtt_client = mqtt.SetupMQTTClient(gameState)

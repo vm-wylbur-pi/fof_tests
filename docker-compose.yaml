@@ -5,6 +5,8 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
+    tmpfs:
+      - /tmp
     ports:
       - 8000:8000
       - 1883:1883
