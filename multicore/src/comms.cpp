@@ -42,6 +42,10 @@ namespace comms
         storage::handleFTP();
     }
 
+    void forceHeartbeat() {
+        heartbeat.Beat();
+    }
+
     void sendDebugMessage(const String& msg) {
         String topic = "flower-debug/" + flower_info::flowerID();
         networking::publishMQTTMessage(topic, msg);

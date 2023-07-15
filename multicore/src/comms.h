@@ -15,6 +15,10 @@ namespace comms
   // messages, and heartbeats.
   void mainLoop();
 
+  // Send a heartbeat outside the normal heartbeat timer loop. Used 
+  // to send a single beat during wake-then-back-to-sleep cycle.
+  void forceHeartbeat();
+
   // Publish a general-purpose debug message.  We can set up various ways
   // to monitor these.  To avoid deadlock, this only sends messages at QoS == 0.
   // (To avoid deadlock, publish() should generally not be called from a message
