@@ -26,6 +26,10 @@ namespace sleep_mode {
             sleepMsg += "I have slept " + String(wakeFromSleepCounter) + " times since last boot.\n";
             sleepMsg += "Wake scheduled for " + String(millisToSleep / 1000.0 / 60) + " minutes from now.";
             comms::sendDebugMessage(sleepMsg);
+            // Send a single heartbeat. This is needed, because usually we're going back to sleep
+            // right away during boot, before the main comms cycle has started.
+            comms::forceHeartbeat();
+
             // Need to call this proactively, rather than wait for the next program loop,
             // because there will be no next program loop.
             networking::mqttSendReceive();
