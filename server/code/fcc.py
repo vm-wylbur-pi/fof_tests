@@ -12,7 +12,7 @@ import ntplib
 from datetime import datetime
 
 FCC_PATH = '/app/flower_control_center'
-DEPLOYMENT_PATH = '/app/fake_field/playa_test_2.yaml'
+DEPLOYMENT_PATH = '/app/fake_field/midway.yaml'
 INVENTORY_PATH = '/app/config/inventory.csv'
 
 app = Flask(__name__)
