@@ -73,7 +73,7 @@ namespace flower_info {
         if (info != FlowerInventory.end()) {
             return info->second;
         } else {
-            comms::sendDebugMessage("Failed to find flower info for " + flowerID());
+            comms::sendDebugMessage("Flower missing from inventory: " + flowerID());
             return { -1, "unknown", unknown, -1.0};
         }
     }
