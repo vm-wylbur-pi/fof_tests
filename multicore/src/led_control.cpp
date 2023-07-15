@@ -40,6 +40,12 @@ namespace led_control {
             // of any field coordination, and/or if the sync timer is not set.
             patterns.emplace_back(new led_patterns::IndependentIdle());
             patterns.emplace_back(new led_patterns::Raindrops(6, 3));
+        } else {
+            // When entering sleep mode for the first time, there's a weird behavior where
+            // one or two LEDs in the strip light up white as the esp32 shuts down. This
+            // clears such LEDs back to black when the flower wakes briefly before returning
+            // to sleep.
+            FastLED.clear(/* writedata= */true);
         }
     }
 
