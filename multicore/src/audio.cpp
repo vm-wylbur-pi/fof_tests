@@ -45,9 +45,9 @@ namespace audio
 
     // Mixing.  The mixer takes the data from wavGenerater (which starts and stops) and
     // the data from silenceGenerator, and combines them, sending the mix to i2sAudioOutput
-    AudioOutputMixer *mixer;
-    AudioOutputMixerStub *wavMixerStub;
-    AudioOutputMixerStub *silenceMixerStub;
+    AudioOutputMixer *mixer = nullptr;
+    AudioOutputMixerStub *wavMixerStub = nullptr;
+    AudioOutputMixerStub *silenceMixerStub = nullptr;
 
     // Audio Output (sent over the I2S bus to the audio shield)
     AudioOutputI2S *i2sAudioOutput = nullptr;
@@ -127,10 +127,15 @@ namespace audio
     }
 
     void shutdownAudio() {
-        commands::stopSoundFile();
-        silenceGenerator->stop();
-        silenceMixerStub->stop();
-        i2sAudioOutput->stop();
+        // We need this to run safely even if audio is not initialized, since
+        // it can be called early in the boot when waking right before going
+        // back to sleep
+        if (wavGenerator) wavGenerator->stop();
+        if (wavMixerStub) wavMixerStub->stop();
+        if (sdAudioSource) sdAudioSource->close();
+        if (silenceGenerator) silenceGenerator->stop();
+        if (silenceMixerStub) silenceMixerStub->stop();
+        if (i2sAudioOutput) i2sAudioOutput->stop();
     }
 
     String formattedVolume() {

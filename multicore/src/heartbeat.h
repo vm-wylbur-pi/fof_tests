@@ -18,6 +18,7 @@ class Uptime {
 class Heartbeat {
   public:
     void BeatIfItsTime();
+    void Beat();
     const uint32_t HEARTBEAT_PERIOD_MILLIS = 5000;
   private:
     String _makeHeartbeatMessage();

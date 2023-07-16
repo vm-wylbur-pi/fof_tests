@@ -1,5 +1,8 @@
 name: "Jeff's living room"
 description: "Hazardous to walk around in."
+field:
+  x: 800
+  y: 500
 flowers:
   "F0:6F:00":
     x: 450

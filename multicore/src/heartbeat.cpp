@@ -16,11 +16,15 @@
 void Heartbeat::BeatIfItsTime() {
     uint32_t currentMillis = millis();
     if (currentMillis - _last_heartbeat_millis > HEARTBEAT_PERIOD_MILLIS) {
-        Serial.println("sending heartbeat");
-        String topic = "flower-heartbeats/" + flower_info::flowerID();
-        networking::publishMQTTMessage(topic, _makeHeartbeatMessage());
+        Beat();
         _last_heartbeat_millis = currentMillis;
     }
+}
+
+void Heartbeat::Beat() {
+    Serial.println("sending heartbeat");
+    String topic = "flower-heartbeats/" + flower_info::flowerID();
+    networking::publishMQTTMessage(topic, _makeHeartbeatMessage());
 }
 
 String Heartbeat::_makeHeartbeatMessage() {
