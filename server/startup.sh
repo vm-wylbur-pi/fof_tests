@@ -3,7 +3,11 @@
 echo "Running Startup.sh"
 
 # NTP service start
-chronyd -f /etc/chrony/chrony.conf
+# docs: https://chrony.tuxfamily.org/doc/3.5/chronyd.html
+#   -x  means that chrony won't try to change the system clock; it acts only as a server
+#   -n  means don't detach from terminal. This lets us see any error messages.
+# chronyd -x -n -f /etc/chrony/chrony.conf &
+chronyd -x -n -f /etc/chrony/chrony.conf &
 
 # Start mosquitto
 mosquitto -c config/mosquitto.conf &
