@@ -34,7 +34,7 @@ class a_localProcessTestCases(unittest.TestCase):
             'state': ['sleeping','running']
         },
         'chrony': {
-            'name': ['chronyd', '-f', '/etc/chrony/chrony.conf'],
+            'name': ['chronyd', '-x', '-n', '-f', '/etc/chrony/chrony.conf'],
             'state': ['sleeping','running']
         }
     }
