@@ -6,7 +6,7 @@ services:
       context: ./server
       dockerfile: Dockerfile
     tmpfs:
-      - /tmp
+      - /tmp:size=10m
     ports:
       - 8000:8000
       - 1883:1883

@@ -23,15 +23,15 @@ class TFLiteTracker:
 
 
     def track(self, frame, personTracker, hudframe):
-        fg_mask = self.bg_subtractor.apply(frame)
+        #fg_mask = self.bg_subtractor.apply(frame)
 
         # Preprocess the image for input to the model
         input_shape = tuple(self.input_details[0]['shape'][1:3])
-        resized_frame = cv2.resize(fg_mask, input_shape)
+        resized_frame = cv2.resize(frame, input_shape)
         input_data = np.expand_dims(resized_frame, axis=0).astype(np.uint8)
 
         # Run the model on the input image
-        print(int(self.input_details[0]['index']), input_data)
+        #print(int(self.input_details[0]['index']), input_data)
         self.interpreter.set_tensor(int(self.input_details[0]['index']), input_data)
         self.interpreter.invoke()
         #output_data = [interpreter.get_tensor(output_details[i]['index']) for i in range(len(output_details))]

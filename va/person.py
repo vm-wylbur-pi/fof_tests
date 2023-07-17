@@ -52,7 +52,11 @@ class Person:
 
         return frame
 
+    def getPos(self):
+        return(self.pos)
+
     def write(self):
+        return(self.pos)
         person_dict = {
             'pid': self.pid,
             'firstseen': self.firstseen,
