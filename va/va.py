@@ -6,13 +6,23 @@ import math
 import pprint
 
 from tflitetracker import TFLiteTracker
+from centroidtracker import CentroidTracker
+
+import paho.mqtt.client as paho_mqtt
+import datetime
+import json
+
+pp = pprint.PrettyPrinter(indent=4)
+
+# TODO: Read this from config
+MQTT_BROKER_IP = "127.0.0.1"
+MQTT_PEOPLE_TOPIC = 'people-locations/'
 
 # open up the channel that we're reading from
-CHANNEL = '../../../vids/ptest2/permieter-run.mp4'
-#CHANNEL = '../../../../vids/ptest2/lots-adults-four-lights.mp4'
+CHANNEL = '../../../vids/ptest2/lots-adults-six-lights.mp4'
 CALIBRATION = 'calibration_parameters.npz'
 DEPLOYMENT_FILE = '../fake_field/playa_test_2.yaml'
-MAX_FRAMES = 165
+MAX_FRAMES = 2000
 
 # max pixels x,y around the initial corner points to search for corners
 CORNER_DEFLECTION = [20,35]
@@ -25,14 +35,19 @@ CORNER_THRESHOLD = 100
 
 # Set video properties
 WRITE_FILE = True
+UNDISTORT = True
+
 output_file = '/Users/george/Desktop/output_video.avi'
-frame_width = 1920
-frame_height = 1080
+if UNDISTORT:
+    frame_width = 1172
+    frame_height = 570
+else:
+    frame_width = 1920
+    frame_height = 1080
+
 fps = 30.0
 if WRITE_FILE:
     video_writer = cv2.VideoWriter(output_file, cv2.VideoWriter_fourcc(*'MJPG'), fps, (frame_width, frame_height))
-
-pp = pprint.PrettyPrinter(indent=4)
 
 # load calibration prameters from previous calibration test
 data = np.load(CALIBRATION)
@@ -43,8 +58,49 @@ distortion_coeffs = data['distortion_coeffs']
 with open(DEPLOYMENT_FILE, 'r') as file:
     deployment = yaml.safe_load(file)
 
-bg_subtractor = cv2.createBackgroundSubtractorKNN(detectShadows=True, history=200)
 
+# unused at this point because i can't be bothered to sort out the dimension problem
+
+# broken tracker, will slot in others as they're made functional
+# bg_subtractor = cv2.createBackgroundSubtractorKNN(detectShadows=True, history=200)
+# tracker = TFLiteTracker(bg_subtractor, frame_width, frame_height)
+tracker = CentroidTracker(bg_subtractor)
+# object that contains all the peeps as PID: Person Object
+personTracker = {}
+
+# shamelessly stolen from the gsa codebase
+def SetupMQTTClient():
+    # Required by paho, but unused
+    def on_pre_connect(unused_arg1, unused_arg2):
+        print("Running pre-connect")
+
+    def on_connect(client, unused_userdata, unused_flags, result_code):
+        result = "successfull." if result_code == 0 else "FAILED!"
+        print(f'Connection to MQTT broker at {MQTT_BROKER_IP} {result}')
+        # hashtag is the MQTT wildcard.
+        # TODO:  implement vis system control messages.
+        #print('Subscribing to viz control messages')
+        #client.subscribe("game-control/#")
+
+    def on_message(unused_client, unused_userdata, message):
+        print(f"Received message, topic='{message.topic}', content='{message.payload}'")
+        HandleMQTTMessage(message, gameState)
+
+    def on_disconnect(unused_client, unused_userdata, result_code):
+        if result_code != 0:
+            print("Unexpected MQTT disconnection.")
+
+    client = paho_mqtt.Client(client_id="va")
+    client.on_pre_connect = on_pre_connect
+    client.on_connect = on_connect
+    client.on_disconnect = on_disconnect
+    client.on_message = on_message
+    # I'm not sure if this is helpful yet.
+    # client.reconnect_delay_set(min_delay=1, max_delay=120)  # time unit is seconds
+    client.connect(MQTT_BROKER_IP)
+
+    # Caller is responsible for calling client.loop() to handle received messages
+    return client
 
 # removes the fish-eye effect from the camera using pre-defined calibration parameters
 def undistort(frame):
@@ -59,9 +115,7 @@ def undistort(frame):
     #cv2.destroyAllWindows()
     return frame
 
-
-
-# helper function used to identify the corner points
+# helper function used to initially identify the corner points in a frame
 ref_points = []
 drawing = False
 def draw_corners():
@@ -82,6 +136,8 @@ def draw_corners():
 
     # Read the first frame
     ret, frame = cap.read()
+    if UNDISTORT:
+        frame = undistort(frame)
     frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     # Loop until three bounding boxes are selected
@@ -139,14 +195,15 @@ def detectCornerPoints(frame):
             else:
                 cx = x_min + int(M['m10'] / M['m00'])
                 cy = y_min + int(M['m01'] / M['m00'])
-            multi_points.append((cx,cy))
+            multi_points.append([cx,cy])
 
         # if there's no contours, revert to the original
         #  if more than one contour, take the one closest to the original
-        newpoint = (x,y)
+        #  TODO:  track the previous corner points and use those instead of the original
+        newpoint = [x,y]
         if len(multi_points) == 0:
             cornerstats[ccnt]['no points'] += 1
-            newpoint = (x,y)
+            newpoint = [x,y]
         if len(multi_points) == 1:
             cornerstats[ccnt]['it worked'] += 1
             newpoint = multi_points[0]
@@ -163,7 +220,7 @@ def detectCornerPoints(frame):
         newdistance = math.sqrt((abs(x - newpoint[0]))**2 + (abs(y - newpoint[1]))**2)
         if newdistance > CORNER_DRIFT:
             cornerstats[ccnt]['corner drift'] += 1
-            newpoint = (x,y)
+            newpoint = [x,y]
 
         foundPoints.append(newpoint)
         bcnt += 1
@@ -186,6 +243,22 @@ def detectCornerPoints(frame):
 
     return foundPoints, frame
 
+def getPeoplePayload(M):
+    plist = {}
+    for pid in personTracker:
+        ppos = personTracker[pid].getPos()
+        pt = np.float32([[int(ppos[0]),int(ppos[1])]])
+        pt_warp = cv2.perspectiveTransform(pt.reshape(-1,1,2),M)
+
+        plist[pid] = {'x': int(pt_warp[0][0][0]), 'y': int(pt_warp[0][0][1])}
+
+    #print(plist)
+    return json.dumps({
+        'timestamp': datetime.datetime.now().isoformat(),
+        'people': plist
+    })
+
+
 
 cap = cv2.VideoCapture(CHANNEL)
 frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -199,9 +272,11 @@ for c in range(len(deployment['field']['corners'])):
         cornerstats[c][s] = 0
 
 fcnt = 0
-tracker = TFLiteTracker(bg_subtractor, frame_width, frame_height)
-personTracker = {}
+output_points = np.float32([[0,0],[0,3300], [3300,3300],[3300,0]])
 
+mqtt_client = SetupMQTTClient()
+mqtt_client.connect(MQTT_BROKER_IP)
+#mqtt_client.loop_start()
 # Loop through the video frames
 while True:
     # Read a frame from the video
@@ -213,19 +288,33 @@ while True:
     if fcnt > MAX_FRAMES:
         break
 
-    # ignoring undistortion atm because it crops the cornerpoints from the image...
-    # frame = undistort(frame)
+    if not mqtt_client.is_connected():
+        mqtt_client.reconnect()
+
+    if UNDISTORT:
+        frame = undistort(frame)
 
     corner_points, hudframe = detectCornerPoints(frame)
+    M = cv2.getPerspectiveTransform(np.float32(corner_points),output_points)
 
     hudframe = tracker.track(frame, personTracker, hudframe)
+
+    if bool(personTracker):
+        payload = getPeoplePayload(M)
+        res = mqtt_client.publish(MQTT_PEOPLE_TOPIC, payload)
+        mqtt_client.loop()
 
     if WRITE_FILE:
         video_writer.write(hudframe)
 
-cap.release()
+print("outside of the loop")
 if WRITE_FILE:
     video_writer.release()
+
+mqtt_client.loop_stop()
+cap.release()
+
+
 
 #print("Frames : ",fcnt)
 #pp.pprint(cornerstats)
