@@ -1,0 +1,34 @@
+# This is the list of messages used in the FunScreenText game.
+#
+# The screens are (currently) 9 characters wide.  Messages will be
+# line-wrapped to this width, but words longer than 9 characters 
+# will still be broken. 
+#
+# Only basic characters (ASCII) work on the flower screens.
+# No unicode, no accent marks or other diacritics, no emojis. 😔
+#
+# Blank lines and lines starting with '#' are ignored
+
+# From George at the Midway showing
+How's the weather up there?
+Please insert 25 cents
+This screen intentionally left blank
+You look so silly right now
+We know what you did last summer
+Honk if you love bees
+I'm with stupid
+Nacho cheese levels critically low
+Is this thing on?
+Dakota was here.
+Beware of the leopard.
+Oh nothin, what's up with you?
+Yes, each screen is different.
+
+# Some more ideas
+Hello world.
+42
+Wait, what?
+
+# From Claire
+They found me. I don't know how, but they found me.
+I like my beans dried by midnight.

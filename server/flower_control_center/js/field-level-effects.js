@@ -25,6 +25,11 @@ $( document ).ready(function() {
         $('input[name="field_params"]').val("");
         $('#field_command_param_explanation').text("Adds one fairy. You can have many. Each is independent of the othres.");
     });
+    $( "button#funScreenText" ).click(function (event) {
+        $('input[name="field_command"]').val("runGame/FunScreenText");
+        $('input[name="field_params"]').val("");
+        $('#field_command_param_explanation').text("Shows fun messages that occasionally change on the flower screens.");
+    });
     $( "button#leftToRight" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/StraightColorWave");
         $('input[name="field_params"]').val("160,0,450,600,0");

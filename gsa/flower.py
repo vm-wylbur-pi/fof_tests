@@ -38,6 +38,10 @@ class Flower:
         params = str(visitDuration)
         self.sendMQTTCommand(command="leds/addPattern/FairyVisit", params=params)
 
+    def SetScreenText(self, text):
+        self.sendMQTTCommand(command="screen/setText", params=text)
+
+
 def readFlowersFromDeploymentYAML(yaml_file_name):
     flowers = []
     yaml_file_path = os.path.join(os.path.dirname(__file__), yaml_file_name)
