@@ -1,82 +1,202 @@
 [
     {
         "name": "FoF_Idle_Thunder1_loopable.medium.wav",
-        "duration_seconds": 81.92086167800454
+        "duration_seconds": 81.92086167800454,
+        "nchannels": 2,
+        "sampwidth": 2,
+        "framerate": 44100,
+        "nframes": 3612710,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
         "name": "FOF_Idle_BigBen_4dongs.wav",
-        "duration_seconds": 24.164625850340137
+        "duration_seconds": 24.164625850340137,
+        "nchannels": 2,
+        "sampwidth": 2,
+        "framerate": 44100,
+        "nframes": 1065660,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
         "name": "FoF_Idle_BirdsStream_loopable.LONG.wav",
-        "duration_seconds": 164.0
+        "duration_seconds": 164.0,
+        "nchannels": 2,
+        "sampwidth": 2,
+        "framerate": 44100,
+        "nframes": 7232400,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
         "name": "FOF_Idle_BigBen_halfhour.wav",
-        "duration_seconds": 16.0
+        "duration_seconds": 16.0,
+        "nchannels": 2,
+        "sampwidth": 2,
+        "framerate": 44100,
+        "nframes": 705600,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
         "name": "FOF_Idle_BigBen_preamble+12dongs.wav",
-        "duration_seconds": 80.89900226757369
+        "duration_seconds": 80.89900226757369,
+        "nchannels": 2,
+        "sampwidth": 2,
+        "framerate": 44100,
+        "nframes": 3567646,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
         "name": "FoF_Idle_Windgust3_loopable.SHORT.wav",
-        "duration_seconds": 9.5
+        "duration_seconds": 9.5,
+        "nchannels": 2,
+        "sampwidth": 2,
+        "framerate": 44100,
+        "nframes": 418950,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
         "name": "FoF_Idle_Rain1_loopable.LONG.wav",
-        "duration_seconds": 180.0
+        "duration_seconds": 180.0,
+        "nchannels": 2,
+        "sampwidth": 2,
+        "framerate": 44100,
+        "nframes": 7938000,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
         "name": "FOF_Idle_BigBen_quarter.wav",
-        "duration_seconds": 8.0
+        "duration_seconds": 8.0,
+        "nchannels": 2,
+        "sampwidth": 2,
+        "framerate": 44100,
+        "nframes": 352800,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
         "name": "FoF_Idle_Rain2_loopable.LONG.wav",
-        "duration_seconds": 76.56249433106576
+        "duration_seconds": 76.56249433106576,
+        "nchannels": 2,
+        "sampwidth": 2,
+        "framerate": 44100,
+        "nframes": 3376406,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
         "name": "FOF_Idle_BigBen_threeqtr.wav",
-        "duration_seconds": 16.0
+        "duration_seconds": 16.0,
+        "nchannels": 2,
+        "sampwidth": 2,
+        "framerate": 44100,
+        "nframes": 705600,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
         "name": "FoF_Idle_Rain1_loopable.medium.wav",
-        "duration_seconds": 15.0
+        "duration_seconds": 15.0,
+        "nchannels": 2,
+        "sampwidth": 2,
+        "framerate": 44100,
+        "nframes": 661500,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
         "name": "FOF_Idle_BigBen_preamble.wav",
-        "duration_seconds": 20.0
+        "duration_seconds": 20.0,
+        "nchannels": 2,
+        "sampwidth": 2,
+        "framerate": 44100,
+        "nframes": 882000,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
         "name": "FOF_Idle_BigBen_1dong.wav",
-        "duration_seconds": 10.399002267573696
+        "duration_seconds": 10.399002267573696,
+        "nchannels": 2,
+        "sampwidth": 2,
+        "framerate": 44100,
+        "nframes": 458596,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
         "name": "FoF_Idle_Windgust5_special.wav",
-        "duration_seconds": 8.0
+        "duration_seconds": 8.0,
+        "nchannels": 2,
+        "sampwidth": 2,
+        "framerate": 44100,
+        "nframes": 352800,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
         "name": "FOF_Idle_BigBen_7dongs.wav",
-        "duration_seconds": 37.680249433106574
+        "duration_seconds": 37.680249433106574,
+        "nchannels": 2,
+        "sampwidth": 2,
+        "framerate": 44100,
+        "nframes": 1661699,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
         "name": "FoF_Idle_Windgust4_loopable.SHORT.wav",
-        "duration_seconds": 9.0
+        "duration_seconds": 9.0,
+        "nchannels": 2,
+        "sampwidth": 2,
+        "framerate": 44100,
+        "nframes": 396900,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
         "name": "FoF_Idle_Windgust2_loopable.SHORT.wav",
-        "duration_seconds": 9.0
+        "duration_seconds": 9.0,
+        "nchannels": 2,
+        "sampwidth": 2,
+        "framerate": 44100,
+        "nframes": 396900,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
         "name": "FoF_Idle_Rain2_loopable.short.wav",
-        "duration_seconds": 3.0624943310657597
+        "duration_seconds": 3.0624943310657597,
+        "nchannels": 2,
+        "sampwidth": 2,
+        "framerate": 44100,
+        "nframes": 135056,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
         "name": "FoF_Idle_Rain1_loopable.short.wav",
-        "duration_seconds": 15.0
+        "duration_seconds": 15.0,
+        "nchannels": 2,
+        "sampwidth": 2,
+        "framerate": 44100,
+        "nframes": 661500,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
         "name": "FoF_Idle_Windgust1_loopable.SHORT.wav",
-        "duration_seconds": 8.0
+        "duration_seconds": 8.0,
+        "nchannels": 2,
+        "sampwidth": 2,
+        "framerate": 44100,
+        "nframes": 352800,
+        "comptype": "NONE",
+        "compname": "not compressed"
     }
 ]
