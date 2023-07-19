@@ -16,10 +16,13 @@ def generate_wav_meta() -> List[Dict[str, Union[str, float]]]:
     for wav_name in os.listdir(WAV_FILE_DIR):
         with wave.open(f"{WAV_FILE_DIR}/{wav_name}") as audio:
             duration_secs = audio.getnframes() / audio.getframerate()
+            params = audio.getparams()
+
             wav_meta.append(
                 {
                     NAME_KEY: wav_name,
                     DURATION_KEY: duration_secs,
+                    **dict(params._asdict()),
                 }
             )
     return wav_meta
