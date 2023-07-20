@@ -24,6 +24,6 @@ The docker compose file mounts several directories from your filesystem into the
 
 If you're writing python or other things that need to be run from the command-line you'll need to shell into the server to test them out.
 * ``docker ps`` which will list the running containers, yours will likely end with the name fof_tests-server-1
-* ``docker exec -it \<container name> /bin/bash``
+* ``docker exec -it <container name> /bin/bash``
 
 Once you've made your changes you can stop your running instance, rebuild the container and verify that things work as expected.
