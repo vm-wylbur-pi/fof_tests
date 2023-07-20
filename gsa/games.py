@@ -402,6 +402,7 @@ class BigBenRandom(StatefulGame):
                 next_play_at = self.current_time + loop_sound.sound_file.duration_seconds
                 sound_file_name = loop_sound.sound_file.name
                 flower.PlaySoundFile(sound_file_name)
+                # TODO: should we add a matching LED effect for duration_seconds?
                 print(f"playing sound: {sound_file_name} on flower: {flower.id} at time: {self.current_time}")
                 self.assigned_flowers[idx][1].next_play_at = next_play_at
 

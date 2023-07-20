@@ -92,4 +92,8 @@ def HandleMQTTMessage(message, gameState):
         gameState.runStatefulGame(games.FunScreenText())
         return
 
+    if command == "runGame/BigBenRandom":
+        gameState.runStatefulGame(games.BigBenRandom())
+        return
+
     print(f"Unhandled command: {command}({message.payload.decode()})")
