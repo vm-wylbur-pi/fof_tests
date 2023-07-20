@@ -3,9 +3,13 @@ import random
 import textwrap
 import time
 import os
+from typing import List, Tuple
 
+from audio.audio_utils import get_all_sounds
 from flower import Flower
 from field import Field
+from game_models import LoopSound
+from game_models import SoundFile
 import geometry
 
 class Game:
@@ -325,3 +329,95 @@ class FunScreenText(StatefulGame):
         # it here, to return each flower display to the debug info showing
         # the flower identifiers and firmware build details.
         pass  
+
+
+class BigBenRandom(StatefulGame):
+    """
+    Randomly choose a flower to start playing one of the big ben sounds.
+    Once selected, flower keeps repeating its selected sound.
+    Every secs_until_next_flower, add more random flower with random sound.
+    Game continues until all flowers are playing
+    """
+    def __init__(self) -> None:
+        print("start BigBenRandom")
+        self.all_flowers: List[Flower] = []  # these will be set in runLoop
+        self.sounds: List[SoundFile] = []  # these are set below in _init_sounds()
+
+        # game config, could be passed in params
+        self.min_secs_to_next_flower_assign = 0
+        self.max_secs_to_next_flower_assign = 10
+        self.min_flowers_to_assign = 1
+        self.max_flowers_to_assign = 3
+        self._init_sounds()
+
+        # initialize vars
+        self.assigned_flowers: List[Tuple[Flower, LoopSound]] = []
+        now = time.time()
+        self.game_start_at = now
+        self.current_time = now
+        self.assign_next_flowers_at = now
+
+    def _init_sounds(self) -> None:
+        self.sounds = [sound for sound in get_all_sounds() if "BigBen" in sound.name]
+
+    def _choose_sound(self) -> SoundFile:
+        return random.choice(self.sounds)
+
+    def _update_assign_next_flowers_at(self) -> None:
+        secs_to_next_flower_assign = random.randint(
+            self.min_secs_to_next_flower_assign,
+            self.max_secs_to_next_flower_assign,
+        )
+        assign_next_flowers_at = self.assign_next_flowers_at + secs_to_next_flower_assign
+        print(f"assign next flowers in {secs_to_next_flower_assign} seconds, "
+              f"from: {self.assign_next_flowers_at} to: {assign_next_flowers_at}")
+        self.assign_next_flowers_at = assign_next_flowers_at
+
+    def _get_unassigned_flowers(self) -> List[Flower]:
+        assigned_flowers = [f for (f, _) in self.assigned_flowers]
+        return list(set(self.all_flowers) - set(assigned_flowers))
+
+    def _assign_flowers(self) -> None:
+        # select next random flower to assign
+        if self.current_time < self.assign_next_flowers_at:
+            return
+        unassigned_flowers = self._get_unassigned_flowers()
+        num_flowers_to_assign = min(
+            len(unassigned_flowers),
+            random.randint(self.min_flowers_to_assign, self.max_flowers_to_assign),
+        )
+        for idx in range(0, num_flowers_to_assign):
+            flower = random.choice(unassigned_flowers)
+            sound = self._choose_sound()
+            self.assigned_flowers.append(
+                (flower, LoopSound(sound, 0))
+            )
+            print(f"assigning {idx + 1} of {num_flowers_to_assign}, flower: {flower.id}, sound: {sound.name}")
+        self._update_assign_next_flowers_at()
+
+    def _play_sounds_on_flowers(self):
+        # iterate through assigned flowers and play sounds
+        for idx, (flower, loop_sound) in enumerate(self.assigned_flowers):
+            if self.current_time >= loop_sound.next_play_at:
+                next_play_at = self.current_time + loop_sound.sound_file.duration_seconds
+                sound_file_name = loop_sound.sound_file.name
+                flower.PlaySoundFile(sound_file_name)
+                print(f"playing sound: {sound_file_name} on flower: {flower.id} at time: {self.current_time}")
+                self.assigned_flowers[idx][1].next_play_at = next_play_at
+
+    def runLoop(self, flowers, field):
+        self.all_flowers = flowers
+        self.current_time = time.time()
+        self._assign_flowers()
+        self._play_sounds_on_flowers()
+
+    # This method is called once per game loop. When it returns true, the game
+    # is stopped, and runLoop will never be called again.
+    def isDone(self):
+        return len(self._get_unassigned_flowers()) == 0
+
+    # This method is called to end the game. It gives the game a chance to
+    # clean up any external state, such as retained MQTT messages, and/or
+    # sending commands to flowers to end indefinitely-running patterns.
+    def stop(self, flowers):
+        print("stop BigBenRandom")

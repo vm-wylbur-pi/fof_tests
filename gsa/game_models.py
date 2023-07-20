@@ -12,5 +12,4 @@ class SoundFile:
 @dataclass
 class LoopSound:
     sound_file: SoundFile
-    last_play_at: float  # time in seconds
     next_play_at: float  # time in seconds
