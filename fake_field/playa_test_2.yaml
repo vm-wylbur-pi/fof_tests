@@ -2,10 +2,10 @@ name: "Pretend Playa"
 description: "100x100 field, used for testing the playa test 2 data"
 field:
   corners:
-    - [1207, 1028]
-    - [257, 256]
-    - [1009, 79]
-    - [1741, 225]
+    - [757, 566]
+    - [46, 89]
+    - [615, 8]
+    - [1168, 134]
   dimensions:
     w: 3330
     h: 3330

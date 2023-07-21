@@ -12,6 +12,8 @@ import paho.mqtt.client as paho_mqtt
 import datetime
 import json
 
+import time
+
 pp = pprint.PrettyPrinter(indent=4)
 
 # TODO: Read this from config
@@ -19,22 +21,22 @@ MQTT_BROKER_IP = "127.0.0.1"
 MQTT_PEOPLE_TOPIC = 'people-locations/'
 
 # open up the channel that we're reading from
-CHANNEL = '../../../vids/ptest2/lots-adults-six-lights.mp4'
+CHANNEL = '../../../vids/ptest2/adult-walk-truncated.mp4'
 CALIBRATION = 'calibration_parameters.npz'
 DEPLOYMENT_FILE = '../fake_field/playa_test_2.yaml'
-MAX_FRAMES = 2000
+MAX_FRAMES = 4000
 
-# max pixels x,y around the initial corner points to search for corners
-CORNER_DEFLECTION = [20,35]
+# consume the first X of these and generate a median frame
+MEDIAN_FRAMES = 25
 
-# max distance between initial point and found point
-CORNER_DRIFT = 20
+# Corner Detection Params
+CORNER_DEFLECTION = [20,35]  # max pixels x,y around the initial corner points to search for corners
+CORNER_DRIFT = 20 # max distance between initial point and found point
+CORNER_THRESHOLD = 100 # min threshold to convert to binary when detecting corner points
 
-# min threshold to convert to binary when detecting corner points
-CORNER_THRESHOLD = 100
 
 # Set video properties
-WRITE_FILE = True
+WRITE_FILE = False
 UNDISTORT = True
 
 output_file = '/Users/george/Desktop/output_video.avi'
@@ -46,10 +48,8 @@ else:
     frame_height = 1080
 
 fps = 30.0
-if WRITE_FILE:
-    video_writer = cv2.VideoWriter(output_file, cv2.VideoWriter_fourcc(*'MJPG'), fps, (frame_width, frame_height))
 
-# load calibration prameters from previous calibration test
+# load calibration parameters from previous calibration test
 data = np.load(CALIBRATION)
 camera_matrix = data['camera_matrix']
 distortion_coeffs = data['distortion_coeffs']
@@ -59,12 +59,15 @@ with open(DEPLOYMENT_FILE, 'r') as file:
     deployment = yaml.safe_load(file)
 
 
-# unused at this point because i can't be bothered to sort out the dimension problem
+bg_subtractor = cv2.createBackgroundSubtractorKNN(detectShadows=True, history=50)
+#tracker = CentroidTracker(bg_subtractor, frame_width, frame_height)
 
 # broken tracker, will slot in others as they're made functional
-# bg_subtractor = cv2.createBackgroundSubtractorKNN(detectShadows=True, history=200)
-# tracker = TFLiteTracker(bg_subtractor, frame_width, frame_height)
-tracker = CentroidTracker(bg_subtractor)
+tracker = TFLiteTracker(bg_subtractor, frame_width, frame_height)
+
+if WRITE_FILE:
+    video_writer = cv2.VideoWriter(output_file, cv2.VideoWriter_fourcc(*'MJPG'), fps, (tracker.output_width, tracker.output_height))
+
 # object that contains all the peeps as PID: Person Object
 personTracker = {}
 
@@ -259,10 +262,15 @@ def getPeoplePayload(M):
     })
 
 
+# used when first getting corners for a sample video
+#print(draw_corners())
+#sys.exit()
 
 cap = cv2.VideoCapture(CHANNEL)
 frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+
 
 cornerstats = {}
 states = ['it worked', 'no points', 'contour fail', 'multi-point', 'corner drift']
@@ -271,12 +279,20 @@ for c in range(len(deployment['field']['corners'])):
     for s in states:
         cornerstats[c][s] = 0
 
-fcnt = 0
+# median frame calculations
+mframes = []
+medianFrame = ''
+
+# TODO:  load from deployment file
 output_points = np.float32([[0,0],[0,3300], [3300,3300],[3300,0]])
 
 mqtt_client = SetupMQTTClient()
 mqtt_client.connect(MQTT_BROKER_IP)
-#mqtt_client.loop_start()
+
+# benchmark timing
+start_time = time.time()
+
+fcnt = 0
 # Loop through the video frames
 while True:
     # Read a frame from the video
@@ -284,7 +300,8 @@ while True:
     if not ret:
         break
 
-    fcnt += 1
+    fcnt+= 1
+
     if fcnt > MAX_FRAMES:
         break
 
@@ -294,10 +311,19 @@ while True:
     if UNDISTORT:
         frame = undistort(frame)
 
+    hudframe = frame
     corner_points, hudframe = detectCornerPoints(frame)
     M = cv2.getPerspectiveTransform(np.float32(corner_points),output_points)
 
-    hudframe = tracker.track(frame, personTracker, hudframe)
+    if fcnt < MEDIAN_FRAMES:
+        mframes.append(frame)
+        continue
+
+    if fcnt == MEDIAN_FRAMES:
+        medianFrame = np.median(mframes, axis=0).astype(dtype=np.uint8)
+        mframes = []
+
+    hudframe = tracker.track(frame, personTracker, hudframe, medianFrame)
 
     if bool(personTracker):
         payload = getPeoplePayload(M)
@@ -307,21 +333,15 @@ while True:
     if WRITE_FILE:
         video_writer.write(hudframe)
 
-print("outside of the loop")
+    if fcnt % 100 == 0:
+        elapsed_time = time.time() - start_time
+        fps = fcnt / elapsed_time
+        print(f"FPS: {fps:.2f}")
+
+
 if WRITE_FILE:
     video_writer.release()
 
+print("out of the loop")
 mqtt_client.loop_stop()
 cap.release()
-
-
-
-#print("Frames : ",fcnt)
-#pp.pprint(cornerstats)
-# draw corners
-
-# detect the center points of the deployment
-
-
-
-#

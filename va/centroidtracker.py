@@ -6,12 +6,18 @@ from person import Person
 
 class CentroidTracker:
 
-    def __init__(self, bg_subtractor):
+    def __init__(self, bg_subtractor, frame_width, frame_height):
         self.next_id = 1
         self.tracked_humans = {}
         self.bg_subtractor = bg_subtractor
+        self.frame_width = frame_width
+        self.frame_height = frame_height
 
-    def track(self, frame, personTracker, hudframe):
+        self.output_width = frame_width
+        self.output_height = frame_height
+
+
+    def track(self, frame, personTracker, hudframe, medianFrame):
         fg_mask = self.bg_subtractor.apply(frame)
 
         # Perform blob detection
@@ -22,7 +28,7 @@ class CentroidTracker:
         for contour in contours:
             # Filter contours based on size, shape, etc.
             x,y,w,h = cv2.boundingRect(contour)
-            if cv2.contourArea(contour) > 400:
+            if cv2.contourArea(contour) > 100:
                 #if( y > 350 and (y/h > 5)):
                 #    continue
 
