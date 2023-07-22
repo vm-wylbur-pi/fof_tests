@@ -1,8 +1,8 @@
 # This is the list of messages used in the FunScreenText game.
 #
 # The screens are (currently) 9 characters wide.  Messages will be
-# line-wrapped to this width, but words longer than 9 characters 
-# will still be broken. 
+# line-wrapped to this width, but words longer than 9 characters
+# will still be broken.
 #
 # Only basic characters (ASCII) work on the flower screens.
 # No unicode, no accent marks or other diacritics, no emojis. 😔
@@ -32,3 +32,11 @@ Wait, what?
 # From Claire
 They found me. I don't know how, but they found me.
 I like my beans dried by midnight.
+
+# from PB
+Abuse of power comes as no surprise.
+Check 1-2, is this thing on?
+Got proboscis? I've got a stamen.
+
+
+# done.
