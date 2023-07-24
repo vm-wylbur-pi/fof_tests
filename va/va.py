@@ -25,11 +25,11 @@ MQTT_BROKER_IP = "127.0.0.1"
 MQTT_PEOPLE_TOPIC = 'people-locations/'
 
 # open up the channel that we're reading from
-# CHANNEL = 'vids/adult-walk-truncated.mp4'
-CHANNEL = 1
+CHANNEL = 'vids/adult-walk-truncated.mp4'
+# CHANNEL = 1
 CALIBRATION = 'calibration_parameters.npz'
 DEPLOYMENT_FILE = '../fake_field/playa_test_2.yaml'
-MAX_FRAMES = 150
+MAX_FRAMES = 350
 
 # consume the first X of these and generate a median frame
 MEDIAN_FRAMES = 25

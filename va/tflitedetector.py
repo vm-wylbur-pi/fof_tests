@@ -20,9 +20,9 @@ class TFLiteDetector:
 
         # Load the TensorFlow Lite model
         # https://tfhub.dev/tensorflow/lite-model/efficientdet/lite2/detection/default/1
-        self.model_file = "models/lite-model_efficientdet_lite2_detection_default_1.tflite"
+        # self.model_file = "models/lite-model_efficientdet_lite2_detection_default_1.tflite"
         # self.model_file = "models/model-edet0-fof.tflite"
-        # self.model_file = "models/lite-model_efficientdet_lite0_detection_default_1.tflite"
+        self.model_file = "models/lite-model_efficientdet_lite0_detection_default_1.tflite"
         # self.model_file = "models/fof-edet2-wtf1.tflite"
 
         # self.model_file = "models/object_detection_mobile_object_localizer_v1_1_default_1.tflite"

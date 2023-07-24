@@ -34,20 +34,17 @@ RUN apt-get update && apt-get install -y \
     iputils-ping \
     build-essential \
     vim \
-    g++
+    g++ \
+    python3-numpy \
+    python3-opencv
 
-    # To be added back in once viz system is up.
-    #   These are easier to add via apt than requirements.txt on the rpi
-    #   since it doesn't require them to be compiled on the host
-    # python3-numpy
-    # python3-opencv
 
 # install our ntp server config
 COPY ./config/chrony.conf /etc/chrony/chrony.conf
 
 # Install any needed packages specified in requirements.txt
 COPY ./requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt
 
 COPY ./startup.sh /app/startup.sh
 RUN chmod +x startup.sh
