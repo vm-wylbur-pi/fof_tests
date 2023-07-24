@@ -8,7 +8,7 @@ services:
     tmpfs:
       - /tmp:size=10m
     ports:
-      - 8000:8000
+      - 80:80
       - 1883:1883
       - 9001:9001
       - 123:123
@@ -20,5 +20,6 @@ services:
       - ./deployments:/app/deployments
       - ./fake_field:/app/fake_field
       - ./gsa:/app/gsa
+      - ./va:/app/va
     command: ./startup.sh
 
