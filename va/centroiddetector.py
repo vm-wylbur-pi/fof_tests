@@ -4,7 +4,7 @@ import sys
 from person import Person
 
 
-class CentroidTracker:
+class CentroidDetector:
 
     def __init__(self, bg_subtractor, frame_width, frame_height):
         self.next_id = 1
@@ -16,8 +16,9 @@ class CentroidTracker:
         self.output_width = frame_width
         self.output_height = frame_height
 
+        self.tracker_type = 'iou'
 
-    def track(self, frame, personTracker, hudframe, medianFrame):
+    def detect(self, frame, personTracker, hudframe, medianFrame):
         fg_mask = self.bg_subtractor.apply(frame)
 
         # Perform blob detection

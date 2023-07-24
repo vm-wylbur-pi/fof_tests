@@ -7,9 +7,14 @@
 from norfair import Detection, Tracker, Video, draw_tracked_objects
 
 class NorfairTracker:
-    def __init__(self, bg_subtractor, frame_width, frame_height):
-        pass
+    def __init__(self, bborpoint):
+        if bborpoint == 'bbox':
+            distance_function = 'iou'
 
+        self.nt = Tracker(
+            distance_function=distance_function,
+            distance_threshold=5,
+        )
 
-    def track(self, frame, personTracker, hudframe, medianFrame):
+    def track(self, objs):
         pass

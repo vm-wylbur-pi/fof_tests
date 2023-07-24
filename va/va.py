@@ -5,14 +5,18 @@ import numpy as np
 import math
 import pprint
 
-from tflitetracker import TFLiteTracker
-from centroidtracker import CentroidTracker
+import norfair
+from norfair import Detection, Paths, Tracker, Video
+
+from tflitedetector import TFLiteDetector
+from centroiddetector import CentroidDetector
 
 import paho.mqtt.client as paho_mqtt
 import datetime
 import json
 
 import time
+import sys
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -21,10 +25,10 @@ MQTT_BROKER_IP = "127.0.0.1"
 MQTT_PEOPLE_TOPIC = 'people-locations/'
 
 # open up the channel that we're reading from
-CHANNEL = '../../../vids/ptest2/adult-walk-truncated.mp4'
+CHANNEL = 'vids/adult-walk-truncated.mp4'
 CALIBRATION = 'calibration_parameters.npz'
 DEPLOYMENT_FILE = '../fake_field/playa_test_2.yaml'
-MAX_FRAMES = 4000
+MAX_FRAMES = 1000
 
 # consume the first X of these and generate a median frame
 MEDIAN_FRAMES = 25
@@ -34,12 +38,11 @@ CORNER_DEFLECTION = [20,35]  # max pixels x,y around the initial corner points t
 CORNER_DRIFT = 20 # max distance between initial point and found point
 CORNER_THRESHOLD = 100 # min threshold to convert to binary when detecting corner points
 
-
 # Set video properties
-WRITE_FILE = False
+WRITE_FILE = True
 UNDISTORT = True
 
-output_file = '/Users/george/Desktop/output_video.avi'
+output_file = 'vids/output_video.avi'
 if UNDISTORT:
     frame_width = 1172
     frame_height = 570
@@ -60,13 +63,12 @@ with open(DEPLOYMENT_FILE, 'r') as file:
 
 
 bg_subtractor = cv2.createBackgroundSubtractorKNN(detectShadows=True, history=50)
-#tracker = CentroidTracker(bg_subtractor, frame_width, frame_height)
 
-# broken tracker, will slot in others as they're made functional
-tracker = TFLiteTracker(bg_subtractor, frame_width, frame_height)
+#etector = CentroidDetector(bg_subtractor, frame_width, frame_height)
+detector = TFLiteDetector(bg_subtractor, frame_width, frame_height)
 
-if WRITE_FILE:
-    video_writer = cv2.VideoWriter(output_file, cv2.VideoWriter_fourcc(*'MJPG'), fps, (tracker.output_width, tracker.output_height))
+#if WRITE_FILE:
+#    video_writer = cv2.VideoWriter(output_file, cv2.VideoWriter_fourcc(*'MJPG'), fps, (tracker.output_width, tracker.output_height))
 
 # object that contains all the peeps as PID: Person Object
 personTracker = {}
@@ -117,6 +119,7 @@ def undistort(frame):
     #cv2.waitKey(0)
     #cv2.destroyAllWindows()
     return frame
+
 
 # helper function used to initially identify the corner points in a frame
 ref_points = []
@@ -246,6 +249,11 @@ def detectCornerPoints(frame):
 
     return foundPoints, frame
 
+def getNorfairPayload(M,detections):
+    print(detections.getActiveObjects)
+    sys.exit()
+    pass
+
 def getPeoplePayload(M):
     plist = {}
     for pid in personTracker:
@@ -293,6 +301,7 @@ mqtt_client.connect(MQTT_BROKER_IP)
 start_time = time.time()
 
 fcnt = 0
+video_writer = None
 # Loop through the video frames
 while True:
     # Read a frame from the video
@@ -323,7 +332,10 @@ while True:
         medianFrame = np.median(mframes, axis=0).astype(dtype=np.uint8)
         mframes = []
 
-    hudframe = tracker.track(frame, personTracker, hudframe, medianFrame)
+    (hudframe, detections) = detector.detect(frame, personTracker, hudframe, medianFrame)
+
+    payload = getNorfairPayload(detections, M)
+
 
     if bool(personTracker):
         payload = getPeoplePayload(M)
@@ -331,8 +343,12 @@ while True:
         mqtt_client.loop()
 
     if WRITE_FILE:
+        if video_writer == None:
+            hheight, hwidth, dims = hudframe.shape
+            video_writer = cv2.VideoWriter(output_file, cv2.VideoWriter_fourcc(*'MJPG'), fps, (hwidth, hheight))
         video_writer.write(hudframe)
 
+    # stupid simple benchmark
     if fcnt % 100 == 0:
         elapsed_time = time.time() - start_time
         fps = fcnt / elapsed_time
