@@ -8,6 +8,9 @@ import tensorflow as tf
 import norfair
 from norfair import Detection, Paths, Tracker, Video
 
+import pprint
+pp = pprint.PrettyPrinter(indent=4)
+
 class TFLiteDetector:
 
     def __init__(self, bg_subtractor, frame_width, frame_height):
@@ -22,7 +25,8 @@ class TFLiteDetector:
         # https://tfhub.dev/tensorflow/lite-model/efficientdet/lite2/detection/default/1
         # self.model_file = "models/lite-model_efficientdet_lite2_detection_default_1.tflite"
         # self.model_file = "models/model-edet0-fof.tflite"
-        self.model_file = "models/lite-model_efficientdet_lite0_detection_default_1.tflite"
+        # self.model_file = "models/lite-model_efficientdet_lite0_detection_default_1.tflite"
+        self.model_file = "models/fof_utlra_yolo8.tflite"
         # self.model_file = "models/fof-edet2-wtf1.tflite"
 
         # self.model_file = "models/object_detection_mobile_object_localizer_v1_1_default_1.tflite"
@@ -50,7 +54,7 @@ class TFLiteDetector:
         # perhaps this should be np.squeeze?
         fg_mask = cv2.merge([fg_mask, fg_mask, fg_mask])
 
-        ##### let's mask some stuff
+        ##### let's mask some stuff using the median frame
         #dframe = cv2.absdiff(frame, medianFrame)
         # Treshold to binarize
         #th, frame = cv2.threshold(dframe, 30, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,)
@@ -58,17 +62,17 @@ class TFLiteDetector:
         # Preprocess the image for input to the model
         input_shape = tuple(self.input_details[0]['shape'][1:3])
         resized_frame = cv2.resize(fg_mask, input_shape)
-        input_data = np.expand_dims(resized_frame, axis=0).astype(np.uint8)
+        input_data = np.expand_dims(resized_frame, axis=0).astype(np.float32)
 
         # Run the model on the input image
-        #print(int(self.input_details[0]['index']), input_data)
         self.interpreter.set_tensor(int(self.input_details[0]['index']), input_data)
         self.interpreter.invoke()
-        #output_data = [interpreter.get_tensor(output_details[i]['index']) for i in range(len(output_details))]
 
+        pp.pprint(self.output_details)
+        sys.exit()
         output_dict = {
             'detection_boxes' : self.interpreter.get_tensor(self.output_details[0]["index"]),
-            'detection_classes': self.interpreter.get_tensor(self.output_details[1]["index"]).astype(np.uint8),
+            'detection_classes': self.interpreter.get_tensor(self.output_details[1]["index"]).astype(np.float32),
             'detection_scores' : self.interpreter.get_tensor(self.output_details[2]["index"]),
             'num_detections': int(self.interpreter.get_tensor(self.output_details[3]["index"]))
         }

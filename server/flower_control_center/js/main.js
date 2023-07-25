@@ -16,6 +16,11 @@ function connectToMQTT() {
 
     mqtt.onConnectionLost = function(context) {
         $( "#mqtt-status" ).append(`MQTT connection lost: ${context.errorMessage}<br/>`);
+        $( "#mqtt-button-nav")
+            // Remove the existing class 'btn-primary'
+            .removeClass("btn-success")
+            // Add the new class 'btn-danger'
+            .addClass("btn-danger");
     };
     mqtt.onMessageArrived = handleMQTTMessage;
 
@@ -23,10 +28,20 @@ function connectToMQTT() {
         timeout: 5,  // seconds
         onSuccess: function() {
             $( "#mqtt-status" ).append("Conncted to MQTT Broker.<br/>");
+            $( "#mqtt-button-nav")
+                // Remove the existing class 'btn-primary'
+                .removeClass("btn-danger")
+                // Add the new class 'btn-danger'
+                .addClass("btn-success");
             subscribeToFlowerMessages();
         },
         onFailure: function(context) {
             $( "#mqtt-status" ).append(`MQTT connection failed: ${context.errorMessage}<br/>`);
+            $( "#mqtt-button-nav")
+                // Remove the existing class 'btn-primary'
+                .removeClass("btn-success")
+                // Add the new class 'btn-danger'
+                .addClass("btn-danger");
         }
     }
     mqtt.connect(connect_options);

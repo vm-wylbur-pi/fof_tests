@@ -4,7 +4,7 @@ import cv2
 
 model = YOLO('yolov8s.pt')
 
-cap = cv2.VideoCapture("../../../vids/ptest2/lots-of-people-three-lights.mp4")
+cap = cv2.VideoCapture("vids/perimeter-run.mp4")
 
 while True:
     ret, frame = cap.read()

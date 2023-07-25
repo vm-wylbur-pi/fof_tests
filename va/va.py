@@ -337,7 +337,6 @@ while True:
 
     payload = getNorfairPayload(detections, M)
 
-
     if bool(personTracker):
         payload = getPeoplePayload(M)
         res = mqtt_client.publish(MQTT_PEOPLE_TOPIC, payload)

@@ -8,7 +8,7 @@ import mqtt
 import games
 from geometry import Point, Vector
 
-DEPLOYMENT_FILE = "../fake_field/patricks_backyard_party_deployment.yaml"
+DEPLOYMENT_FILE = "../fake_field/lucas_party_deployment.yaml"
 
 # Wrapper for references to the game state.
 class GameState:

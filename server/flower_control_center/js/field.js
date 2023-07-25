@@ -111,14 +111,14 @@ $(document).ready(function() {
         .then( res => {
             let field = cy.add({
                 position: {
-                  x: res.field.dimensions.w/2,
-                  y: res.field.dimensions.h/2
+                  x: res.field.x/2,
+                  y: res.field.y/2
                 },
                 group: 'nodes',
                 data: {
                     id: 'field',
-                    width: res.field.dimensions.w,
-                    height: res.field.dimensions.h,
+                    width: res.field.x,
+                    height: res.field.y,
                     atype:'field'
                 },
                 locked: true,
@@ -179,8 +179,8 @@ $(document).ready(function() {
             }
 
             cy.fit(padding = 30)
-            cy.minZoom(cy.zoom())
-            cy.maxZoom(cy.zoom()+5)
+            cy.minZoom(cy.zoom()-100)
+            cy.maxZoom(cy.zoom()+50)
             return res
         })
 

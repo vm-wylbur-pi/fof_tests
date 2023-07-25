@@ -1,0 +1,18 @@
+name: "Lucas' Party"
+description: "Blinky lights everywhere."
+field:
+  x: 500
+  y: 500
+flowers:
+  "F0:6F:00":
+    x: 450
+    y: 100
+  "F0:6D:8C":
+    x: 350
+    y: 200
+  "F0:6D:80":
+    x: 150
+    y: 300
+  "F0:70:1C":
+    x: 50
+    y: 400

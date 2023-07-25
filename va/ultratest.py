@@ -1,7 +1,7 @@
 import cv2
 from ultralytics import YOLO
 
-cap = cv2.VideoCapture("../../../vids/ptest2/perimeter-run.mp4")
+cap = cv2.VideoCapture("vids/perimeter-run.mp4")
 model = YOLO("yolov8n.pt")
 
 while True:
@@ -9,7 +9,7 @@ while True:
     if not ret:
         break
     results = model.track(frame, persist=True)
-    boxes = results[0].boxes.xyxy.cpu().numpy().astype(int)
+    boxes = results[0].boxes.xyxy.numpy().astype(int)
 
     print(boxes)
     if not results[0].boxes:

@@ -29,6 +29,10 @@ class a_localProcessTestCases(unittest.TestCase):
             'name': ['/usr/local/bin/python3', '/app/code/fcc.py'],
             'state': ['sleeping', 'running']
         },
+        'gsa': {
+            'name': ['python3', 'code/fcc.py'],
+            'state': ['sleeping', 'running']
+        },
         'mosquitto': {
             'name': ['mosquitto', '-c', 'config/mosquitto.conf'],
             'state': ['sleeping','running']

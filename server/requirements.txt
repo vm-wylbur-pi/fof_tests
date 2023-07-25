@@ -5,12 +5,12 @@ paho-mqtt
 # viz system
 # holding off on installation, these take a long time
 #  to build ond the rpi and aren't necessary at this time.
-# opencv-python
-numpy
-torch
-ultralytics
-norfair
-lapx
+#opencv-python
+#torch
+#norfair
+#lapx
+#tensorflow
+#ultralytics
 
 # CDC
 pyyaml
