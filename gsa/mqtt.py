@@ -50,7 +50,7 @@ def HandleMQTTMessage(message, gameState):
         return
 
     if command == "runGame/StraightColorWave":
-        wave = games.StraightColorWave.randomInstance()
+        wave = games.StraightColorWave.randomInstance(gameState.field)
         if len(params) >= 1:
             wave.hue = int(params[0])
         if len(params) >= 2:
@@ -65,7 +65,7 @@ def HandleMQTTMessage(message, gameState):
         return
 
     if command == "runGame/CircularColorWave":
-        wave = games.CircularColorWave.randomInstance()
+        wave = games.CircularColorWave.randomInstance(gameState.field)
         if len(params) >= 1:
             wave.hue = int(params[0])
         if len(params) >= 2:
