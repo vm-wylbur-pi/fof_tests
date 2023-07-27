@@ -1,0 +1,25 @@
+apt install git docker-compose samba
+
+Docker Service
+system file to /etc/systemd/system/docker-compose.service
+
+# Reload Systemd to load the new service unit file
+sudo systemctl daemon-reload
+
+# Enable the service to start on boot
+sudo systemctl enable my-docker-service.service
+
+# Start the service
+sudo systemctl start my-docker-service.service
+
+# Check the status to ensure the service is active and running
+sudo systemctl status my-docker-service.service
+
+
+
+SMB Config
+append to end of /etc/samba/smb.conf
+
+sudo smbpasswd -a fof
+sudo systemctl restart smbd
+sudo systemctl enable smbd
