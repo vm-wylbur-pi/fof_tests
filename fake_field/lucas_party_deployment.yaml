@@ -1,18 +1,54 @@
 name: "Lucas' Party"
 description: "Blinky lights everywhere."
 field:
-  x: 500
-  y: 500
+  x: 330
+  y: 330
 flowers:
-  "F0:6F:00":
-    x: 450
-    y: 100
-  "F0:6D:8C":
-    x: 350
-    y: 200
-  "F0:6D:80":
+  "C0:F0:2C":
+    x: 98
+    y: 60
+    id: 28
+  "BA:7A:EC":
+    x: 60
+    y: 150
+    id: 43
+  "C0:0E:1C":
+    x: 60
+    y: 270
+    id: 37
+  "C0:0D:A4":
     x: 150
-    y: 300
-  "F0:70:1C":
-    x: 50
-    y: 400
+    y: 270
+    id: 36
+  "BA:79:EC":
+    x: 240
+    y: 270
+    id: 30
+  "BA:86:C8":
+    x: 270
+    y: 250
+    id: 34
+  "C0:2B:44":
+    x: 200
+    y: 190
+    id: 48
+  "BA:6F:A0":
+    x: 190
+    y: 20
+    id: 25
+  "CC:FE:C8":
+    x: 225
+    y: 160
+    id: 35
+  "C0:39:CC":
+    x: 165
+    y: 80
+    id: 39
+  "C0:2B:A0":
+    x: 120
+    y: 180
+    id: 46
+  "CD:10:54":
+    x: 130
+    y: 120
+    id: 44

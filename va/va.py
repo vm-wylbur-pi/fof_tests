@@ -5,13 +5,15 @@ import numpy as np
 import math
 import pprint
 
-import norfair
-from norfair import Detection, Paths, Tracker, Video
+#import norfair
+#from norfair import Detection, Paths, Tracker, Video
 
-from tflitedetector import TFLiteDetector
-from centroiddetector import CentroidDetector
+#from tflitedetector import TFLiteDetector
+#from centroiddetector import CentroidDetector
 
-import paho.mqtt.client as paho_mqtt
+from ultratracker import UltraTracker
+
+# plane - import paho.mqtt.client as paho_mqtt
 import datetime
 import json
 
@@ -29,7 +31,7 @@ CHANNEL = 'vids/adult-walk-truncated.mp4'
 # CHANNEL = 1
 CALIBRATION = 'calibration_parameters.npz'
 DEPLOYMENT_FILE = '../fake_field/playa_test_2.yaml'
-MAX_FRAMES = 350
+MAX_FRAMES = 250
 
 # consume the first X of these and generate a median frame
 MEDIAN_FRAMES = 25
@@ -65,8 +67,9 @@ with open(DEPLOYMENT_FILE, 'r') as file:
 
 bg_subtractor = cv2.createBackgroundSubtractorKNN(detectShadows=True, history=50)
 
-#etector = CentroidDetector(bg_subtractor, frame_width, frame_height)
-detector = TFLiteDetector(bg_subtractor, frame_width, frame_height)
+# detector = CentroidDetector(bg_subtractor, frame_width, frame_height)
+# detector = TFLiteDetector(bg_subtractor, frame_width, frame_height)
+tracker = UltraTracker(bg_subtractor)
 
 #if WRITE_FILE:
 #    video_writer = cv2.VideoWriter(output_file, cv2.VideoWriter_fourcc(*'MJPG'), fps, (tracker.output_width, tracker.output_height))
@@ -263,8 +266,6 @@ def getPeoplePayload(M):
         pt_warp = cv2.perspectiveTransform(pt.reshape(-1,1,2),M)
 
         plist[pid] = {'x': int(pt_warp[0][0][0]), 'y': int(pt_warp[0][0][1])}
-
-    #print(plist)
     return json.dumps({
         'timestamp': datetime.datetime.now().isoformat(),
         'people': plist
@@ -295,8 +296,8 @@ medianFrame = ''
 # TODO:  load from deployment file
 output_points = np.float32([[0,0],[0,3300], [3300,3300],[3300,0]])
 
-mqtt_client = SetupMQTTClient()
-mqtt_client.connect(MQTT_BROKER_IP)
+# plane - mqtt_client = SetupMQTTClient()
+# plane - mqtt_client.connect(MQTT_BROKER_IP)
 
 # benchmark timing
 start_time = time.time()
@@ -315,8 +316,8 @@ while True:
     if fcnt > MAX_FRAMES:
         break
 
-    if not mqtt_client.is_connected():
-        mqtt_client.reconnect()
+    # - planeif not mqtt_client.is_connected():
+        # - plane mqtt_client.reconnect()
 
     if UNDISTORT:
         frame = undistort(frame)
@@ -333,14 +334,15 @@ while True:
         medianFrame = np.median(mframes, axis=0).astype(dtype=np.uint8)
         mframes = []
 
-    (hudframe, detections) = detector.detect(frame, personTracker, hudframe, medianFrame)
+    # (hudframe, detections) = detector.detect(frame, personTracker, hudframe, medianFrame)
+    # payload = getNorfairPayload(detections, M)
 
-    payload = getNorfairPayload(detections, M)
+    hudframe = tracker.track(frame, personTracker, hudframe, medianFrame)
 
     if bool(personTracker):
         payload = getPeoplePayload(M)
-        res = mqtt_client.publish(MQTT_PEOPLE_TOPIC, payload)
-        mqtt_client.loop()
+        # plane - res = mqtt_client.publish(MQTT_PEOPLE_TOPIC, payload)
+        # - plane mqtt_client.loop()
 
     if WRITE_FILE:
         if video_writer == None:
@@ -359,5 +361,5 @@ if WRITE_FILE:
     video_writer.release()
 
 print("out of the loop")
-mqtt_client.loop_stop()
+# plane - mqtt_client.loop_stop()
 cap.release()
