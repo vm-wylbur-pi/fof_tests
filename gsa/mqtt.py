@@ -1,6 +1,10 @@
 import paho.mqtt.client as paho_mqtt
-import games
 from geometry import Point, Vector
+
+import gsa.games.color_waves as color_waves
+import gsa.games.fairy as fairy
+import gsa.games.fun_screen_text as fun_screen_text
+import gsa.games.sleep_mode as sleep_mode
 
 # Used during development.
 # TODO: Read this from config
@@ -65,7 +69,7 @@ def HandleGameControlCommand(message, gameState):
         return
 
     if command == "runGame/StraightColorWave":
-        wave = games.StraightColorWave.randomInstance(gameState.field)
+        wave = color_waves.StraightColorWave.randomInstance(gameState.field)
         if len(params) >= 1:
             wave.hue = int(params[0])
         if len(params) >= 2:
@@ -80,7 +84,7 @@ def HandleGameControlCommand(message, gameState):
         return
 
     if command == "runGame/CircularColorWave":
-        wave = games.CircularColorWave.randomInstance(gameState.field)
+        wave = color_waves.CircularColorWave.randomInstance(gameState.field)
         if len(params) >= 1:
             wave.hue = int(params[0])
         if len(params) >= 2:
@@ -96,15 +100,15 @@ def HandleGameControlCommand(message, gameState):
 
     if command == "runGame/Fairy":
         # No parameters (yet) for the fairy game.  It runs indefinitely.
-        gameState.runStatefulGame(games.Fairy())
+        gameState.runStatefulGame(fairy.Fairy())
         return
 
     if command == "runGame/RandomIdle":
-        gameState.runStatefulGame(games.RandomIdle())
+        gameState.runStatefulGame(color_waves.RandomIdle())
         return
 
     if command == "runGame/FunScreenText":
-        gameState.runStatefulGame(games.FunScreenText())
+        gameState.runStatefulGame(fun_screen_text.FunScreenText())
         return
 
     print(f"Unhandled command: {command}({message.payload.decode()})")

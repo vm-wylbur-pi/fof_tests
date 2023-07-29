@@ -1,6 +1,15 @@
 # TODO: docs, what is the GSA?
 import time
 
+# Allow absolute import from the root folder. This is needed because
+# the GSA prgoram has the non-pythonic structure of putting main.py
+# in the same directory as the modules it uses.
+if __name__ == "__main__" and __package__ is None:
+    from sys import path
+    from os.path import dirname
+    path.append(dirname(path[0]))
+
+
 import flower
 import field
 import person
