@@ -1,12 +1,9 @@
 # TODO: docs, what is the GSA?
 import time
-import threading
 
 import flower
 import field
 import mqtt
-import games
-from geometry import Point, Vector
 
 DEPLOYMENT_FILE = "../fake_field/lucas_party_deployment.yaml"
 
@@ -40,43 +37,6 @@ gameState = GameState()
 #  2) it can be used in the callbacks that respond to person location
 #     updates (currently sent over MQTT)
 mqtt_client = mqtt.SetupMQTTClient(gameState)
-
-# For monitoring keyborad commands without blocking the main game loop
-class KeyboardInputThread(threading.Thread):
-    def __init__(self, callback):
-        self.callback = callback
-        super(KeyboardInputThread, self).__init__(name='gsa-input-thread')
-        self.start()
-
-    def run(self):
-        while True:
-            self.callback(input("Next command? "))
-
-def handle_keyboard_input(command):
-    global stateful_games
-    if command == "x":
-        # Clear all current-running games
-        gameState.clearStatefulGames()
-    elif command == "w":
-        # A randomized straight-line wave.
-        gameState.runStatelessGame(games.StraightColorWave.randomInstance())
-    elif command == "b":
-        # Left-to-right wave superimposed on top-to-bottom wave
-        wave1 = games.StraightColorWave(120, start_loc=Point(100, 100), velocity=Vector(500, 0))
-        wave2 = games.StraightColorWave(200, start_loc=Point(100, 100), velocity=Vector(0, 400))
-        gameState.runStatelessGame(wave1)
-        gameState.runStatelessGame(wave2)
-    elif command == "c":
-        # A randomized circular wave
-        gameState.runStatelessGame(games.CircularColorWave.randomInstance())
-    elif command == "f":
-        gameState.runStatefulGame(games.Fairy())
-    elif command == "i":
-        gameState.runStatefulGame(games.RandomIdle())
-    elif command == "s":
-        gameState.runStatefulGame(games.WholeFieldSleep())
-
-input_thread = KeyboardInputThread(handle_keyboard_input)
 
 # Interaction/game loop
 while True:
