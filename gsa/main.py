@@ -3,15 +3,17 @@ import time
 
 import flower
 import field
+import person
 import mqtt
 
-DEPLOYMENT_FILE = "../fake_field/lucas_party_deployment.yaml"
+DEPLOYMENT_FILE = "../fake_field/gsa_testing_deployment.yaml"
 
 # Wrapper for references to the game state.
 class GameState:
     def __init__(self):
         self.flowers = flower.readFlowersFromDeploymentYAML(DEPLOYMENT_FILE)
         self.field = field.Field(DEPLOYMENT_FILE)
+        self.people = person.People()
         self.stateful_games = []
 
     def runStatelessGame(self, game):
@@ -44,9 +46,14 @@ while True:
     gameState.updateStatefulGames()
 
     # Check for any mqtt messages, and send any buffered outgoing messages
+    # This is used for handling
+    #  1) game control commands from the FCC to start/end games
+    #  2) people location updates from the VA (camera system)
     if not mqtt_client.is_connected():
         mqtt_client.reconnect()
     mqtt_client.loop()
+
+    gameState.people.removePeopleNotSeenForAWhile()
 
     # Stall the loop.
     time.sleep(1/60)  # seconds

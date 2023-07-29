@@ -17,9 +17,10 @@ def SetupMQTTClient(gameState):
         # hashtag is the MQTT wildcard.
         print('Subscribing to game control messages')
         client.subscribe("game-control/#")
+        print('Subscribing to people location updates.')
+        client.subscribe("people-locations/#")
 
     def on_message(unused_client, unused_userdata, message):
-        print(f"Received message, topic='{message.topic}', content='{message.payload}'")
         HandleMQTTMessage(message, gameState)
 
     def on_disconnect(unused_client, unused_userdata, result_code):
@@ -45,10 +46,19 @@ def SetupMQTTClient(gameState):
 
 
 def HandleMQTTMessage(message, gameState):
+    if message.topic.startswith("game-control"):
+        HandleGameControlCommand(message, gameState)
+    elif message.topic.startswith("people-locations"):
+        gameState.people.updateFromMQTT(message)
+    else:
+        print(f"Unhandled MQTT message topic: {message.topic}")
+
+
+def HandleGameControlCommand(message, gameState):
     _, command = message.topic.split('/', maxsplit=1)
     raw_param_string = message.payload.decode()
     params = raw_param_string.split(',') if raw_param_string else []
-    print(f"Command is {command}{params}")
+    print(f"Received command: {command}({','.join(params)})")
 
     if command == "clearGames":
         gameState.clearStatefulGames()
