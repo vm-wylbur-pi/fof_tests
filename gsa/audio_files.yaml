@@ -1,0 +1,35 @@
+# This file contains a structure list of audio files that the experiences (games")
+# run through the GSA use. These files should be loaded onto all the flowers.
+#
+# Schema:
+#  At the top level, this is a dict keyed by game name. The structure within each
+#  game is not specified and all that matters is that the file matches what that
+#  game code expects.
+
+Fairy:
+  # A dict from fairy name to the set of giggle sounds for each fairy.
+  # Any one fairy instance is a randomly chosen fairy and will randomly choose
+  # giggle sounds only from under that fairy name.
+  Mikayla:
+    - FoF_MikaylaCantCatch.wav
+    - FoF_MikaylaGiggle1.wav
+    - FoF_MikaylaGiggle2.wav
+    - FoF_MikaylaGiggle3.wav
+    - FoF_MikaylaGiggle4.wav
+    - FoF_MikaylaGiggle5.wav
+    - FoF_MikaylaGiggle6.wav
+    - FoF_MikaylaGiggle7.wav
+    - FoF_MikaylaOverHere1.wav
+    - FoF_MikaylaOverHere2.wav
+    - FoF_MikaylaOverHere_DOUBLE.wav
+    - FoF_MikaylaThisWay1.wav
+    - FoF_MikaylaThisWay_DOUBLE.wav
+  Talia:
+    - FoF_TaliaCantCatch1.wav
+    - FoF_TaliaCmonThisWay.wav
+    - FoF_TaliaGiggle1.wav
+    - FoF_TaliaGiggle2.wav
+    - FoF_TaliaGiggle3.wav
+    - FoF_TaliaGiggle4.wav
+    - FoF_TaliaOverHere.wav
+    - FoF_TaliaOverHere2.wav

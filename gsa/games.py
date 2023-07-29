@@ -1,8 +1,10 @@
 from dataclasses import dataclass
+import functools
 import random
 import textwrap
 import time
 import os
+import yaml
 
 from flower import Flower
 from field import Field
@@ -35,6 +37,15 @@ class StatefulGame(Game):
     # sending commands to flowers to end indefinitely-running patterns.
     def stop(self, flowers):
         raise NotImplementedError
+
+# Reads the configuration file containing the set of audio files available to games.
+@functools.lru_cache
+def getAudioFiles():
+    # Assumed to be in the same directory as main.py
+    AUDIO_CONFIG_YAML_FILE = "audio_files.yaml"
+    yaml_file_path = os.path.join(os.path.dirname(__file__), AUDIO_CONFIG_YAML_FILE)
+    with open(yaml_file_path, 'r') as yaml_file:
+        return yaml.safe_load(yaml_file)
 
 # A straight line of color that propagates perpendicular to itself.
 # This is cool in itself and a useful building block for other effects.
@@ -150,39 +161,7 @@ class WholeFieldSleep(StatefulGame):
 # the speed of drift within the flower, the number of LEDs lit at a time.
 @dataclass
 class Fairy(StatefulGame):
-    giggle_filenames = [
-        "FoF_LilyGiggle1.WAV",
-        "FoF_LilyGiggle2.wav",
-        "FoF_LilyGiggle3.wav",
-        "FoF_MikaylaCantCatch.wav",
-        "FoF_MikaylaGiggle1.wav",
-        "FoF_MikaylaGiggle2.wav",
-        "FoF_MikaylaGiggle3.wav",
-        "FoF_MikaylaGiggle4.wav",
-        "FoF_MikaylaGiggle5.wav",
-        "FoF_MikaylaGiggle6.wav",
-        "FoF_MikaylaGiggle7.wav",
-        "FoF_MikaylaOverHere1.wav",
-        "FoF_MikaylaOverHere2.wav",
-        "FoF_MikaylaOverHere_DOUBLE.wav",
-        "FoF_MikaylaThisWay1.wav",
-        "FoF_MikaylaThisWay_DOUBLE.wav",
-        "FoF_PamMMgiggles.wav",
-        "FoF_TaliaCantCatch1.wav",
-        "FoF_TaliaCmonThisWay.wav",
-        "FoF_TaliaGiggle1.wav",
-        "FoF_TaliaGiggle2.wav",
-        "FoF_TaliaGiggle3.wav",
-        "FoF_TaliaGiggle4.wav",
-        "FoF_TaliaOverHere.wav",
-        "FoF_TaliaOverHere2.wav",
-    ]
-    giggles = {
-        'Mikayla': [f for f in giggle_filenames if 'Mikayla' in f],
-        'Talia': [f for f in giggle_filenames if 'Talia' in f],
-    }
-
-    def __init__(self, fairyName=None):
+    def __init__(self):
         # Behavior variables.  Constant for any game instance.
         self.secsPerVisitMean: float = 3.0
         self.secsPerVisitStDev: float = 2.0
@@ -192,11 +171,10 @@ class Fairy(StatefulGame):
         # State variables
         self.current_flower: Flower = None
         self.next_visit_time: int = 0
-        if fairyName and fairyName in Fairy.giggles:
-            self.fairyName = fairyName
-        else:
-            self.fairyName = random.choice(list(Fairy.giggles.keys()))
-        self.giggle_sequence = list(Fairy.giggles[self.fairyName])
+
+        fairy_audio_files = getAudioFiles()['Fairy']
+        self.fairyName = random.choice(list(fairy_audio_files.keys()))
+        self.giggle_sequence = list(fairy_audio_files[self.fairyName])
         random.shuffle(self.giggle_sequence)
         self.next_giggle_idx = 0
 
@@ -224,7 +202,7 @@ class Fairy(StatefulGame):
             self.next_visit_time = now + visitDuration
             self.current_flower = next_flower
         
-    def stop(self):
+    def stop(self, unused_flowers):
         # The Fairy game only uses finite-duration patterns and audio clips, so
         # there is nothing that needs to be cleaned up when it stops.
         pass
