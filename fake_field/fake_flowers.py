@@ -5,6 +5,11 @@ import yaml
 
 import pygame
 
+# Used for text rendering.
+# Done once at module load time since this is slow
+pygame.init()
+font = pygame.font.SysFont(None, 15)
+
 @dataclass
 class FakeFlower:
     x: int
@@ -13,6 +18,7 @@ class FakeFlower:
     id: str
     reference_time = 0
     patterns = []
+    text: str = ""
 
     def draw(self, screen):
         time = self.controlMillis()
@@ -26,11 +32,23 @@ class FakeFlower:
         pygame.draw.circle(screen, led_state.blossom_color,
                            pygame.Vector2(self.x, self.y), radius=20)
 
+        if self.text and self.textExpirationTime > time:
+            textImg = font.render(self.text, True, pygame.Color("white"))
+            screen.blit(textImg, (self.x, self.y+25))
+
         # clear out finished patterns
         self.patterns = [p for p in self.patterns if not p.isDone(time)]
 
     def setEventReference(self, new_reference_time):
         self.reference_time = new_reference_time
+
+    # Render a short piece of text next to the flower briefly.
+    # This is used to show the flower playing a sound file, rebooting, or
+    # other behaviors that are hard to render as graphics.
+    # duration is in milliseconds.
+    def showText(self, text, duration=900):
+        self.text = text
+        self.textExpirationTime = self.controlMillis() + duration
 
     def controlMillis(self):
         # System time is used as a stand-in for NTP-synced time

@@ -74,6 +74,12 @@ def send_commands_to_flowers(mqtt_message, flowers):
             if flower.id == which_flower or which_flower == "all":
                 flower.addPattern(pattern_name, pattern_params)
 
+    elif command.startswith("audio/playSoundFile"):
+        audio_filename = payload
+        for flower in flowers:
+            if flower.id == which_flower or which_flower == "all":
+                flower.showText(audio_filename)
+
     else:
         print(f"Flower command {command} isn't implemented by fake_field.")
         return
