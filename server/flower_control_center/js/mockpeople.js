@@ -189,6 +189,11 @@ function replayTracks(){
         }
     });
 
+    if (moveset.length == 0) {
+        // Don't send empty updates
+        return
+    }
+
     let peopleUpdate = {
         'timestamp': Date.now(),
         'people': moveset
