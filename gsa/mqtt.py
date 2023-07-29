@@ -35,6 +35,11 @@ def SetupMQTTClient(gameState):
     # client.reconnect_delay_set(min_delay=1, max_delay=120)  # time unit is seconds
     client.connect(MQTT_BROKER_IP)
 
+    # Flowers get a reference to the client, because sending the mqtt commands needed
+    # for running games is delegated to each of them.
+    for flower in gameState.flowers:
+        flower.mqtt_client = client
+
     # Caller is responsible for calling client.loop() to handle received messages
     return client
 

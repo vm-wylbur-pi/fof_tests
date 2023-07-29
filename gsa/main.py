@@ -34,11 +34,12 @@ class GameState:
             game.runLoop(self.flowers, self.field)
 
 gameState = GameState()
+# The mqtt client gets a reference to the game state so that:
+#  1) it can pass it on to each flower object. The flower objects each can send
+#     mqtt messages to the real-world flowers they represent
+#  2) it can be used in the callbacks that respond to person location
+#     updates (currently sent over MQTT)
 mqtt_client = mqtt.SetupMQTTClient(gameState)
-
-# TODO: There is probably better way to share the mqtt client handle with each flower.
-for flower in gameState.flowers:
-    flower.mqtt_client = mqtt_client
 
 # For monitoring keyborad commands without blocking the main game loop
 class KeyboardInputThread(threading.Thread):
