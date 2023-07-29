@@ -23,7 +23,7 @@ import mqtt_handling
 
 # Initialize the graphics window in which the fake field is rendered.
 pygame.init()
-screen = pygame.display.set_mode((1280, 720))
+screen = pygame.display.set_mode((1000, 1000))
 # Game clock is a global variable also used to stand-in for NTP-synced
 # time in each flower. The flowers do still need to handle the control timer
 # offset.
@@ -31,7 +31,7 @@ clock = pygame.time.Clock()
 running = True
 FPS = 60
 
-flowers = fake_flowers.makeFakeFieldFromDeploymentYAML("patricks_backyard_party_deployment.yaml")
+flowers = fake_flowers.makeFakeFieldFromDeploymentYAML("gsa_testing_deployment.yaml")
 people = fake_people.FakePeople()
 
 # Pass a handle to the set of flowers and people to the MQTT-handling module, so that
