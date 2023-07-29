@@ -10,38 +10,13 @@ if __name__ == "__main__" and __package__ is None:
     path.append(dirname(path[0]))
 
 
-import flower
-import field
-import person
+
 import mqtt
+import game_state
 
 DEPLOYMENT_FILE = "../fake_field/gsa_testing_deployment.yaml"
 
-# Wrapper for references to the game state.
-class GameState:
-    def __init__(self):
-        self.flowers = flower.readFlowersFromDeploymentYAML(DEPLOYMENT_FILE)
-        self.field = field.Field(DEPLOYMENT_FILE)
-        self.people = person.People()
-        self.stateful_games = []
-
-    def runStatelessGame(self, game):
-        game.run(self.flowers)
-
-    def runStatefulGame(self, game):
-        self.stateful_games.append(game)
-
-    def clearStatefulGames(self):
-        for game in self.stateful_games:
-            game.stop(self.flowers)
-        self.stateful_games = []
-
-    def updateStatefulGames(self):
-        self.stateful_games = [g for g in self.stateful_games if not g.isDone()]
-        for game in self.stateful_games:
-            game.runLoop(self.flowers, self.field)
-
-gameState = GameState()
+gameState = game_state.GameState(deployment_file=DEPLOYMENT_FILE)
 # The mqtt client gets a reference to the game state so that:
 #  1) it can pass it on to each flower object. The flower objects each can send
 #     mqtt messages to the real-world flowers they represent
