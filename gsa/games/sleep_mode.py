@@ -1,14 +1,15 @@
 from . import game
+from ..game_state import GameState
 
 class WholeFieldSleep(game.StatefulGame):
     def __init__(self, sleepIntervalSecs=5):
         self.hasSetRetainedSleepCommand = False
         self.sleepIntervalSecs = 5 * 60
 
-    def runLoop(self, flowers, unused_field):
+    def runLoop(self, gameState: GameState):
         if not self.hasSetRetainedSleepCommand:
             print("Setting retained sleep mode commands.")
-            for flower in flowers:
+            for flower in gameState.flowers:
                 # This is a "Retained" MQTT message, which means the flowers will get it
                 # right away, and will get it again every time they subscribe. Since they
                 # re-subscribe to their MQTT command topic after waking from sleep, this
@@ -22,9 +23,9 @@ class WholeFieldSleep(game.StatefulGame):
         # Keep the field asleep until this game is force-ended via the clearGames command
         return False
 
-    def stop(self, flowers):
+    def stop(self, gameState: GameState):
         print("Clearing retained sleep commands.")
-        for flower in flowers:
+        for flower in gameState.flowers:
             # You clear a retained MQTT message by sending a new one with an empty payload
             # If any flowers are currently awake (unlikely), this will cause them to sleep
             # one more time, for the default sleep duration (10 seconds)

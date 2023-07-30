@@ -3,8 +3,8 @@ import random
 import time
 
 from . import game
-from ..flower import Flower
 from ..field import Field
+from ..game_state import GameState
 from .. import geometry
 
 
@@ -103,11 +103,11 @@ class RandomIdle(game.StatefulGame):
         # State variables
         self.next_effect_time: int = 0
 
-    def runLoop(self, flowers, field):
+    def runLoop(self, gameState: GameState):
         now = time.time()
         if now > self.next_effect_time:
-            effect = random.choice(RandomIdle.field_effects_menu).randomInstance(field)
-            effect.run(flowers)
+            effect = random.choice(RandomIdle.field_effects_menu).randomInstance(gameState.field)
+            effect.run(gameState.flowers)
             delay = random.normalvariate(self.effectGapSecsMean, self.effectGapSecsStDev)
             delay = max(delay, self.effectGapSecsMinimum)
             self.next_effect_time = now + delay
@@ -117,6 +117,6 @@ class RandomIdle(game.StatefulGame):
         # clearGames command sent to the GSA
         return False
 
-    def stop(self, flowers):
+    def stop(self, unused_gameState):
         # We're only running short-duration effects, so there's nothing to do when stopping
         pass

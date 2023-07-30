@@ -18,7 +18,7 @@ class StatelessGame(Game):
 
 class StatefulGame(Game):
     # This method is called repeatedly, every time through the main game loop
-    def runLoop(self, flowers, field):
+    def runLoop(self, gameState):
         raise NotImplementedError
 
     # This method is called once per game loop. When it returns true, the game
@@ -29,7 +29,7 @@ class StatefulGame(Game):
     # This method is called to end the game. It gives the game a chance to
     # clean up any external state, such as retained MQTT messages, and/or
     # sending commands to flowers to end indefinitely-running patterns.
-    def stop(self, flowers):
+    def stop(self, gameState):
         raise NotImplementedError
 
 # Reads the configuration file containing the set of audio files available to games.

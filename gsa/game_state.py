@@ -17,10 +17,10 @@ class GameState:
 
     def clearStatefulGames(self):
         for game in self.stateful_games:
-            game.stop(self.flowers)
+            game.stop(self)
         self.stateful_games = []
 
     def updateStatefulGames(self):
         self.stateful_games = [g for g in self.stateful_games if not g.isDone()]
         for game in self.stateful_games:
-            game.runLoop(self.flowers, self.field)
+            game.runLoop(self)

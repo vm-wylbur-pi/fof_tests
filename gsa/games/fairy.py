@@ -3,6 +3,7 @@ import random
 import time
 
 from . import game
+from ..game_state import GameState
 from ..flower import Flower
 
 # A moving spot of light on a flower, which jumps from flower to flower.
@@ -37,11 +38,11 @@ class Fairy(game.StatefulGame):
             random.shuffle(self.giggle_sequence)
         return giggle_filename
 
-    def runLoop(self, flowers, unused_field):
+    def runLoop(self, gameState: GameState):
         now = time.time()
         if now > self.next_visit_time:
-            candidates = flowers if self.current_flower is None else self.current_flower.findNClosestFlowers(
-                flowers, 3)
+            candidates = (gameState.flowers if self.current_flower is None
+                          else self.current_flower.findNClosestFlowers(gameState.flowers, 3))
             next_flower = random.choice(candidates)
             visitDuration = random.normalvariate(
                 self.secsPerVisitMean, self.secsPerVisitStDev)
@@ -53,7 +54,7 @@ class Fairy(game.StatefulGame):
             self.next_visit_time = now + visitDuration
             self.current_flower = next_flower
 
-    def stop(self, unused_flowers):
+    def stop(self, unused_gameState: GameState):
         # The Fairy game only uses finite-duration patterns and audio clips, so
         # there is nothing that needs to be cleaned up when it stops.
         pass

@@ -5,6 +5,7 @@ import time
 import os
 
 from . import game
+from ..game_state import GameState
 
 @dataclass
 class FunScreenText(game.StatefulGame):
@@ -38,27 +39,27 @@ class FunScreenText(game.StatefulGame):
             for message in self.messages:
                 yield message
 
-    def runLoop(self, flowers, unused_field):
-        if not flowers:
+    def runLoop(self, gameState: GameState):
+        if not gameState.flowers:
             return
         if self.first_run:
             # Put a message on every flower, before starting to change them.
-            for flower in flowers:
+            for flower in gameState.flowers:
                 flower.SetScreenText(next(self.msgGenerator))
             self.first_run = False
         else:
             now = time.time()
             if now > self.nextChangeTime:
-                flowers[self.nextFlowerIdx].SetScreenText(
+                gameState.flowers[self.nextFlowerIdx].SetScreenText(
                     next(self.msgGenerator))
-                self.nextFlowerIdx = (self.nextFlowerIdx + 1) % len(flowers)
-                delay = self.per_flower_change_interval_secs / len(flowers)
+                self.nextFlowerIdx = (self.nextFlowerIdx + 1) % len(gameState.flowers)
+                delay = self.per_flower_change_interval_secs / len(gameState.flowers)
                 self.nextChangeTime = now + delay
 
     def isDone(self):
         return False  # Runs indefinitely
 
-    def stop(self, flowers):
+    def stop(self, gameState: GameState):
         # TODO: Add a screen/showFlowerInfo command to each flower, and call
         # it here, to return each flower display to the debug info showing
         # the flower identifiers and firmware build details.
