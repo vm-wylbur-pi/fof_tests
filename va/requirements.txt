@@ -8,7 +8,11 @@ lapx
 tensorflow
 ultralytics
 
+# support tools
 paho-mqtt
+flask
+flask-socketio
+eventlet
 
 # CDC
 pyyaml

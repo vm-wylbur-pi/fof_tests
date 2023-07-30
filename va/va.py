@@ -20,6 +20,12 @@ import json
 import time
 import sys
 
+# websocket
+from flask import Flask, render_template
+from flask_socketio import SocketIO, emit
+import base64
+import threading
+
 pp = pprint.PrettyPrinter(indent=4)
 
 # TODO: Read this from config
@@ -27,11 +33,11 @@ MQTT_BROKER_IP = "127.0.0.1"
 MQTT_PEOPLE_TOPIC = 'people-locations/'
 
 # open up the channel that we're reading from
-CHANNEL = 'vids/lots-adults-six-lights.mp4'
+CHANNEL = 'vids/lots-adults-four-lights.mp4'
 # CHANNEL = 1
 CALIBRATION = 'calibration_parameters.npz'
 DEPLOYMENT_FILE = '../fake_field/playa_test_2.yaml'
-MAX_FRAMES = 2500
+MAX_FRAMES = 5000
 
 # consume the first X of these and generate a median frame
 # MEDIAN_FRAMES = 2500
@@ -52,8 +58,6 @@ if UNDISTORT:
 else:
     frame_width = 1920
     frame_height = 1080
-
-fps = 30.0
 
 # load calibration parameters from previous calibration test
 data = np.load(CALIBRATION)
@@ -299,67 +303,98 @@ output_points = np.float32([[0,0],[0,3300], [3300,3300],[3300,0]])
 mqtt_client = SetupMQTTClient()
 mqtt_client.connect(MQTT_BROKER_IP)
 
-# benchmark timing
-start_time = time.time()
 
-fcnt = 0
-video_writer = None
-# Loop through the video frames
-while True:
-    # Read a frame from the video
-    ret, frame = cap.read()
-    if not ret:
-        break
+def viz_loop(fps=30.0):
+    # benchmark timing
+    start_time = time.time()
 
-    fcnt+= 1
+    fcnt = 0
+    video_writer = None
+    # Loop through the video frames
+    while True:
+        # Read a frame from the video
+        ret, frame = cap.read()
+        if not ret:
+            break
 
-    if fcnt > MAX_FRAMES:
-        break
+        fcnt+= 1
 
-    if not mqtt_client.is_connected():
-        mqtt_client.reconnect()
+        if fcnt > MAX_FRAMES:
+            break
 
-    if UNDISTORT:
-        frame = undistort(frame)
+        if not mqtt_client.is_connected():
+            mqtt_client.reconnect()
 
-    hudframe = frame
-    corner_points, hudframe = detectCornerPoints(frame)
-    M = cv2.getPerspectiveTransform(np.float32(corner_points),output_points)
+        if UNDISTORT:
+            frame = undistort(frame)
 
-    #if fcnt < MEDIAN_FRAMES:
-    #    mframes.append(frame)
-    #    continue
+        hudframe = frame
+        corner_points, hudframe = detectCornerPoints(frame)
+        M = cv2.getPerspectiveTransform(np.float32(corner_points),output_points)
 
-    #if fcnt == MEDIAN_FRAMES:
-    #    medianFrame = np.median(mframes, axis=0).astype(dtype=np.uint8)
-    #    mframes = []
+        #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        #frame = cv2.equalizeHist(frame)
+        #frame = np.expand_dims(frame, axis=0).transpose((0, 3, 1, 2))
 
-    # (hudframe, detections) = detector.detect(frame, personTracker, hudframe, medianFrame)
-    # payload = getNorfairPayload(detections, M)
+        #if fcnt < MEDIAN_FRAMES:
+        #    mframes.append(frame)
+        #    continue
 
-    hudframe = tracker.track(frame, personTracker, hudframe, medianFrame)
+        #if fcnt == MEDIAN_FRAMES:
+        #    medianFrame = np.median(mframes, axis=0).astype(dtype=np.uint8)
+        #    mframes = []
 
-    if bool(personTracker):
-        payload = getPeoplePayload(M)
-        res = mqtt_client.publish(MQTT_PEOPLE_TOPIC, payload)
-        mqtt_client.loop()
+        # (hudframe, detections) = detector.detect(frame, personTracker, hudframe, medianFrame)
+        # payload = getNorfairPayload(detections, M)
+
+        # he he he does this do anything - not really aside from breaking stuf
+        # fg_mask = bg_subtractor.apply(frame)
+        # frame = cv2.merge([fg_mask, fg_mask, fg_mask])
+
+        hudframe = tracker.track(frame, personTracker, hudframe, medianFrame)
+
+        if bool(personTracker):
+            payload = getPeoplePayload(M)
+            res = mqtt_client.publish(MQTT_PEOPLE_TOPIC, payload)
+            mqtt_client.loop()
+
+        if WRITE_FILE:
+            if video_writer == None:
+                hheight, hwidth, dims = hudframe.shape
+                video_writer = cv2.VideoWriter(output_file, cv2.VideoWriter_fourcc(*'MJPG'), fps, (hwidth, hheight))
+            video_writer.write(hudframe)
+
+        # stupid simple benchmark
+        if fcnt % 100 == 0:
+            elapsed_time = time.time() - start_time
+            fps = fcnt / elapsed_time
+            print(f"FPS: {fps:.2f}")
+
+            _, buffer = cv2.imencode('.jpg', hudframe)
+            hudframe_base64 = base64.b64encode(buffer).decode('utf-8')
+
+            # Emit the encoded image to connected clients via the websocket
+            socketio.emit('hud_update', hudframe_base64)
 
     if WRITE_FILE:
-        if video_writer == None:
-            hheight, hwidth, dims = hudframe.shape
-            video_writer = cv2.VideoWriter(output_file, cv2.VideoWriter_fourcc(*'MJPG'), fps, (hwidth, hheight))
-        video_writer.write(hudframe)
+        video_writer.release()
 
-    # stupid simple benchmark
-    if fcnt % 100 == 0:
-        elapsed_time = time.time() - start_time
-        fps = fcnt / elapsed_time
-        print(f"FPS: {fps:.2f}")
+    print("out of the loop")
+    mqtt_client.loop_stop()
+    cap.release()
 
+app = Flask(__name__)
+socketio = SocketIO(app)
 
-if WRITE_FILE:
-    video_writer.release()
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-print("out of the loop")
-# plane - mqtt_client.loop_stop()
-cap.release()
+if __name__ == '__main__':
+    # Start the image detection pipeline in a separate thread
+    pipeline_thread = threading.Thread(target=viz_loop)
+    pipeline_thread.start()
+
+    # Run the Flask app with socketio
+    socketio.run(app, host='0.0.0.0', port=8000)
+
