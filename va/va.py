@@ -21,7 +21,7 @@ import time
 import sys
 
 # websocket
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
 from flask_socketio import SocketIO, emit
 import base64
 import threading
@@ -48,10 +48,12 @@ CORNER_DRIFT = 20 # max distance between initial point and found point
 CORNER_THRESHOLD = 100 # min threshold to convert to binary when detecting corner points
 
 # Set video properties
-WRITE_FILE = True
-UNDISTORT = True
-
+WEBSOCKET = True
+WEBSOCKET_RATE = 10 # how many frames to skip between emitting an image
+WRITE_FILE = False
 output_file = 'vids/output_video.avi'
+
+UNDISTORT = True
 if UNDISTORT:
     frame_width = 1172
     frame_height = 570
@@ -294,8 +296,8 @@ for c in range(len(deployment['field']['corners'])):
         cornerstats[c][s] = 0
 
 # median frame calculations
-mframes = []
-medianFrame = ''
+# mframes = []
+# medianFrame = ''
 
 # TODO:  load from deployment file
 output_points = np.float32([[0,0],[0,3300], [3300,3300],[3300,0]])
@@ -332,7 +334,7 @@ def viz_loop(fps=30.0):
         corner_points, hudframe = detectCornerPoints(frame)
         M = cv2.getPerspectiveTransform(np.float32(corner_points),output_points)
 
-        hudframe = tracker.track(frame, personTracker, hudframe, medianFrame)
+        hudframe = tracker.track(frame, personTracker, hudframe)
 
         #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         #frame = cv2.equalizeHist(frame)
@@ -370,7 +372,7 @@ def viz_loop(fps=30.0):
             fps = fcnt / elapsed_time
             print(f"FPS: {fps:.2f}")
 
-        if fcnt % 10 == 0:
+        if fcnt % WEBSOCKET_RATE == 0:
             _, buffer = cv2.imencode('.jpg', hudframe)
             hudframe_base64 = base64.b64encode(buffer).decode('utf-8')
 
@@ -380,24 +382,32 @@ def viz_loop(fps=30.0):
 
     if WRITE_FILE:
         video_writer.release()
-
-        print("out of the loop")
         mqtt_client.loop_stop()
         cap.release()
 
-app = Flask(__name__)
-# socketio = SocketIO(app)
-socketio = SocketIO(app, async_mode='threading')
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+if WEBSOCKET:
+    app = Flask(__name__)
+    # socketio = SocketIO(app)
+    socketio = SocketIO(app, async_mode='threading')
+
+    @app.route('/')
+    def index():
+        return render_template('index.html')
+
+    # Route for serving the WebSocket JavaScript file
+    @app.route('/static/<path:filename>')
+    def serve_js(filename):
+        return send_from_directory('static', filename)
 
 if __name__ == '__main__':
-    # Start the image detection pipeline in a separate thread
-    pipeline_thread = threading.Thread(target=viz_loop)
-    pipeline_thread.start()
+    if WEBSOCKET:
+        # Start the image detection pipeline in a separate thread
+        pipeline_thread = threading.Thread(target=viz_loop)
+        pipeline_thread.start()
 
-    # Run the Flask app with socketio
-    socketio.run(app, host='0.0.0.0', port=8000, debug=True)
+        # Run the Flask app with socketio
+        socketio.run(app, host='0.0.0.0', port=8000, debug=True)
+    else:
+        viz_loop()
 
