@@ -27,9 +27,10 @@ def SetupMQTTClient(gameState):
     def on_message(unused_client, unused_userdata, message):
         HandleMQTTMessage(message, gameState)
 
-    def on_disconnect(unused_client, unused_userdata, result_code):
+    def on_disconnect(client, unused_userdata, result_code):
         if result_code != 0:
             print("Unexpected MQTT disconnection.")
+            print(f"Client connected?: {client.is_connected()}")
 
     client = paho_mqtt.Client(client_id="gsa")
     client.on_pre_connect = on_pre_connect
@@ -37,7 +38,7 @@ def SetupMQTTClient(gameState):
     client.on_disconnect = on_disconnect
     client.on_message = on_message
     # I'm not sure if this is helpful yet.
-    # client.reconnect_delay_set(min_delay=1, max_delay=120)  # time unit is seconds
+    client.reconnect_delay_set(min_delay=1, max_delay=5)  # time unit is seconds
     client.connect(MQTT_BROKER_IP)
 
     # Flowers get a reference to the client, because sending the mqtt commands needed

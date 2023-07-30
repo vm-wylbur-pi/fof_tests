@@ -34,6 +34,7 @@ while True:
     #  1) game control commands from the FCC to start/end games
     #  2) people location updates from the VA (camera system)
     if not mqtt_client.is_connected():
+        print("Attempting reconnection...")
         mqtt_client.reconnect()
     mqtt_client.loop()
 
