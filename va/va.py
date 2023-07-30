@@ -332,6 +332,8 @@ def viz_loop(fps=30.0):
         corner_points, hudframe = detectCornerPoints(frame)
         M = cv2.getPerspectiveTransform(np.float32(corner_points),output_points)
 
+        hudframe = tracker.track(frame, personTracker, hudframe, medianFrame)
+
         #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         #frame = cv2.equalizeHist(frame)
         #frame = np.expand_dims(frame, axis=0).transpose((0, 3, 1, 2))
@@ -351,8 +353,6 @@ def viz_loop(fps=30.0):
         # fg_mask = bg_subtractor.apply(frame)
         # frame = cv2.merge([fg_mask, fg_mask, fg_mask])
 
-        hudframe = tracker.track(frame, personTracker, hudframe, medianFrame)
-
         if bool(personTracker):
             payload = getPeoplePayload(M)
             res = mqtt_client.publish(MQTT_PEOPLE_TOPIC, payload)
@@ -364,27 +364,30 @@ def viz_loop(fps=30.0):
                 video_writer = cv2.VideoWriter(output_file, cv2.VideoWriter_fourcc(*'MJPG'), fps, (hwidth, hheight))
             video_writer.write(hudframe)
 
-        # stupid simple benchmark
+        #  stupid simple benchmark
         if fcnt % 100 == 0:
             elapsed_time = time.time() - start_time
             fps = fcnt / elapsed_time
             print(f"FPS: {fps:.2f}")
 
+        if fcnt % 10 == 0:
             _, buffer = cv2.imencode('.jpg', hudframe)
             hudframe_base64 = base64.b64encode(buffer).decode('utf-8')
 
             # Emit the encoded image to connected clients via the websocket
             socketio.emit('hud_update', hudframe_base64)
 
+
     if WRITE_FILE:
         video_writer.release()
 
-    print("out of the loop")
-    mqtt_client.loop_stop()
-    cap.release()
+        print("out of the loop")
+        mqtt_client.loop_stop()
+        cap.release()
 
 app = Flask(__name__)
-socketio = SocketIO(app)
+# socketio = SocketIO(app)
+socketio = SocketIO(app, async_mode='threading')
 
 @app.route('/')
 def index():
@@ -396,5 +399,5 @@ if __name__ == '__main__':
     pipeline_thread.start()
 
     # Run the Flask app with socketio
-    socketio.run(app, host='0.0.0.0', port=8000)
+    socketio.run(app, host='0.0.0.0', port=8000, debug=True)
 

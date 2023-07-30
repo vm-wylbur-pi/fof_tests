@@ -1,17 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Real-time Object Detection</title>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+    <title>Real-time Video</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
 </head>
 <body>
-<h1>Real-time Object Detection</h1>
-<img id="hud-image" src="" alt="HUD Image" width="640" height="480">
-<script type="text/javascript">
+<h1>Real-time Video Stream</h1>
+<div id="frame-container">
+    <img id="frame" src="" alt="Video Frame">
+</div>
+
+<script>
     var socket = io.connect('http://' + document.domain + ':' + location.port);
-    socket.on('hud_update', function(data) {
-        var img = document.getElementById('hud-image');
-        img.src = 'data:image/jpeg;base64,' + data;
+
+    socket.on('message', function(data) {
+        console.log(data);
+    });
+
+    socket.on('hud_update', function(hudframe) {
+        var frameImg = document.getElementById('frame');
+        frameImg.src = 'data:image/jpeg;base64,' + hudframe;
+        console.log('received hudframe')
+    });
+
+    socket.on('connect', function() {
+        console.log('Connected to server');
+        socket.emit('request_frame');
+    });
+
+    socket.on('disconnect', function() {
+        console.log('Disconnected from server');
     });
 </script>
 </body>
