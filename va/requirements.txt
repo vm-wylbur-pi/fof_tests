@@ -1,0 +1,14 @@
+# viz system
+# holding off on installation, these take a long time
+#  to build ond the rpi and aren't necessary at this time.
+opencv-python
+torch
+norfair
+lapx
+tensorflow
+ultralytics
+
+paho-mqtt
+
+# CDC
+pyyaml

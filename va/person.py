@@ -12,7 +12,7 @@ class Person:
         self.firstseen = self.lastseen = time.time()
         self.bb = bb
         self.bbQueue = deque(maxlen=self.MAXQUEUE)
-        self.pos = [bb[0] + bb[2] // 2, bb[1] + bb[3]]
+        self.pos = [(bb[0] + bb[2]) // 2, bb[3]]
         self.posQueue = deque(maxlen=self.MAXQUEUE)
         self.dir = None
 
@@ -22,7 +22,7 @@ class Person:
         self.bb = newbb
         self.posQueue.append(self.pos)
         # TODO:  smooth out by averaging over the last X positions
-        self.pos = [newbb[0] + newbb[2] // 2, newbb[1] + newbb[3]]
+        self.pos = [(newbb[0] + newbb[2]) // 2, newbb[3]]
         self.dir = self.direction()
 
     def direction(self):
@@ -35,7 +35,9 @@ class Person:
     def draw(self, frame):
         # Draw bounding box
         p1 = (int(self.bb[0]), int(self.bb[1]))
-        p2 = (int(self.bb[0] + self.bb[2]), int(self.bb[1] + self.bb[3]))
+        # p2 = (int(self.bb[0] + self.bb[2]), int(self.bb[1] + self.bb[3]))
+        p2 = (int(self.bb[2]), int(self.bb[3]))
+
         cv2.rectangle(frame, p1, p2, (0,255,0), 2)
 
         # Place small red dot at the position

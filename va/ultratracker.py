@@ -3,6 +3,8 @@ import cv2
 from person import Person
 
 MODEL_FILE = "models/fof-yolov8n-secondbatch.pt"
+#MODEL_FILE = "models/fof_yolo5nu.pt"
+
 class UltraTracker:
 
     def __init__(self, bg_subtractor):
@@ -13,6 +15,7 @@ class UltraTracker:
         for res in results:
             if  results[0].boxes.id !=  None:
                 boxes = results[0].boxes.xyxy.cpu().numpy().astype(int)
+                hboxes = results[0].boxes.xywh.cpu().numpy().astype(int)
                 ids = results[0].boxes.id.cpu().numpy().astype(int)
 
                 for idx in range(len(ids)):

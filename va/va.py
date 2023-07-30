@@ -13,7 +13,7 @@ import pprint
 
 from ultratracker import UltraTracker
 
-# plane - import paho.mqtt.client as paho_mqtt
+import paho.mqtt.client as paho_mqtt
 import datetime
 import json
 
@@ -27,14 +27,14 @@ MQTT_BROKER_IP = "127.0.0.1"
 MQTT_PEOPLE_TOPIC = 'people-locations/'
 
 # open up the channel that we're reading from
-CHANNEL = 'vids/adult-walk-truncated.mp4'
+CHANNEL = 'vids/lots-adults-six-lights.mp4'
 # CHANNEL = 1
 CALIBRATION = 'calibration_parameters.npz'
 DEPLOYMENT_FILE = '../fake_field/playa_test_2.yaml'
-MAX_FRAMES = 250
+MAX_FRAMES = 2500
 
 # consume the first X of these and generate a median frame
-MEDIAN_FRAMES = 25
+# MEDIAN_FRAMES = 2500
 
 # Corner Detection Params
 CORNER_DEFLECTION = [20,35]  # max pixels x,y around the initial corner points to search for corners
@@ -296,8 +296,8 @@ medianFrame = ''
 # TODO:  load from deployment file
 output_points = np.float32([[0,0],[0,3300], [3300,3300],[3300,0]])
 
-# plane - mqtt_client = SetupMQTTClient()
-# plane - mqtt_client.connect(MQTT_BROKER_IP)
+mqtt_client = SetupMQTTClient()
+mqtt_client.connect(MQTT_BROKER_IP)
 
 # benchmark timing
 start_time = time.time()
@@ -316,8 +316,8 @@ while True:
     if fcnt > MAX_FRAMES:
         break
 
-    # - planeif not mqtt_client.is_connected():
-        # - plane mqtt_client.reconnect()
+    if not mqtt_client.is_connected():
+        mqtt_client.reconnect()
 
     if UNDISTORT:
         frame = undistort(frame)
@@ -326,13 +326,13 @@ while True:
     corner_points, hudframe = detectCornerPoints(frame)
     M = cv2.getPerspectiveTransform(np.float32(corner_points),output_points)
 
-    if fcnt < MEDIAN_FRAMES:
-        mframes.append(frame)
-        continue
+    #if fcnt < MEDIAN_FRAMES:
+    #    mframes.append(frame)
+    #    continue
 
-    if fcnt == MEDIAN_FRAMES:
-        medianFrame = np.median(mframes, axis=0).astype(dtype=np.uint8)
-        mframes = []
+    #if fcnt == MEDIAN_FRAMES:
+    #    medianFrame = np.median(mframes, axis=0).astype(dtype=np.uint8)
+    #    mframes = []
 
     # (hudframe, detections) = detector.detect(frame, personTracker, hudframe, medianFrame)
     # payload = getNorfairPayload(detections, M)
@@ -341,8 +341,8 @@ while True:
 
     if bool(personTracker):
         payload = getPeoplePayload(M)
-        # plane - res = mqtt_client.publish(MQTT_PEOPLE_TOPIC, payload)
-        # - plane mqtt_client.loop()
+        res = mqtt_client.publish(MQTT_PEOPLE_TOPIC, payload)
+        mqtt_client.loop()
 
     if WRITE_FILE:
         if video_writer == None:
