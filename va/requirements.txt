@@ -13,6 +13,7 @@ paho-mqtt
 flask
 flask-socketio
 eventlet
+simple-websocket
 
 # CDC
 pyyaml

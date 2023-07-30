@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Real-time Video</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+    <title>Real-time(ish) FOF Video</title>
+    <script src="/static/socket.io.js"></script>
 </head>
 <body>
 <h1>Real-time Video Stream</h1>
+<div id="status-container">Status:<span id="whatsup">Disconnected</span></div>
 <div id="frame-container">
     <img id="frame" src="" alt="Video Frame">
 </div>
@@ -26,10 +27,17 @@
     socket.on('connect', function() {
         console.log('Connected to server');
         socket.emit('request_frame');
+        let status = document.getElementById('whatsup')
+            status.innerText = 'Connected'
+            status.style.color = "green";
     });
 
     socket.on('disconnect', function() {
         console.log('Disconnected from server');
+        let status = document.getElementById('whatsup')
+            status.innerText = 'Disconnected'
+            status.style.color = "red";
+
     });
 </script>
 </body>

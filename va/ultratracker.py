@@ -10,8 +10,8 @@ class UltraTracker:
     def __init__(self, bg_subtractor):
         self.model = YOLO(MODEL_FILE)
 
-    def track(self, frame, personTracker, hudframe, medianFrame):
-        results = self.model.track(frame, persist=True, classes=1, tracker="botsort.yaml", conf=0.05)
+    def track(self, frame, personTracker, hudframe):
+        results = self.model.track(frame, persist=True, classes=1, tracker="botsort.yaml", conf=0.25)
         for res in results:
             if  results[0].boxes.id !=  None:
                 boxes = results[0].boxes.xyxy.cpu().numpy().astype(int)
