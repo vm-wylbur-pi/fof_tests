@@ -31,11 +31,13 @@ class People():
         # Any people *not* included in this update message will be preserved
         # at their prior location.  
         for name, location in update['people'].items():
+            person = None
             if name in self.people:
                 person = self.people[name]
             else:
                 # We've never seen this person before; instantiate them.
                 person = Person(name)
+                self.people[name] = person
             person.location = Point(location['x'], location['y'])
             person.last_seen = update['timestamp']
 
@@ -51,6 +53,6 @@ class People():
         # they are comparable with python's time.time().
         now = time.time()
         for person in list(self.people.keys()):
-            time_since_last_seen = now - person.last_seen
+            time_since_last_seen = now - self.people[person].last_seen
             if time_since_last_seen > PERSON_TIMEOUT:
                 del self.people[person]
