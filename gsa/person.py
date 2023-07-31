@@ -4,13 +4,13 @@ import time
 
 import paho.mqtt.client as mqtt
 
+from geometry import Point
 
 # A person in the field.
 @dataclass
 class Person():
     name: str = ""
-    x: int = None
-    y: int = None
+    location: Point = None
     last_seen: int = None
 
 class People():
@@ -36,8 +36,7 @@ class People():
             else:
                 # We've never seen this person before; instantiate them.
                 person = Person(name)
-            person.x = location['x']
-            person.y = location['y']
+            person.location = Point(location['x'], location['y'])
             person.last_seen = update['timestamp']
 
     def removePeopleNotSeenForAWhile(self):
