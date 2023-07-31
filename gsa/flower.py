@@ -1,17 +1,28 @@
 import os.path
 import paho.mqtt.client as paho_mqtt
+import time
 import yaml
 
 import geometry
+import color
 
 # encapsulates 
 #   - What the GSA knows about the flower state, including its location
 #   - How to send commands to this flower over MQTT
 class Flower:
     def __init__(self, id: str, location: geometry.Point, mqtt_client: paho_mqtt.Client):
-        self.id = id
-        self.location = location
-        self.mqtt_client = mqtt_client
+        self.id: str = id
+        self.location: geometry.Point = location
+        self.mqtt_client: paho_mqtt.Client = mqtt_client
+
+        # State used to buffer mqtt commands
+        #
+        # Color used in the UpdatableColor pattern.
+        self.currentUpdatableColor = None
+        # Used to periodically sync the field state with the state the GSA believes
+        # it should be.
+        self.timeOfColorUpdate = 0
+        self.MAX_AGE_OF_COLOR_UPDATE = 5  # seconds
 
     def sendMQTTCommand(self, command: str, params: str, retained: bool = False):
         topic = f"flower-control/{self.id}/{command}"
@@ -33,6 +44,20 @@ class Flower:
     def HuePulse(self, hue, startTime, rampDuration, peakDuration, brightness):
         params = f"{hue},{startTime},{rampDuration},{peakDuration},{brightness}"
         self.sendMQTTCommand(command="leds/addPattern/HuePulse", params=params)
+
+    def SetUpdatableColor(self, c: color.HSVAColor):
+        # To avoid sending a color to every flower on every frame, we only send an
+        # update if the flower color changes.  TODO(..only if it changes by a lot. Some
+        # changes will be small changes in alpha only.)
+        # HSVA are all on the 0-255 scale.
+        if (self.currentUpdatableColor != c or
+            time.time() - self.timeOfColorUpdate > self.MAX_AGE_OF_COLOR_UPDATE):
+            #print(f"Updating color for {self.id}, old={self.currentUpdatableColor}, new={c}")
+            params = f"{c.hue},{c.sat},{c.val},{c.alpha}"
+            self.sendMQTTCommand(command="leds/addPattern/UpdatableColor", params=params)
+            self.currentUpdatableColor = c
+            self.timeOfColorUpdate = time.time()
+
 
     def FairyVisit(self, visitDuration):
         params = str(visitDuration)

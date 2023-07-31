@@ -3,12 +3,21 @@ import os.path
 import time
 import yaml
 
+import sys  # TODO temp
+
 import pygame
 
 # Used for text rendering.
 # Done once at module load time since this is slow
 pygame.init()
 font = pygame.font.SysFont(None, 15)
+
+@dataclass
+class HSVAColor:
+    hue: int
+    sat: int = 0
+    val: int = 100
+    alpha: int = 255
 
 @dataclass
 class FakeFlower:
@@ -22,7 +31,7 @@ class FakeFlower:
 
     def draw(self, screen):
         time = self.controlMillis()
-        led_state = LEDState(blossom_color=pygame.Color("red"),
+        led_state = LEDState(blossom_color=pygame.Color("grey"),
                              leaf_color=pygame.Color("green"));
         for pattern in self.patterns:
             led_state = pattern.modifyLEDState(time, led_state)
@@ -59,10 +68,24 @@ class FakeFlower:
     def addPattern(self, pattern_name, str_params):
         if pattern_name == "HuePulse":
             self.patterns.append(HuePulse(self.controlMillis(), str_params))
-            print(f"Flower {self.id} added HuePulse({str_params})")
+            #print(f"Flower {self.id} added HuePulse({str_params})")
         if pattern_name == "FairyVisit":
             self.patterns.append(FairyVisit(self.controlMillis(), str_params))
             print(f"Flower {self.id} added FairyVisit({str_params})")
+        if pattern_name == "UpdatableColor":
+            h,s,v,a = map(int, str_params.split(','))
+            color = HSVAColor(h, s, v, a)
+            # Special case of a pattern that is only instantiated once. The
+            # handling is similar in the real flowers.
+            for p in self.patterns:
+                if p.__class__.__name__ == "UpdatableColor":
+                    p.setColor(color)
+                    #print(f"Flower {self.id} modified UpdatableColor({str_params})")
+                    break
+            else:
+                self.patterns.append(UpdatableColor(color))
+                #print(f"Flower {self.id} added UpdatableColor({str_params})")
+
 
     def clearPatterns(self):
         self.patterns = []
@@ -93,6 +116,18 @@ def hueToPyGameColor(hue: int):
         raise
     return color
 
+def hsv255ToPyGameColor(hue: int, sat: int, val: int):
+    hue360 = int(round(360 * hue/255))
+    sat100 = int(round(100 * sat/255))
+    val100 = int(round(100 * val/255))
+    color = pygame.Color(0, 0, 0, 0)
+    try:
+        color.hsva = (hue360, sat100, val100, 100)
+    except ValueError:
+        print(f"Error making PyGame color based on hsv={hue},{sat},{val}")
+        raise
+    return color
+
 def makeFakeField():
     return [
         FakeFlower(450, 100, "a"),
@@ -117,6 +152,25 @@ def makeFakeFieldFromDeploymentYAML(yaml_file_name):
 # in the flower microcontroler code, but simplified.
 class FlowerPattern:
    pass
+
+class UpdatableColor(FlowerPattern):
+    def __init__(self, color: HSVAColor):
+        self.setColor(color)
+
+    def setColor(self, color: HSVAColor):
+        self.color = color  # used for alpha
+        self.pycolor = hsv255ToPyGameColor(color.hue, color.sat, color.val) # used for other components
+
+    def isDone(self, time: int):
+        return False
+    
+    def modifyLEDState(self, time: int, prevState: LEDState) -> LEDState:
+        alpha = self.color.alpha/255
+        return LEDState(
+            blossom_color=prevState.blossom_color.lerp(self.pycolor, alpha),
+            leaf_color=prevState.leaf_color,
+        )
+
 
 class HuePulse(FlowerPattern):
     def __init__(self, control_time, str_params):
@@ -178,7 +232,7 @@ class FairyVisit(FlowerPattern):
         # In this simplified fake flower, "fairy" means the blossom and leaf
         # take turns flashing white for as long as the fairy is visiting.
         inFlash = (time // 50) % 2 == 0   # alternate every 50 ms
-        onBlossom = (time // 510) % 2 == 0  # alternate every 510 ms
+        onBlossom = (time // 200) % 2 == 0  # alternate every 510 ms
         newState = LEDState(prevState.blossom_color, prevState.leaf_color)
         if inFlash:
             if onBlossom:
