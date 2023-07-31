@@ -25,6 +25,11 @@ $( document ).ready(function() {
         $('input[name="field_params"]').val("");
         $('#field_command_param_explanation').text("Adds one fairy. You can have many. Each is independent of the othres.");
     });
+    $( "button#aura" ).click(function (event) {
+        $('input[name="field_command"]').val("runGame/Aura");
+        $('input[name="field_params"]').val("");
+        $('#field_command_param_explanation').text("Starts the Aura game. No parameters. It only makes sense to have one instance.");
+    });
     $( "button#funScreenText" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/FunScreenText");
         $('input[name="field_params"]').val("");
