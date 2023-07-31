@@ -2,17 +2,20 @@ from ultralytics import YOLO
 import cv2
 from person import Person
 
-MODEL_FILE = "models/fof-yolov8n-secondbatch.pt"
+MODEL_FILE = "models/fof_yolov8s_128ms.pt"
+#MODEL_FILE = "models/fof_yolo5nu.pt"
+
 class UltraTracker:
 
     def __init__(self, bg_subtractor):
         self.model = YOLO(MODEL_FILE)
 
-    def track(self, frame, personTracker, hudframe, medianFrame):
-        results = self.model.track(frame, persist=True, classes=1, tracker="bytetrack.yaml", conf=0.05)
+    def track(self, frame, personTracker, hudframe):
+        results = self.model.track(frame, persist=True, classes=1, tracker="botsort.yaml", conf=0.25)
         for res in results:
             if  results[0].boxes.id !=  None:
                 boxes = results[0].boxes.xyxy.cpu().numpy().astype(int)
+                hboxes = results[0].boxes.xywh.cpu().numpy().astype(int)
                 ids = results[0].boxes.id.cpu().numpy().astype(int)
 
                 for idx in range(len(ids)):

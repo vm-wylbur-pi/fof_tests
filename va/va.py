@@ -13,12 +13,18 @@ import pprint
 
 from ultratracker import UltraTracker
 
-# plane - import paho.mqtt.client as paho_mqtt
+import paho.mqtt.client as paho_mqtt
 import datetime
 import json
 
 import time
 import sys
+
+# websocket
+from flask import Flask, render_template, send_from_directory
+from flask_socketio import SocketIO, emit
+import base64
+import threading
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -27,14 +33,14 @@ MQTT_BROKER_IP = "127.0.0.1"
 MQTT_PEOPLE_TOPIC = 'people-locations/'
 
 # open up the channel that we're reading from
-CHANNEL = 'vids/adult-walk-truncated.mp4'
+CHANNEL = 'vids/lots-adults-four-lights.mp4'
 # CHANNEL = 1
 CALIBRATION = 'calibration_parameters.npz'
 DEPLOYMENT_FILE = '../fake_field/playa_test_2.yaml'
-MAX_FRAMES = 250
+MAX_FRAMES = 5000
 
 # consume the first X of these and generate a median frame
-MEDIAN_FRAMES = 25
+# MEDIAN_FRAMES = 2500
 
 # Corner Detection Params
 CORNER_DEFLECTION = [20,35]  # max pixels x,y around the initial corner points to search for corners
@@ -42,18 +48,18 @@ CORNER_DRIFT = 20 # max distance between initial point and found point
 CORNER_THRESHOLD = 100 # min threshold to convert to binary when detecting corner points
 
 # Set video properties
-WRITE_FILE = True
-UNDISTORT = True
-
+WEBSOCKET = True
+WEBSOCKET_RATE = 10 # how many frames to skip between emitting an image
+WRITE_FILE = False
 output_file = 'vids/output_video.avi'
+
+UNDISTORT = True
 if UNDISTORT:
     frame_width = 1172
     frame_height = 570
 else:
     frame_width = 1920
     frame_height = 1080
-
-fps = 30.0
 
 # load calibration parameters from previous calibration test
 data = np.load(CALIBRATION)
@@ -290,76 +296,118 @@ for c in range(len(deployment['field']['corners'])):
         cornerstats[c][s] = 0
 
 # median frame calculations
-mframes = []
-medianFrame = ''
+# mframes = []
+# medianFrame = ''
 
 # TODO:  load from deployment file
 output_points = np.float32([[0,0],[0,3300], [3300,3300],[3300,0]])
 
-# plane - mqtt_client = SetupMQTTClient()
-# plane - mqtt_client.connect(MQTT_BROKER_IP)
+mqtt_client = SetupMQTTClient()
+mqtt_client.connect(MQTT_BROKER_IP)
 
-# benchmark timing
-start_time = time.time()
 
-fcnt = 0
-video_writer = None
-# Loop through the video frames
-while True:
-    # Read a frame from the video
-    ret, frame = cap.read()
-    if not ret:
-        break
+def viz_loop(fps=30.0):
+    # benchmark timing
+    start_time = time.time()
 
-    fcnt+= 1
+    fcnt = 0
+    video_writer = None
+    # Loop through the video frames
+    while True:
+        # Read a frame from the video
+        ret, frame = cap.read()
+        if not ret:
+            break
 
-    if fcnt > MAX_FRAMES:
-        break
+        fcnt+= 1
 
-    # - planeif not mqtt_client.is_connected():
-        # - plane mqtt_client.reconnect()
+        if fcnt > MAX_FRAMES:
+            break
 
-    if UNDISTORT:
-        frame = undistort(frame)
+        if not mqtt_client.is_connected():
+            mqtt_client.reconnect()
 
-    hudframe = frame
-    corner_points, hudframe = detectCornerPoints(frame)
-    M = cv2.getPerspectiveTransform(np.float32(corner_points),output_points)
+        if UNDISTORT:
+            frame = undistort(frame)
 
-    if fcnt < MEDIAN_FRAMES:
-        mframes.append(frame)
-        continue
+        hudframe = frame
+        corner_points, hudframe = detectCornerPoints(frame)
+        M = cv2.getPerspectiveTransform(np.float32(corner_points),output_points)
 
-    if fcnt == MEDIAN_FRAMES:
-        medianFrame = np.median(mframes, axis=0).astype(dtype=np.uint8)
-        mframes = []
+        hudframe = tracker.track(frame, personTracker, hudframe)
 
-    # (hudframe, detections) = detector.detect(frame, personTracker, hudframe, medianFrame)
-    # payload = getNorfairPayload(detections, M)
+        #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        #frame = cv2.equalizeHist(frame)
+        #frame = np.expand_dims(frame, axis=0).transpose((0, 3, 1, 2))
 
-    hudframe = tracker.track(frame, personTracker, hudframe, medianFrame)
+        #if fcnt < MEDIAN_FRAMES:
+        #    mframes.append(frame)
+        #    continue
 
-    if bool(personTracker):
-        payload = getPeoplePayload(M)
-        # plane - res = mqtt_client.publish(MQTT_PEOPLE_TOPIC, payload)
-        # - plane mqtt_client.loop()
+        #if fcnt == MEDIAN_FRAMES:
+        #    medianFrame = np.median(mframes, axis=0).astype(dtype=np.uint8)
+        #    mframes = []
+
+        # (hudframe, detections) = detector.detect(frame, personTracker, hudframe, medianFrame)
+        # payload = getNorfairPayload(detections, M)
+
+        # he he he does this do anything - not really aside from breaking stuf
+        # fg_mask = bg_subtractor.apply(frame)
+        # frame = cv2.merge([fg_mask, fg_mask, fg_mask])
+
+        if bool(personTracker):
+            payload = getPeoplePayload(M)
+            res = mqtt_client.publish(MQTT_PEOPLE_TOPIC, payload)
+            mqtt_client.loop()
+
+        if WRITE_FILE:
+            if video_writer == None:
+                hheight, hwidth, dims = hudframe.shape
+                video_writer = cv2.VideoWriter(output_file, cv2.VideoWriter_fourcc(*'MJPG'), fps, (hwidth, hheight))
+            video_writer.write(hudframe)
+
+        #  stupid simple benchmark
+        if fcnt % 100 == 0:
+            elapsed_time = time.time() - start_time
+            fps = fcnt / elapsed_time
+            print(f"FPS: {fps:.2f}")
+
+        if fcnt % WEBSOCKET_RATE == 0:
+            _, buffer = cv2.imencode('.jpg', hudframe)
+            hudframe_base64 = base64.b64encode(buffer).decode('utf-8')
+
+            # Emit the encoded image to connected clients via the websocket
+            socketio.emit('hud_update', hudframe_base64)
+
 
     if WRITE_FILE:
-        if video_writer == None:
-            hheight, hwidth, dims = hudframe.shape
-            video_writer = cv2.VideoWriter(output_file, cv2.VideoWriter_fourcc(*'MJPG'), fps, (hwidth, hheight))
-        video_writer.write(hudframe)
-
-    # stupid simple benchmark
-    if fcnt % 100 == 0:
-        elapsed_time = time.time() - start_time
-        fps = fcnt / elapsed_time
-        print(f"FPS: {fps:.2f}")
+        video_writer.release()
+        mqtt_client.loop_stop()
+        cap.release()
 
 
-if WRITE_FILE:
-    video_writer.release()
+if WEBSOCKET:
+    app = Flask(__name__)
+    # socketio = SocketIO(app)
+    socketio = SocketIO(app, async_mode='threading')
 
-print("out of the loop")
-# plane - mqtt_client.loop_stop()
-cap.release()
+    @app.route('/')
+    def index():
+        return render_template('index.html')
+
+    # Route for serving the WebSocket JavaScript file
+    @app.route('/static/<path:filename>')
+    def serve_js(filename):
+        return send_from_directory('static', filename)
+
+if __name__ == '__main__':
+    if WEBSOCKET:
+        # Start the image detection pipeline in a separate thread
+        pipeline_thread = threading.Thread(target=viz_loop)
+        pipeline_thread.start()
+
+        # Run the Flask app with socketio
+        socketio.run(app, host='0.0.0.0', port=8000, debug=True)
+    else:
+        viz_loop()
+
