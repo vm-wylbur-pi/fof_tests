@@ -8,6 +8,9 @@ class Point:
 
     def diff(self, p):
         return Vector(self.x - p.x, self.y - p.y)
+    
+    def distanceTo(self, p):
+        return self.diff(p).magnitude()
 
 @dataclass
 class Vector:
