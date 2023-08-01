@@ -37,13 +37,13 @@ class FakeFlower:
             led_state = pattern.modifyLEDState(time, led_state)
 
         pygame.draw.circle(screen, led_state.leaf_color,
-                           pygame.Vector2(self.x+4, self.y+4), radius=20)
+                           pygame.Vector2(self.x+3, self.y+3), radius=15)
         pygame.draw.circle(screen, led_state.blossom_color,
-                           pygame.Vector2(self.x, self.y), radius=20)
+                           pygame.Vector2(self.x, self.y), radius=15)
 
         if self.text and self.textExpirationTime > time:
             textImg = font.render(self.text, True, pygame.Color("white"))
-            screen.blit(textImg, (self.x, self.y+25))
+            screen.blit(textImg, (self.x, self.y+20))
 
         # clear out finished patterns
         self.patterns = [p for p in self.patterns if not p.isDone(time)]
@@ -143,7 +143,6 @@ def makeFakeFieldFromDeploymentYAML(yaml_file_name):
     yaml_file_path = os.path.join(os.path.dirname(__file__), yaml_file_name)
     with open(yaml_file_path, 'r') as yaml_file:
         config = yaml.safe_load(yaml_file)
-        print(config['flowers'])
         for flower_id, flower in config['flowers'].items():
             field.append(FakeFlower(x=flower['x'], y=flower['y'], id=flower_id))
     return field
