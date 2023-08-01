@@ -16,13 +16,13 @@ class Aura(game.StatefulGame):
 
     def __init__(self):
         # Which person has which color. Colors are 0-255 hues.
-        self.color_assignments = {}
+        self.hue_assignments = {}
 
-    def chooseNextColor(self):
-        if not self.color_assignments:
+    def chooseNextHue(self):
+        if not self.hue_assignments:
             return random.choice(list(Aura.hueMenu))
         else:
-            used_colors = set(self.color_assignments.items())
+            used_colors = set(self.hue_assignments.items())
             remaining_colors = Aura.hueMenu - used_colors
             if remaining_colors:
                 return random.choice(list(remaining_colors))
@@ -31,14 +31,14 @@ class Aura(game.StatefulGame):
                 return random.randint(0,255)
     
     def updateColorAssignments(self, activePersonNames):
-        assignedNames = list(self.color_assignments.keys())
+        assignedNames = list(self.hue_assignments.keys())
         for name in assignedNames:
             if name not in activePersonNames:
-                del self.color_assignments[name]
+                del self.hue_assignments[name]
 
         for name in activePersonNames:
-            if name not in self.color_assignments:
-                self.color_assignments[name] = self.chooseNextColor()
+            if name not in self.hue_assignments:
+                self.hue_assignments[name] = self.chooseNextHue()
 
     # TODO: This should probably be a utility function, since other games will
     # also need it.  Factor it out when that happens.
@@ -59,17 +59,17 @@ class Aura(game.StatefulGame):
                 if distToPerson < Aura.BLOB_RADIUS:
                     blobs.append(person)
 
-            hue, sat = 0, 25
+            hue, sat = 0, 255
             if len(blobs) == 0:
                 # This flower is not in any blob
                 flower.SetUpdatableColor(Aura.TRANSPARENT)
                 continue
             elif len(blobs) == 1:
                 # This flower is near a single person; use their color
-                hue = self.color_assignments[blobs[0].name]
+                hue = self.hue_assignments[blobs[0].name]
             elif len(blobs) <= 3:
                 # Fun color mixing. Choose a color distant from the inputs
-                hues = [self.color_assignments[blob.name] for blob in blobs]
+                hues = [self.hue_assignments[blob.name] for blob in blobs]
                 print(f"Choosing intersection of: {hues}")
                 hue = distantFromSetofHues(hues)
             else:
@@ -77,7 +77,7 @@ class Aura(game.StatefulGame):
                 hue, sat = 0, 255
 
             # TODO: Make the color.alpha value depend on distance from the blob center
-            flower.SetUpdatableColor(HSVAColor(hue, sat, 100, 255))
+            flower.SetUpdatableColor(HSVAColor(hue, sat, 255, 255))
 
 
     def isDone(self):
