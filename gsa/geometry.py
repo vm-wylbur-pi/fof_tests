@@ -30,7 +30,7 @@ class Vector:
     # whether v is pointing "against" (anywhere in the 180-degrees opposite)
     # the direction of self.
     def contraryTo(self, v):
-        return self.sum(v).magnitude() < self.magnitude()
+        return self.norm().sum(v.norm()).magnitude() < self.norm().magnitude()
 
     def dot(self, v):
         return (self.dx * v.dx + self.dy * v.dy)
@@ -63,6 +63,7 @@ class Line:
 
 import unittest
 
+
 class TestPeripendicularVectorTo(unittest.TestCase):
 
     def test_horizontal_line(self):
@@ -72,7 +73,7 @@ class TestPeripendicularVectorTo(unittest.TestCase):
         self.assertEqual(horizontal_line.perpendicularVectorTo(Point(-5,-7)), Vector(0, -7) )
         self.assertEqual(horizontal_line.perpendicularVectorTo(Point(200,6)), Vector(0, 6) )
 
-    def test_horizontal_line(self):
+    def test_vertical_line(self):
         # The perpendicular vector from a vertical line must be horizontal, i.e. y compenent of 0
         vertical_line = Line(Point(0, 0), Vector(0, 1))
         self.assertEqual(vertical_line.perpendicularVectorTo(Point(3,3)), Vector(3, 0) )
