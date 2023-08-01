@@ -22,7 +22,7 @@ class Flower:
         # Used to periodically sync the field state with the state the GSA believes
         # it should be.
         self.timeOfColorUpdate = 0
-        self.MAX_AGE_OF_COLOR_UPDATE = 5  # seconds
+        self.MAX_AGE_OF_COLOR_UPDATE = 20  # seconds
 
     def sendMQTTCommand(self, command: str, params: str, retained: bool = False):
         topic = f"flower-control/{self.id}/{command}"
