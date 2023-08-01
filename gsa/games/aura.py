@@ -50,6 +50,9 @@ class Aura(game.StatefulGame):
 
     def runLoop(self, gameState: GameState):
         people = gameState.people.people
+        if not people:
+            # Nobody is in the field, no updates to the flowers are needed
+            return
         self.updateColorAssignments(people.keys())
 
         for flower in gameState.flowers:
