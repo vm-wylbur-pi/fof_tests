@@ -23,20 +23,13 @@ gameState = game_state.GameState(deployment_file=DEPLOYMENT_FILE)
 #  2) it can be used in the callbacks that respond to person location
 #     updates (currently sent over MQTT)
 mqtt_client = mqtt.SetupMQTTClient(gameState)
+# Starts the MQTT polling loop in a separate thread.
+mqtt_client.loop_start()
 
 # Interaction/game loop
 while True:
     # Update the current set of stateful games
     gameState.updateStatefulGames()
-
-    # Check for any mqtt messages, and send any buffered outgoing messages
-    # This is used for handling
-    #  1) game control commands from the FCC to start/end games
-    #  2) people location updates from the VA (camera system)
-    if not mqtt_client.is_connected():
-        print("Attempting reconnection...")
-        mqtt_client.reconnect()
-    mqtt_client.loop()
 
     gameState.people.removePeopleNotSeenForAWhile()
 
