@@ -1,9 +1,10 @@
 from dataclasses import dataclass
 import random
 import time
-
+ 
 from . import game
 from ..field import Field
+from ..flower import Flower
 from ..game_state import GameState
 from .. import geometry
 
@@ -45,8 +46,8 @@ class StraightColorWave(game.StatelessGame):
                 millisToReachFlower = int(
                     round(1000 * perpVectorToFlower.magnitude() / speed))
                 # ramp and peak time could be parameters of this Game, or computed based on speed
-                rampDuration = 200
-                peakDuration = 400
+                rampDuration = 100
+                peakDuration = 200
                 brightness = 200
                 flower.HuePulse(hue=self.hue, startTime=f"+{millisToReachFlower}", rampDuration=rampDuration,
                                 peakDuration=peakDuration, brightness=brightness)
@@ -72,7 +73,7 @@ class CircularColorWave(game.StatelessGame):
         return CircularColorWave(hue=random.randint(0, 255),
                                  center=center, startRadius=startRadius, speed=speed)
 
-    def run(self, flowers):
+    def run(self, flowers: 'list[Flower]'):
         print(f"Running wave: {self}")
         for flower in flowers:
             distanceFromCenter = self.center.diff(flower.location).magnitude()
@@ -82,8 +83,12 @@ class CircularColorWave(game.StatelessGame):
                 millisToReachFlower = int(round(1000 * timeToReachFlower))
                 # TODO: consider exposing hue pulse parameters as part of CircularColorWave, or maybe
                 #       just make each pulse shorter the faster the wave speed.
-                flower.HuePulse(hue=self.hue, startTime=f"+{millisToReachFlower}", rampDuration=200,
-                                peakDuration=400, brightness=200)
+                rampDuration = 100
+                peakDuration = 200
+                brightness = 200
+                flower.HuePulse(hue=self.hue, startTime=f"+{millisToReachFlower}", rampDuration=rampDuration,
+                                peakDuration=peakDuration, brightness=brightness)
+                flower.SetScreenText(f"dfC: {round(distanceFromCenter)}")
 
 
 # Showcase wave effects by running through them with randomized parameters.
