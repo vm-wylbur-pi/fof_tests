@@ -6,6 +6,7 @@ var tracks = {}
 var tracksReplay = {}
 var replayStartTime
 var replayRunning = false
+var replayIntervalId
 var trackTable
 
 var REPLAY_FPS = 15
@@ -45,7 +46,7 @@ $( "#playSelectedTracks-button" ).click(function( event ) {
 
     replayStartTime = Date.now()
     replayRunning = true
-    setInterval(replayTracks, 1000/REPLAY_FPS);
+    replayIntervalId = setInterval(replayTracks, 1000/REPLAY_FPS);
 });
 
 $( "#mqtt-reconnect" ).click(function( event ) {
@@ -196,6 +197,7 @@ function replayTracks(){
         if(Object.keys(tracksReplay) == 0){
             console.log('end of list')
             replayRunning = false
+            clearInterval(replayIntervalId)  // Stop calling replayTracks
         }
     });
 
