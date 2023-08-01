@@ -8,7 +8,25 @@ from geometry import Point
 
 class Aura(game.StatefulGame):
 
-    BLOB_RADIUS = 150
+    # Within this distance, flowers fully show blob color
+    BLOB_FULL_STRENGTH_RADIUS = 100
+    # Between the full-strength radus and the ramp radius, flowers
+    # only show the blob's color partially.
+    # Beyond the ramp radius, flowers are not affectedy by the blob.
+    BLOB_RAMP_RADIUS = 150
+
+    # How strong the color effect of a blob is as a function of radius (distance
+    # from the person at its center).  Ranges from [0-1].  Zero means no effect.
+    @classmethod
+    def blobFalloff(cls, distToPerson):
+        if distToPerson < Aura.BLOB_FULL_STRENGTH_RADIUS:
+            return 1.0
+        elif distToPerson < Aura.BLOB_RAMP_RADIUS:
+            rampFraction = ((distToPerson - Aura.BLOB_FULL_STRENGTH_RADIUS) /
+                            (Aura.BLOB_RAMP_RADIUS - Aura.BLOB_FULL_STRENGTH_RADIUS))
+            return rampFraction
+        else:
+            return 0.0
 
     # A set of distinguishable colors
     hueMenu = frozenset([0, 32, 64, 96, 128, 160, 192, 224])
@@ -35,18 +53,12 @@ class Aura(game.StatefulGame):
         for name in assignedNames:
             if name not in activePersonNames:
                 del self.hue_assignments[name]
+                print(f"Removed hue assignment from {name}.")
 
         for name in activePersonNames:
             if name not in self.hue_assignments:
                 self.hue_assignments[name] = self.chooseNextHue()
-
-    # TODO: This should probably be a utility function, since other games will
-    # also need it.  Factor it out when that happens.
-    #
-    # TODO: This renders one blob at a time, so the most recently rendered
-    # blob will overwrite the others.
-    def renderBlob(self, flowers: 'list[Flower]', hue: int, location: Point):
-        pass
+                print(f"Assigned hue {self.hue_assignments[name]} to {name}.")
 
     def runLoop(self, gameState: GameState):
         people = gameState.people.people
@@ -59,7 +71,7 @@ class Aura(game.StatefulGame):
             blobs = []
             for name, person in people.items():
                 distToPerson = flower.location.distanceTo(person.location)
-                if distToPerson < Aura.BLOB_RADIUS:
+                if distToPerson < Aura.BLOB_RAMP_RADIUS:
                     blobs.append(person)
 
             hue, sat = 0, 255
@@ -78,8 +90,8 @@ class Aura(game.StatefulGame):
                 # Four or more people, use white for the overlap
                 hue, sat = 0, 255
 
-            # TODO: Make the color.alpha value depend on distance from the blob center
-            flower.SetUpdatableColor(HSVAColor(hue, sat, 255, 255))
+            alpha = int(round(255 * Aura.blobFalloff(distToPerson)))
+            flower.SetUpdatableColor(HSVAColor(hue, sat, 255, alpha))
 
 
     def isDone(self):
