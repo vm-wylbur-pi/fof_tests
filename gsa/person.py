@@ -51,8 +51,9 @@ class People():
         # Timestamps in people updates are milliseconds since the unix epoch
         # (in the mock-people code they come from Javascript's Date.now()), so
         # they are comparable with python's time.time().
-        now = time.time()
+        now = time.time() * 1000
         for person in list(self.people.keys()):
             time_since_last_seen = now - self.people[person].last_seen
             if time_since_last_seen > PERSON_TIMEOUT:
+                print(f"Forgetting about {person}, who hasn't been seen in a while.")
                 del self.people[person]
