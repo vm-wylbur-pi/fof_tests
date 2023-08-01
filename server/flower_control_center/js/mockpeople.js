@@ -8,7 +8,7 @@ var replayStartTime
 var replayRunning = false
 var trackTable
 
-var MAX_REPLAY_FPS = 15
+var REPLAY_FPS = 15
 
 // Ensure that localstorage is configured or initialized when the page loads
 let tp = localStorage.getItem('fof-saved-tracks')
@@ -45,7 +45,7 @@ $( "#playSelectedTracks-button" ).click(function( event ) {
 
     replayStartTime = Date.now()
     replayRunning = true
-    setInterval(replayTracks, 1000/MAX_REPLAY_FPS);
+    setInterval(replayTracks, 1000/REPLAY_FPS);
 });
 
 $( "#mqtt-reconnect" ).click(function( event ) {
@@ -171,15 +171,23 @@ function replayTracks(){
 
     let moveset = {}
     Object.entries(tracksReplay).forEach(function ([id, entry]) {
-        let elapsedTime = Date.now() - replayStartTime
-        let nextstep = entry['path'][0]['time']
-        if (nextstep < elapsedTime){
+        let currentTime = Date.now() - replayStartTime
+        // If more than one step happened between the last time replayTracks
+        // was called and now, only send the latest step.  This mimicks the
+        // true behavior of camera loop running at the specified REPLAY_FPS
+        let nextstepTime = entry['path'][0]['time']
+        while (nextstepTime < currentTime) {
             let target = entry['path'].shift()
             moveset[id] = {
                 'x': target['x'],
                 'y': target['y'],
             }
+            if (entry['path'].length == 0) {
+                break;
+            }
+            nextstepTime = entry['path'][0]['time']
         }
+        console.log(`${id} has ${entry['path'].length} steps remaining.`)
         if(entry['path'].length == 0){
             console.log('end of the line for - ', id)
             delete tracksReplay[id]
