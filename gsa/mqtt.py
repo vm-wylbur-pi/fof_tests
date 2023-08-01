@@ -74,10 +74,8 @@ def HandleGameControlCommand(message, gameState):
         wave = color_waves.StraightColorWave.randomInstance(gameState.field)
         if len(params) >= 1:
             wave.hue = int(params[0])
-        if len(params) >= 2:
-            wave.startX = int(params[1])
         if len(params) >= 3:
-            wave.startY = int(params[2])
+            wave.start_loc = Point(int(params[1]), int(params[2]))
         if len(params) >= 4:
             wave.velocityX = int(params[3])
         if len(params) >= 5:
@@ -89,10 +87,8 @@ def HandleGameControlCommand(message, gameState):
         wave = color_waves.CircularColorWave.randomInstance(gameState.field)
         if len(params) >= 1:
             wave.hue = int(params[0])
-        if len(params) >= 2:
-            wave.centerX = int(params[1])
         if len(params) >= 3:
-            wave.centerY = int(params[2])
+            wave.center = Point(int(params[1]), int(params[2]))
         if len(params) >= 4:
             wave.startRadius = int(params[3])
         if len(params) >= 5:
