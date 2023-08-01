@@ -8,6 +8,8 @@ var replayStartTime
 var replayRunning = false
 var trackTable
 
+var MAX_REPLAY_FPS = 15
+
 // Ensure that localstorage is configured or initialized when the page loads
 let tp = localStorage.getItem('fof-saved-tracks')
 if (tp){
@@ -43,7 +45,7 @@ $( "#playSelectedTracks-button" ).click(function( event ) {
 
     replayStartTime = Date.now()
     replayRunning = true
-    setInterval(replayTracks,30);
+    setInterval(replayTracks, 1000/MAX_REPLAY_FPS);
 });
 
 $( "#mqtt-reconnect" ).click(function( event ) {
