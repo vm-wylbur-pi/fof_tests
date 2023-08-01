@@ -70,7 +70,6 @@ class Aura(game.StatefulGame):
             elif len(blobs) <= 3:
                 # Fun color mixing. Choose a color distant from the inputs
                 hues = [self.hue_assignments[blob.name] for blob in blobs]
-                print(f"Choosing intersection of: {hues}")
                 hue = distantFromSetofHues(hues)
             else:
                 # Four or more people, use white for the overlap
