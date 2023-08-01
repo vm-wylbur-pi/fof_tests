@@ -91,5 +91,40 @@ class TestPeripendicularVectorTo(unittest.TestCase):
         self.assertAlmostEqual(vec_to_y_axis.dy, -1)
 
 
+class TestContraryTo(unittest.TestCase):
+
+    def test_opposite(self):
+        # The negative of a vector must be contrary to it.
+        self.assertTrue(Vector(1,0).contraryTo(Vector(-1,0)))
+        self.assertTrue(Vector(0,1).contraryTo(Vector(0,-1)))
+        self.assertTrue(Vector(1,1).contraryTo(Vector(-1,-1)))
+
+    def test_parallel(self):
+        # Two parallel vectors are not contrary
+        self.assertFalse(Vector(1, 0).contraryTo(Vector(1, 0)))
+        self.assertFalse(Vector(0, 1).contraryTo(Vector(0, 1)))
+        self.assertFalse(Vector(1, 1).contraryTo(Vector(1, 1)))
+        self.assertFalse(Vector(1, 1).contraryTo(Vector(50, 50)))
+
+    def test_perpendicular(self):
+        # Two perpendicular vectors are right at the cusp of being contrary.
+        self.assertFalse(Vector(1, 0).contraryTo(Vector(0, 1)))
+        self.assertFalse(Vector(0, 1).contraryTo(Vector(1, 0)))
+        self.assertFalse(Vector(1, 1).contraryTo(Vector(1, -1)))
+
+    def test_aligned_not_parallel(self):
+        # Any two vectors in the same quadrant are not contrary
+        self.assertFalse(Vector(1, 1).contraryTo(Vector(1, 4)))
+        self.assertFalse(Vector(1, 1).contraryTo(Vector(0, 200)))
+        self.assertFalse(Vector(1, 1).contraryTo(Vector(5, 2)))
+
+    def test_contrary(self):
+        # Any two vectors in opposite quadrants are contrary
+        self.assertTrue(Vector(1, 1).contraryTo(Vector(-1, -4)))
+        self.assertTrue(Vector(1, 1).contraryTo(Vector(-1, -200)))
+        self.assertTrue(Vector(1, 1).contraryTo(Vector(-5, -2)))
+        self.assertTrue(Vector(200, 0).contraryTo(Vector(-200, 0)))
+
+
 if __name__ == '__main__':
     unittest.main()
