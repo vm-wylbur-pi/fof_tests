@@ -37,6 +37,9 @@ people = fake_people.FakePeople()
 # Pass a handle to the set of flowers and people to the MQTT-handling module, so that
 # they can be sent commands and updated when MQTT messages are received from the GSA.
 mqtt_client = mqtt_handling.SetupMQTTClient(flowers, people)
+# Start the mqtt_client communication loop in a separate thread. This is much easier
+# than coordinating the polling with the pygame thread.
+mqtt_client.loop_start()
 
 while running:
     # poll for events.  We get events from both the keyboard/mouse, and from MQTT.
@@ -59,18 +62,12 @@ while running:
     for flower in flowers:
         flower.draw(screen)
 
-    # Person rendering.  They will be draw wherever the most recent update placed them.
+    # Person rendering.  They will be drawn wherever the most recent update placed them.
     # There's no smoothing applied between locations.
     people.draw(screen)
 
     # double buffering
     pygame.display.flip()
-
-    # Block for up to 1/3 of frame time to handle MQTT messages. Do this before callying
-    # the pygame clock.tick(), because clock.tick() will block.
-    if not mqtt_client.is_connected():
-        mqtt_client.reconnect()
-    mqtt_client.loop(timeout= (1/FPS) / 3) # timeout is in seconds
 
     # Advance the pygame clock sufficiently to get 60 FPS display.  This will block
     # like sleep(), for however much time is needed so that ticks happen at least
