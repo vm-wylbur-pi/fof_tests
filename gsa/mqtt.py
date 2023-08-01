@@ -76,10 +76,8 @@ def HandleGameControlCommand(message, gameState):
             wave.hue = int(params[0])
         if len(params) >= 3:
             wave.start_loc = Point(int(params[1]), int(params[2]))
-        if len(params) >= 4:
-            wave.velocityX = int(params[3])
         if len(params) >= 5:
-            wave.velocityY = int(params[4])
+            wave.velocity = Vector(int(params[3]), int(params[4]))
         gameState.runStatelessGame(wave)
         return
 
