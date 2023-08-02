@@ -22,7 +22,8 @@ import sys
 
 # websocket
 from flask import Flask, render_template, send_from_directory
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit, async_mode
+import asyncio
 import base64
 import threading
 
@@ -310,6 +311,15 @@ def viz_loop(fps=30.0):
     # benchmark timing
     start_time = time.time()
 
+    #async def emit_results():
+    #    while True:
+    #        # Your machine learning results (e.g., hudframe) here
+    #        # Emit the results to all connected clients
+    #        await socketio.emit('results', {'result': 'your_results_here'}, namespace='/test')
+    #        await asyncio.sleep(0.1)  # You can adjust the sleep time as needed
+
+    # asyncio.ensure_future(emit_results())
+
     fcnt = 0
     video_writer = None
     # Loop through the video frames
@@ -372,7 +382,7 @@ def viz_loop(fps=30.0):
             fps = fcnt / elapsed_time
             print(f"FPS: {fps:.2f}")
 
-        if fcnt % WEBSOCKET_RATE == 0:
+        if WEBSOCKET && fcnt % WEBSOCKET_RATE == 0:
             _, buffer = cv2.imencode('.jpg', hudframe)
             hudframe_base64 = base64.b64encode(buffer).decode('utf-8')
 
