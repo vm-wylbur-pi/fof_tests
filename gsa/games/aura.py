@@ -1,9 +1,14 @@
+# An interactive game in which each person in the field is assigned a color
+# and all the flowers near them light up with their color. Their color follows
+# them as they move around the field. When two or more people get near one another,
+# their colors mix in interesting ways.
+
 import random
 
 from . import game
 from ..game_state import GameState
 from ..flower import Flower
-from ..color import distantFromSetofHues, HSVAColor
+from ..color import distantFromSetofHues, HSVAColor, HueAssignments
 from geometry import Point
 
 class Aura(game.StatefulGame):
@@ -28,44 +33,18 @@ class Aura(game.StatefulGame):
         else:
             return 0.0
 
-    # A set of distinguishable colors
-    hueMenu = frozenset([0, 32, 64, 96, 128, 160, 192, 224])
     TRANSPARENT = HSVAColor(0, 0, 0, 0)  # only alpha=0 matters here
 
     def __init__(self):
         # Which person has which color. Colors are 0-255 hues.
-        self.hue_assignments = {}
-
-    def chooseNextHue(self):
-        if not self.hue_assignments:
-            return random.choice(list(Aura.hueMenu))
-        else:
-            used_colors = set(self.hue_assignments.items())
-            remaining_colors = Aura.hueMenu - used_colors
-            if remaining_colors:
-                return random.choice(list(remaining_colors))
-            else:
-                # This would be a lot of simultaneous people in the field.
-                return random.randint(0,255)
-    
-    def updateColorAssignments(self, activePersonNames):
-        assignedNames = list(self.hue_assignments.keys())
-        for name in assignedNames:
-            if name not in activePersonNames:
-                del self.hue_assignments[name]
-                print(f"Removed hue assignment from {name}.")
-
-        for name in activePersonNames:
-            if name not in self.hue_assignments:
-                self.hue_assignments[name] = self.chooseNextHue()
-                print(f"Assigned hue {self.hue_assignments[name]} to {name}.")
+        self.hueAssignments = HueAssignments()
 
     def runLoop(self, gameState: GameState):
         people = gameState.people.people
         if not people:
             # Nobody is in the field, no updates to the flowers are needed
             return
-        self.updateColorAssignments(people.keys())
+        self.hueAssignments.updateColorAssignments(people.keys())
 
         for flower in gameState.flowers:
             blobs = []
@@ -81,10 +60,10 @@ class Aura(game.StatefulGame):
                 continue
             elif len(blobs) == 1:
                 # This flower is near a single person; use their color
-                hue = self.hue_assignments[blobs[0].name]
+                hue = self.hueAssignments.getAssignment(blobs[0].name)
             elif len(blobs) <= 3:
                 # Fun color mixing. Choose a color distant from the inputs
-                hues = [self.hue_assignments[blob.name] for blob in blobs]
+                hues = [self.hueAssignments.getAssignment(blob.name) for blob in blobs]
                 hue = distantFromSetofHues(hues)
             else:
                 # Four or more people, use white for the overlap
