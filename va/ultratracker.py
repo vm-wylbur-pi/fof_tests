@@ -2,7 +2,7 @@ from ultralytics import YOLO
 import cv2
 from person import Person
 
-MODEL_FILE = "models/fof_yolov8s_128ms.pt"
+MODEL_FILE = "models/fof-yolov8n-secondbatch.pt"
 #MODEL_FILE = "models/fof_yolo5nu.pt"
 
 class UltraTracker:
