@@ -30,12 +30,14 @@ import threading
 pp = pprint.PrettyPrinter(indent=4)
 
 # TODO: Read this from config
+MQTT_ENABLED = True
 MQTT_BROKER_IP = "127.0.0.1"
 MQTT_PEOPLE_TOPIC = 'people-locations/'
 
 # open up the channel that we're reading from
 CHANNEL = 'vids/lots-adults-four-lights.mp4'
 # CHANNEL = 1
+
 CALIBRATION = 'calibration_parameters.npz'
 DEPLOYMENT_FILE = '../fake_field/playa_test_2.yaml'
 MAX_FRAMES = 5000
@@ -51,6 +53,8 @@ CORNER_THRESHOLD = 100 # min threshold to convert to binary when detecting corne
 # Set video properties
 WEBSOCKET = True
 WEBSOCKET_RATE = 10 # how many frames to skip between emitting an image
+
+# saving videos for testing and debugging and posterity
 WRITE_FILE = False
 output_file = 'vids/output_video.avi'
 
@@ -260,10 +264,6 @@ def detectCornerPoints(frame):
 
     return foundPoints, frame
 
-def getNorfairPayload(M,detections):
-    #print(detections.getActiveObjects())
-    #sys.exit()
-    pass
 
 def getPeoplePayload(M):
     plist = {}
@@ -288,7 +288,6 @@ frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
 
-
 cornerstats = {}
 states = ['it worked', 'no points', 'contour fail', 'multi-point', 'corner drift']
 for c in range(len(deployment['field']['corners'])):
@@ -302,9 +301,6 @@ for c in range(len(deployment['field']['corners'])):
 
 # TODO:  load from deployment file
 output_points = np.float32([[0,0],[0,3300], [3300,3300],[3300,0]])
-
-mqtt_client = SetupMQTTClient()
-mqtt_client.connect(MQTT_BROKER_IP)
 
 
 def viz_loop(fps=30.0):
@@ -334,7 +330,7 @@ def viz_loop(fps=30.0):
         if fcnt > MAX_FRAMES:
             break
 
-        if not mqtt_client.is_connected():
+        if MQTT_ENABLED and not mqtt_client.is_connected():
             mqtt_client.reconnect()
 
         if UNDISTORT:
@@ -365,7 +361,7 @@ def viz_loop(fps=30.0):
         # fg_mask = bg_subtractor.apply(frame)
         # frame = cv2.merge([fg_mask, fg_mask, fg_mask])
 
-        if bool(personTracker):
+        if MQTT_ENABLED and bool(personTracker):
             payload = getPeoplePayload(M)
             res = mqtt_client.publish(MQTT_PEOPLE_TOPIC, payload)
             mqtt_client.loop()
@@ -377,12 +373,16 @@ def viz_loop(fps=30.0):
             video_writer.write(hudframe)
 
         #  stupid simple benchmark
-        if fcnt % 100 == 0:
-            elapsed_time = time.time() - start_time
-            fps = fcnt / elapsed_time
-            print(f"FPS: {fps:.2f}")
+        #if fcnt % 100 == 0:
+        #    elapsed_time = time.time() - start_time
+        #    fps = fcnt / elapsed_time
+        #    print(f"FPS: {fps:.2f}")
 
+<<<<<<< Updated upstream
         if WEBSOCKET && fcnt % WEBSOCKET_RATE == 0:
+=======
+        if WEBSOCKET and fcnt % WEBSOCKET_RATE == 0:
+>>>>>>> Stashed changes
             _, buffer = cv2.imencode('.jpg', hudframe)
             hudframe_base64 = base64.b64encode(buffer).decode('utf-8')
 
@@ -411,6 +411,10 @@ if WEBSOCKET:
         return send_from_directory('static', filename)
 
 if __name__ == '__main__':
+    if MQTT_ENABLED:
+        mqtt_client = SetupMQTTClient()
+        mqtt_client.connect(MQTT_BROKER_IP)
+
     if WEBSOCKET:
         # Start the image detection pipeline in a separate thread
         pipeline_thread = threading.Thread(target=viz_loop)
