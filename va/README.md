@@ -79,4 +79,6 @@ In addition to the two trackers built into Ultralytics there's an additional pac
 
 I also built a super stupid tracker initially that just naievely relates current points on the field to the nearest previous points on the field.
 
-It turns out tha tpersistent tracking is based on a combination of nearness and prediction algorithms rather than re-processing the images to see if this blob looks like the last blob.  That makes the processing very sensitive to the accuracy of the trackers.
+It turns out that persistent tracking is based on a combination of nearness and prediction algorithms rather than re-processing the images to see if this blob looks like the last blob.  That makes the processing very sensitive to the accuracy of the trackers.
+
+The approach I've been taking is to get processes designed to track people in bustling crowds to work.  These state of the art models look great in all the testing footage that they show online, but those are all super-carefully-selected videos that the authors and everyone else promoting the models want to show off.  It's possible that the FOF use case is different - where we can shape the tracking process to the games if it's not possible to come up with a unified tracker to track them all.
