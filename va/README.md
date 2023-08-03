@@ -7,7 +7,7 @@ Welcome to the VA system which is responsible for taking live images from the US
 The requirements.txt file contains the python libraries needed to operate the VA.  It's best installed in a virtual environment.
 
 ```
-pip3 -m venv viz
+python3 -m venv viz
 source viz/bin/activate
 pip3 install -r va/requirements.txt`
 ```
