@@ -3,7 +3,6 @@ import cv2
 from person import Person
 
 MODEL_FILE = "models/fof-yolov8n-secondbatch.pt"
-#MODEL_FILE = "models/fof_yolo5nu.pt"
 
 class UltraTracker:
 
@@ -11,7 +10,7 @@ class UltraTracker:
         self.model = YOLO(MODEL_FILE)
 
     def track(self, frame, personTracker, hudframe):
-        results = self.model.track(frame, persist=True, classes=1, tracker="botsort.yaml", conf=0.25)
+        results = self.model.track(frame, persist=True, classes=1, tracker="bytetrack.yaml", conf=0.1, iou=0.8)
         for res in results:
             if  results[0].boxes.id !=  None:
                 boxes = results[0].boxes.xyxy.cpu().numpy().astype(int)

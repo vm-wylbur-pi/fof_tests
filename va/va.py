@@ -22,7 +22,7 @@ import sys
 
 # websocket
 from flask import Flask, render_template, send_from_directory
-from flask_socketio import SocketIO, emit, async_mode
+from flask_socketio import SocketIO, emit # , async_mode
 import asyncio
 import base64
 import threading
@@ -40,7 +40,7 @@ CHANNEL = 'vids/lots-adults-four-lights.mp4'
 
 CALIBRATION = 'calibration_parameters.npz'
 DEPLOYMENT_FILE = '../fake_field/playa_test_2.yaml'
-MAX_FRAMES = 5000
+MAX_FRAMES = 2500
 
 # consume the first X of these and generate a median frame
 # MEDIAN_FRAMES = 2500
@@ -378,11 +378,7 @@ def viz_loop(fps=30.0):
         #    fps = fcnt / elapsed_time
         #    print(f"FPS: {fps:.2f}")
 
-<<<<<<< Updated upstream
-        if WEBSOCKET && fcnt % WEBSOCKET_RATE == 0:
-=======
         if WEBSOCKET and fcnt % WEBSOCKET_RATE == 0:
->>>>>>> Stashed changes
             _, buffer = cv2.imencode('.jpg', hudframe)
             hudframe_base64 = base64.b64encode(buffer).decode('utf-8')
 
