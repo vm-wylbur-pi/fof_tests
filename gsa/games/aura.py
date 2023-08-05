@@ -8,7 +8,8 @@ import random
 from . import game
 from ..game_state import GameState
 from ..flower import Flower
-from ..color import distantFromSetofHues, HSVAColor, HueAssignments
+from ..color import distantFromSetofHues, HSVAColor
+from ..person import HueAssignments
 from geometry import Point
 
 class Aura(game.StatefulGame):
