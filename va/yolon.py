@@ -116,7 +116,7 @@ parser.add_argument(
 parser.add_argument(
     "--track-points",
     type=str,
-    default="centroid",
+    default="bbox",
     help="Track points: 'centroid' or 'bbox'",
 )
 args = parser.parse_args()

@@ -205,6 +205,9 @@ $(document).ready(function() {
     function handlePeople(plist){
        let foundpeople = cy.collection()
 
+        let peeps = cy.nodes('[atype="person"]')
+        cy.remove(peeps)
+
         for (var pid in plist){
             var pobj = plist[pid]
             var pele = cy.$id(pid)
@@ -219,11 +222,12 @@ $(document).ready(function() {
             }
 
             pele.position({x: pobj['x'], y: pobj['y']})
-            foundpeople.union(pele)
+            foundpeople.add(pele)
         }
         // clean out people who weren't in the list
         let ediff = cy.nodes('[atype="person"]').diff(foundpeople)
-        console.log(ediff.left.length, ediff.right.length)
+        //console.log(ediff.left.length, ediff.right.length)
+        console.log(foundpeople)
         //cy.remove(unfoundpeople)
     }
 
