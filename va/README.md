@@ -26,7 +26,17 @@ Variables in the code can enable/disable and configure various features.
 
 When running, the va will print out a stream of debug messages with the number of people that it detected in the field and the time it took to process the image.  The people should be visible as grey squares moving around the field - I've been using the Mock People field page to watch them move.
 
+### Swapping Detection Models
+There are a variety of detection models in the va/models directory that can be swapped in to trade off speed and accuracy.  They can be slotted into the ultradetector.py file.  Note that the models beginning with "fof" need to set the PERSON_CLASS variable to 0.  You'll know you did it wrong if you run the VA and the only thing it highligts are the flowers in the field.
 
+Models are named based on:
+* n - nano
+* s - small
+* m - medium
+
+Where the larger the model, the more time it's going to take for processing, but the more accurate it will be.
+
+The other variable is the confidence score that is used when detecting people - it's set in the ultradetector and the value is carried over to the tracker.  That can be set in the utradetector file.  For most of the models 0.3 and above is good, with the exeception of the models with "scratch" in the name.  These need to have the PERSON_CLASS variable set to 0 and the confidence dialed way down, like 0.1 or lower.
 ## Under the Hood
 The VA pipeline is split into multiple parts.
 
