@@ -2,6 +2,7 @@ from dataclasses import dataclass
 import json
 import random
 import time
+from typing import Any, List, Callable
 
 import paho.mqtt.client as mqtt
 
@@ -59,57 +60,55 @@ class People():
                 print(f"Forgetting about {person}, who hasn't been seen in a while.")
                 del self.people[person]
 
-# Class to track the association of colors with people, and assign new colors
-# to new people arriving on the field.
-class HueAssignments:
 
-    # A set of distinguishable colors, with names for redable debugging messages.
-    hueMenu = {
-        0: 'red',
-        32: 'orange',
-        64: 'yellow',
-        96: 'green',
-        128: 'aqua',
-        160: 'blue',
-        192: 'purple',
-        224: 'pink',
-    }
+# Class to track the association of some set of items (hues, sounds, etc) with 
+# each person on the field. Handles the assignment of an item to new people
+# when they arrive on the field.  Keeps the same item assigned to the same person,
+# even if they disappear for a while then reappear.
+class RandomizedAssignments:
 
-    def __init__(self):
-        # Which person has which color. People are their names. Colors are 0-255 hues.
-        self.hue_assignments: dict[str, int] = {}
+    # assignableItems: the values that can be assigned to a person.
+    # itemGenerator: If this is provided, it will be called to generate new items
+    # after the assignableItems have been exhausted. If not, the assignableItems
+    # will be recycled (so that one of them is assigned to more than one person).
+    def __init__(self, assignableItems: List[Any], itemGenerator: Callable[[], Any] = None):
+        self.asignableItems = assignableItems
+        self.itemGenerator = itemGenerator
+        # Which person has which item. People are their names.
+        self.assignments: dict[str, Any] = {}
 
-    def hueName(self, hue):
-        return HueAssignments.hueMenu.get(hue, "some other random hue")
-
-    def chooseNextHue(self):
-        if not self.hue_assignments:
-            return random.choice(list(HueAssignments.hueMenu.keys()))
+    def chooseNextItem(self):
+        unassigned_items = [item for item in self.asignableItems
+                            if item not in self.assignments.values()]
+        if unassigned_items:
+            return random.choice(unassigned_items)
         else:
-            remaining_colors = [c for c in HueAssignments.hueMenu.keys()
-                                if c not in self.hue_assignments.values()]
-            if remaining_colors:
-                return random.choice(remaining_colors)
+            # The items have all been assigned.  We'll either generate one
+            # using the provided function...
+            if self.itemGenerator:
+                return self.itemGenerator()
             else:
-                # This would be a lot of simultaneous people in the field.
-                return random.randint(0, 255)
+                # ...or pick a random item to re-use among those assigned the least so far.
+                use_counts = [self.asignableItems.count(item) for item in self.asignableItems]
+                min_use_count = min(use_counts)
+                items_used_least = [item for item in self.asignableItems
+                                    if list.count(item) == min_use_count]
+                return random.choice(items_used_least)
 
-    def updateColorAssignments(self, activePersonNames):
-        assignedNames = list(self.hue_assignments.keys())
+    def updateAssignments(self, activePersonNames):
+        assignedNames = list(self.assignments.keys())
         for name in assignedNames:
             if name not in activePersonNames:
-                del self.hue_assignments[name]
-                print(f"Removed hue assignment from {name}.")
+                del self.assignments[name]
+                print(f"Removed assignment from {name}.")
 
         for name in activePersonNames:
-            if name not in self.hue_assignments:
-                self.hue_assignments[name] = self.chooseNextHue()
-                print(
-                    f"Assigned hue {self.hue_assignments[name]} to {name}.")
+            if name not in self.assignments:
+                self.assignments[name] = self.chooseNextItem()
+                print(f"Assigned {self.assignments[name]} to {name}.")
 
     def getAssignment(self, name: str) -> int:
-        if name not in self.hue_assignments:
-            print(
-                "WARNING: Requested hue assignment of unknown person. Returning random hue.")
-            self.hue_assignments[name] = random.randint(0, 255)
-        return self.hue_assignments.get(name, 0)
+        if name not in self.assignments:
+            print("WARNING: Requested assignment of unknown person, assigning new item.")
+            self.assignments[name] = self.chooseNextItem()
+        return self.assignments.get(name, None)

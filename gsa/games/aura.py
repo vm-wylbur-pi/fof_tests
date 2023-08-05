@@ -7,10 +7,8 @@ import random
 
 from . import game
 from ..game_state import GameState
-from ..flower import Flower
 from ..color import distantFromSetofHues, HSVAColor
-from ..person import HueAssignments
-from geometry import Point
+from ..person import RandomizedAssignments
 
 class Aura(game.StatefulGame):
 
@@ -35,17 +33,28 @@ class Aura(game.StatefulGame):
             return 0.0
 
     TRANSPARENT = HSVAColor(0, 0, 0, 0)  # only alpha=0 matters here
+    # A set of distinguishable colors
+    hueMenu = {
+        0: 'red',
+        32: 'orange',
+        64: 'yellow',
+        96: 'green',
+        128: 'aqua',
+        160: 'blue',
+        192: 'purple',
+        224: 'pink',
+    }
 
     def __init__(self):
         # Which person has which color. Colors are 0-255 hues.
-        self.hueAssignments = HueAssignments()
+        self.hueAssignments = RandomizedAssignments(list(Aura.hueMenu.keys()))
 
     def runLoop(self, gameState: GameState):
         people = gameState.people.people
         if not people:
             # Nobody is in the field, no updates to the flowers are needed
             return
-        self.hueAssignments.updateColorAssignments(people.keys())
+        self.hueAssignments.updateAssignments(people.keys())
 
         for flower in gameState.flowers:
             blobs = []
