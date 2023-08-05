@@ -1,6 +1,8 @@
 # This file contains a structure list of audio files that the experiences (games")
 # run through the GSA use. These files should be loaded onto all the flowers.
 #
+# All paths here are relative to the root folder of the SD filesystem.
+#
 # Schema:
 #  At the top level, this is a dict keyed by game name. The structure within each
 #  game is not specified and all that matters is that the file matches what that
@@ -33,3 +35,80 @@ Fairy:
     - FoF_TaliaGiggle4.wav
     - FoF_TaliaOverHere.wav
     - FoF_TaliaOverHere2.wav
+
+Wave:
+  # These are the sounds that play as each wave of color arrives at a flower.
+
+  # Nat specified that each of these works together as an alternating pair.
+  # Each string here must appear as a key in the Syllables dit below
+  SyllablePairs:
+    - [Hi, yeahUP]
+    - [OO, mm]
+    - [Ha, oa]
+    - [oo-oo, He]
+    - [yeahUP, "yeah"]
+    - [mm, Hi]
+  Syllables:
+    # All files for the wave game are in a folder named "wave", which is in
+    # the root of the SD card filesystem.
+    #
+    # There's plenty of redundancy in the file naming here.  We decided this
+    # is preferable to computed filenames, since it leaves us more flexibility
+    # to make changes later.
+    yeahUP:
+      - wave/yeahUP1.wav
+      - wave/yeahUP2.wav
+      - wave/yeahUP3.wav
+      - wave/yeahUP4.wav
+      - wave/yeahUP5.wav
+      - wave/yeahUP6.wav
+    oa:
+      - wave/oa1.wav
+      - wave/oa2.wav
+      - wave/oa3.wav
+      - wave/oa4.wav
+      - wave/oa5.wav
+      - wave/oa6.wav
+    # These are capital Os, not zeros
+    OO:
+      - wave/OO1.wav
+      - wave/OO2.wav
+      - wave/OO3.wav
+      - wave/OO4.wav
+      - wave/OO5.wav
+      - wave/OO6.wav
+    oo-oo:
+      - wave/oo-oo1.wav
+      - wave/oo-oo2.wav
+      - wave/oo-oo3.wav
+      - wave/oo-oo4.wav
+      - wave/oo-oo5.wav
+      - wave/oo-oo6.wav
+    yeah:
+      - wave/yeah1.wav
+      - wave/yeah2.wav
+      - wave/yeah3.wav
+      - wave/yeah4.wav
+      - wave/yeah5.wav
+      - wave/yeah6.wav
+    mm:
+      - wave/mm1.wav
+      - wave/mm2.wav
+      - wave/mm3.wav
+      - wave/mm4.wav
+      - wave/mm5.wav
+      - wave/mm6.wav
+    ha:
+      - wave/ha1.wav
+      - wave/ha2.wav
+      - wave/ha3.wav
+      - wave/ha4.wav
+      - wave/ha5.wav
+      - wave/ha6.wav
+    He:
+      - wave/He1.wav
+      - wave/He2.wav
+      - wave/He3.wav
+      - wave/He4.wav
+      - wave/He5.wav
+      - wave/He6.wav
