@@ -6,12 +6,14 @@ import math
 import pprint
 
 #import norfair
-#from norfair import Detection, Paths, Tracker, Video
+from norfair import Detection, Paths, Tracker
 
 #from tflitedetector import TFLiteDetector
 #from centroiddetector import CentroidDetector
+# from ultratracker import UltraTracker
 
-from ultratracker import UltraTracker
+from ultradetector import UltraDetector
+from norfairtracker import NorfairTracker
 
 import paho.mqtt.client as paho_mqtt
 import datetime
@@ -80,7 +82,10 @@ bg_subtractor = cv2.createBackgroundSubtractorKNN(detectShadows=True, history=50
 
 # detector = CentroidDetector(bg_subtractor, frame_width, frame_height)
 # detector = TFLiteDetector(bg_subtractor, frame_width, frame_height)
-tracker = UltraTracker(bg_subtractor)
+# tracker = UltraTracker(bg_subtractor)
+
+detector = UltraDetector(bg_subtractor)
+tracker = NorfairTracker()
 
 #if WRITE_FILE:
 #    video_writer = cv2.VideoWriter(output_file, cv2.VideoWriter_fourcc(*'MJPG'), fps, (tracker.output_width, tracker.output_height))
@@ -340,7 +345,9 @@ def viz_loop(fps=30.0):
         corner_points, hudframe = detectCornerPoints(frame)
         M = cv2.getPerspectiveTransform(np.float32(corner_points),output_points)
 
-        hudframe = tracker.track(frame, personTracker, hudframe)
+        detections, conf = detector.detect(frame)
+        hudframe = tracker.track(frame, detections, conf, hudframe, personTracker)
+
 
         #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         #frame = cv2.equalizeHist(frame)
@@ -388,8 +395,10 @@ def viz_loop(fps=30.0):
 
     if WRITE_FILE:
         video_writer.release()
-        mqtt_client.loop_stop()
         cap.release()
+
+    if MQTT_ENABLED:
+        mqtt_client.loop_stop()
 
 
 if WEBSOCKET:
