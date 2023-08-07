@@ -6,14 +6,30 @@ from typing import Any, List, Callable
 
 import paho.mqtt.client as mqtt
 
-from geometry import Point
+import geometry
+from util import RingBuffer
 
 # A person in the field.
 @dataclass
 class Person():
     name: str = ""
-    location: Point = None
+    location: geometry.Point = None
     last_seen: int = None
+    recent_locations: RingBuffer(capacity=20)  # Two seconds of history at 10 FPS
+
+    def isMoving(self):
+        # TODO: This could be better if it took into account timing. We could store the
+        #       timestamps of the recent locations and have a speed threshold instead 
+        #       of a distance threshold.
+        if len(self.recent_locations) < 10:
+            # Don't try to decide if people are moving before we have some location history
+            return False
+        old_location = geometry.AveragePoint(self.recent_locations[:5])
+        new_location = geometry.AveragePoint(self.recent_locations[5:])
+        dist = old_location.distanceTo(new_location)
+        MOVING_DISTANCE_THRESHOLD = 100  # In field units which should be inches.
+        return dist > MOVING_DISTANCE_THRESHOLD
+        
 
 class People():
     def __init__(self):
@@ -41,6 +57,7 @@ class People():
                 person = Person(name)
                 self.people[name] = person
             person.location = Point(location['x'], location['y'])
+            person.recent_locations.add(person.location)
             person.last_seen = update['timestamp']
 
     def removePeopleNotSeenForAWhile(self):
