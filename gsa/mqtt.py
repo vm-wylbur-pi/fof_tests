@@ -24,6 +24,8 @@ def SetupMQTTClient(gameState):
         client.subscribe("game-control/#")
         print('Subscribing to people location updates.')
         client.subscribe("people-locations/#")
+        print('Subscribing to reference clock updates.')
+        client.subscribe("flower-control/all/time/setEventReference")
 
     def on_message(unused_client, unused_userdata, message):
         HandleMQTTMessage(message, gameState)
@@ -56,6 +58,10 @@ def HandleMQTTMessage(message, gameState):
         HandleGameControlCommand(message, gameState)
     elif message.topic.startswith("people-locations"):
         gameState.people.updateFromMQTT(message)
+    elif message.topic.startswith("flower-control/all/time/setEventReference"):
+        # flower-control/*/time/setEventReference has a single integer parameter
+        gameState.control_timer_reference_time = int(message.payload)
+        print(f"Set event reference time to {gameState.control_timer_reference_time}")
     else:
         print(f"Unhandled MQTT message topic: {message.topic}")
 

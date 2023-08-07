@@ -1,3 +1,5 @@
+import time
+
 import flower
 import field
 import person
@@ -8,6 +10,13 @@ class GameState:
         self.field = field.Field(deployment_file)
         self.people = person.People()
         self.stateful_games = []
+        self.control_timer_reference_time: int = None
+
+    # Returns the number of milliseconds that have passed since the 
+    # globally shared event reference time.
+    def controlTimer(self) -> int:
+        nowMillis = int(round(time.time() * 1000))
+        return nowMillis - self.control_timer_reference_time
 
     def runStatelessGame(self, game):
         game.run(self.flowers)
