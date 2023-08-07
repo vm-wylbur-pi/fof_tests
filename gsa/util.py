@@ -14,9 +14,15 @@ class RingBuffer(Sequence):
             self.items[self.oldestIndex] = item
             self.oldestIndex = (self.oldestIndex+1) % self.capacity
 
+    def translateIndex(self, i):
+        return (self.oldestIndex + i) % self.capacity
+
     def __getitem__(self, i):
-        true_index = (self.oldestIndex + i) % self.capacity
-        return self.L[true_index]
+        if isinstance(i, int):
+            return self.items[self.translateIndex(i)]
+        if isinstance(i, slice):
+            start, stop, step = i.indices(len(self.items))
+            return [self.items[idx] for idx in range(start, stop, step)]
 
     def __len__(self):
         return len(self.items)
