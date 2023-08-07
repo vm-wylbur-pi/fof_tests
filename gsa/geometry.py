@@ -58,6 +58,14 @@ class Line:
         return projection.diff( self.v.scale(projection.dot(self.v))  )
 
 
+def AveragePoint(points: 'list[Point]') -> Point:
+    if not points:
+        return None
+    avg_x = sum(point.x for point in points) / len(points)
+    avg_y = sum(point.y for point in points) / len(points)
+    return Point(int(round(avg_x)), int(round(avg_y)))
+
+
 # Run unit testes:
 #  python3 geometry.py
 
