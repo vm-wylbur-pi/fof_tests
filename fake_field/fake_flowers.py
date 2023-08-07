@@ -14,6 +14,7 @@ font = pygame.font.SysFont(None, 15)
 
 @dataclass
 class HSVAColor:
+    # All components are in the range [0-255]
     hue: int
     sat: int = 0
     val: int = 100
@@ -41,7 +42,7 @@ class FakeFlower:
         pygame.draw.circle(screen, led_state.blossom_color,
                            pygame.Vector2(self.x, self.y), radius=15)
 
-        if self.text and self.textExpirationTime > time:
+        if self.text and self.textStartTime < time < self.textExpirationTime:
             textImg = font.render(self.text, True, pygame.Color("white"))
             screen.blit(textImg, (self.x, self.y+20))
 
@@ -55,9 +56,16 @@ class FakeFlower:
     # This is used to show the flower playing a sound file, rebooting, or
     # other behaviors that are hard to render as graphics.
     # duration is in milliseconds.
-    def showText(self, text, duration=900):
+    # startTime is a string start-time spec, which is either
+    #   - an integer giving a controlMillis start time
+    #   - a string starting with "+" giving a number of millis relative to now.
+    def showText(self, text, duration=900, startTime=None):
         self.text = text
-        self.textExpirationTime = self.controlMillis() + duration
+        if startTime:
+            self.textStartTime = parseStartTime(self.controlMillis, startTime)
+        else:
+            self.textStartTime = self.controlMillis()  # show immediately
+        self.textExpirationTime = self.textStartTime + duration
 
     def controlMillis(self):
         # System time is used as a stand-in for NTP-synced time
@@ -80,7 +88,8 @@ class FakeFlower:
             for p in self.patterns:
                 if p.__class__.__name__ == "UpdatableColor":
                     p.setColor(color)
-                    #print(f"Flower {self.id} modified UpdatableColor({str_params})")
+                    #if int(self.id[-2:], base=16) % 20 == 0:
+                    #    print(f"Flower {self.id} modified UpdatableColor({str_params})")
                     break
             else:
                 self.patterns.append(UpdatableColor(color))
@@ -157,7 +166,7 @@ class UpdatableColor(FlowerPattern):
         self.setColor(color)
 
     def setColor(self, color: HSVAColor):
-        self.color = color  # used for alpha
+        self.color = color  # used for alpha only
         self.pycolor = hsv255ToPyGameColor(color.hue, color.sat, color.val) # used for other components
 
     def isDone(self, time: int):

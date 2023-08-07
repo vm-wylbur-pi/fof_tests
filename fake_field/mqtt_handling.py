@@ -75,10 +75,18 @@ def send_commands_to_flowers(mqtt_message, flowers):
                 flower.addPattern(pattern_name, pattern_params)
 
     elif command.startswith("audio/playSoundFile"):
-        audio_filename = payload
+        audio_filename, start_time = None, None
+        params = payload.split(',')
+        if len(params) < 1 or params[0].strip() == '':
+            print(f"ERROR: audio/playSoundFile command missing filename")
+            return
+        if len(params) >= 1:
+            audio_filename = params[0]
+        if len(params) >= 2:
+            start_time = params[1] 
         for flower in flowers:
             if flower.id == which_flower or which_flower == "all":
-                flower.showText(audio_filename)
+                flower.showText(audio_filename, startTime=start_time)
 
     elif command.startswith("screen/setText"):
         text_to_show_on_screen = payload
