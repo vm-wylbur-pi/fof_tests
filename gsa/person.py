@@ -15,7 +15,7 @@ class Person():
     name: str = ""
     location: geometry.Point = None
     last_seen: int = None
-    recent_locations: RingBuffer(capacity=20)  # Two seconds of history at 10 FPS
+    recent_locations: RingBuffer = RingBuffer(capacity=20)  # Two seconds of history at 10 FPS
 
     def isMoving(self):
         # TODO: This could be better if it took into account timing. We could store the
@@ -56,7 +56,7 @@ class People():
                 # We've never seen this person before; instantiate them.
                 person = Person(name)
                 self.people[name] = person
-            person.location = Point(location['x'], location['y'])
+            person.location = geometry.Point(location['x'], location['y'])
             person.recent_locations.add(person.location)
             person.last_seen = update['timestamp']
 
@@ -71,11 +71,11 @@ class People():
         # (in the mock-people code they come from Javascript's Date.now()), so
         # they are comparable with python's time.time().
         now = time.time() * 1000
-        for person in list(self.people.keys()):
-            time_since_last_seen = now - self.people[person].last_seen
+        for name in list(self.people.keys()):
+            time_since_last_seen = now - self.people[name].last_seen
             if time_since_last_seen > PERSON_TIMEOUT:
-                print(f"Forgetting about {person}, who hasn't been seen in a while.")
-                del self.people[person]
+                print(f"Forgetting about {name}, who hasn't been seen in a while.")
+                del self.people[name]
 
 
 # Class to track the association of some set of items (hues, sounds, etc) with 
