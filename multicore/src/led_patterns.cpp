@@ -158,6 +158,27 @@ void HuePulse::run(uint32_t time, CRGB leds[NUM_LEDS]) {
     }
 }
 
+void UpdatableColor::run(uint32_t time, CRGB leds[NUM_LEDS]) {
+    // Alpha blend against the blossom only.
+    for (int i=BLOSSOM_START; i<BLOSSOM_END; i++) {
+        CRGB target = _color;
+        leds[i].r = lerp8by8(leds[i].r, target.r, _alpha);
+        leds[i].g = lerp8by8(leds[i].g, target.g, _alpha);
+        leds[i].b = lerp8by8(leds[i].b, target.b, _alpha);
+    }
+}
+
+bool UpdatableColor::isDone(uint32_t time) {
+    // Keep the flower at the specified color until the pattern is cleared explicitly.
+    return false;
+}
+
+String UpdatableColor::name() {
+    // Simple, invariant name, since we check for equality against this to get 
+    // some polymorphism in led_control::commands::addPattern
+    return "UpdatableColor";
+}
+
 String FairyVisit::name() {
     return "FairyVisit(visitDuration=" + String(_visitDuration) + 
         ", fairySpeed=" + String(_fairySpeed, 1) + ")";
@@ -341,6 +362,22 @@ std::unique_ptr<Pattern> makePattern(const String& patternName, const String& pa
         if (params.size() >= 5) { brightness = params[4].toInt(); }
         return std::unique_ptr<Pattern>(new HuePulse(hue, startTime, rampDuration, peakDuration, brightness));
     }
+    // hue, sat, val: which color to show
+    // alpha: blending param with existing LED state larger means
+    //        this pattern's color will be more dominant.
+    // All four parameters are in the range [0-255]
+    if (patternName == "UpdatableColor") {
+        uint8_t hue = 160;
+        uint8_t sat = 255;
+        uint8_t val = 255;
+        uint8_t alpha = 255;
+        if (params.size() >= 1) { hue = params[0].toInt(); }
+        if (params.size() >= 2) { sat = params[1].toInt(); }
+        if (params.size() >= 3) { val = params[2].toInt(); }
+        if (params.size() >= 4) { alpha = params[3].toInt(); }
+        return std::unique_ptr<Pattern>(new UpdatableColor(CHSV(hue, sat, val), alpha));
+    }
+    
     // Parameters
     //    visitDuration; How long the fairy effect lasts, in milliseconds
     //    fairySpeed: speed of the fairy, in LEDs per second

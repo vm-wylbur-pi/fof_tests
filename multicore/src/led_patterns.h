@@ -130,6 +130,23 @@ class HuePulse : public Pattern {
     fract8 _alpha[NUM_LEDS];
 };
 
+// Sets the blossom to a specified HSVA Color.
+// This Pattern is unusual in that its color parameter can be changed after it 
+// is constructed.  The idea is that there should only be one UpdatableColor
+// in the stack of LED Patterns, and it can be changed, maybe often. This is used
+// for any frame-by-frame control of the field's appearance.
+class UpdatableColor : public Pattern {
+  public:
+    UpdatableColor(CHSV color, uint8_t alpha)
+      : _color(color), _alpha(alpha) {};
+    void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
+    bool isDone(uint32_t time) override;
+    String name();
+  private:
+    CHSV _color;
+    uint8_t _alpha;
+};
+
 class FairyVisit : public Pattern {
   public:
     FairyVisit(uint32_t visitDuration, float fairySpeed)
