@@ -206,6 +206,7 @@ $(document).ready(function() {
        let foundpeople = cy.collection()
 
         let peeps = cy.nodes('[atype="person"]')
+        // just remove everyone and re-draw rather than diff
         cy.remove(peeps)
 
         for (var pid in plist){
@@ -225,9 +226,9 @@ $(document).ready(function() {
             foundpeople.add(pele)
         }
         // clean out people who weren't in the list
-        let ediff = cy.nodes('[atype="person"]').diff(foundpeople)
+        //let ediff = cy.nodes('[atype="person"]').diff(foundpeople)
         //console.log(ediff.left.length, ediff.right.length)
-        console.log(foundpeople)
+        //console.log(foundpeople)
         //cy.remove(unfoundpeople)
     }
 

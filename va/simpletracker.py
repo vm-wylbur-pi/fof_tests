@@ -13,7 +13,6 @@ class SimpleTracker:
         personTracker.clear()
         for bb in detections:
             bbarray = [bb[0],bb[1],bb[2],bb[3]]
-            print(bbarray)
             personTracker[self.counter] = Person(pid=self.counter,bb=bbarray)
             personTracker[self.counter].draw(hudframe)
             self.counter += 1

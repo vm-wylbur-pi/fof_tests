@@ -8,9 +8,9 @@ import pprint
 #import norfair
 from norfair import Detection, Paths, Tracker
 
-#from tflitedetector import TFLiteDetector
-#from centroiddetector import CentroidDetector
-# from ultratracker import UltraTracker
+from tflitedetector import TFLiteDetector
+from centroiddetector import CentroidDetector
+from ultratracker import UltraTracker
 
 from ultradetector import UltraDetector
 from norfairtracker import NorfairTracker
@@ -45,6 +45,7 @@ CHANNEL = 'vids/lots-adults-four-lights.mp4'
 CALIBRATION = 'calibration_parameters.npz'
 DEPLOYMENT_FILE = '../fake_field/playa_test_2.yaml'
 MAX_FRAMES = 2500
+SKIP_FRAMES = 1  # used to test intermittent frames from a live camera
 
 # consume the first X of these and generate a median frame
 # MEDIAN_FRAMES = 2500
@@ -84,12 +85,12 @@ bg_subtractor = cv2.createBackgroundSubtractorKNN(detectShadows=True, history=50
 
 # detector = CentroidDetector(bg_subtractor, frame_width, frame_height)
 # detector = TFLiteDetector(bg_subtractor, frame_width, frame_height)
-# tracker = UltraTracker(bg_subtractor)
 
 detector = UltraDetector(bg_subtractor)
-tracker = SimpleTracker()
 
-#tracker = NorfairTracker()
+# tracker = NorfairTracker()
+tracker = SimpleTracker()
+#tracker = UltraTracker(bg_subtractor)
 
 #if WRITE_FILE:
 #    video_writer = cv2.VideoWriter(output_file, cv2.VideoWriter_fourcc(*'MJPG'), fps, (tracker.output_width, tracker.output_height))
@@ -338,6 +339,9 @@ def viz_loop(fps=30.0):
 
         if fcnt > MAX_FRAMES:
             break
+
+        if fcnt % SKIP_FRAMES != 0:
+            continue
 
         if MQTT_ENABLED and not mqtt_client.is_connected():
             mqtt_client.reconnect()

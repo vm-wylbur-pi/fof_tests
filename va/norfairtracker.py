@@ -41,7 +41,7 @@ class NorfairTracker:
             )
             cnt += 1
 
-        tracked_objects = self.nt.update(detections=norfair_detections)
+        tracked_objects = self.nt.update(detections=norfair_detections, period=1)
 
         ids = []
 
@@ -56,7 +56,6 @@ class NorfairTracker:
                 else:
                     personTracker[id] = Person(pid=id,bb=bbarray)
 
-                print(bbarray)
                 personTracker[id].draw(hudframe)
 
         personTrackerKeys = set(personTracker.keys())

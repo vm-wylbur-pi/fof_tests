@@ -3,9 +3,11 @@ import cv2
 from person import Person
 
 MODEL_FILE = "models/fof-yolov5su-fullset.pt"
+#MODEL_FILE = "models/fof-yolov8n-secondbatch.pt"
+#MODEL_FILE = "models/yolov8n.pt"
+
 PERSON_CLASS = 1
 PERSON_CONF = 0.4
-#MODEL_FILE = "models/yolov8n.pt"
 
 class UltraDetector:
 
