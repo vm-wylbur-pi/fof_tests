@@ -95,18 +95,19 @@ namespace led_control {
                 if (pattern->name() == patternName) {
                     alreadyHaveOne = true;
                     pattern = std::move(newPattern);
+                    comms::sendDebugMessage("Updated LED pattern: " + newPattern->descrip());
                 }
             }
             if (!alreadyHaveOne) {
                 patterns.push_back(std::move(newPattern));
-                comms::sendDebugMessage("Adding LED pattern: " + newPattern->name());
+                comms::sendDebugMessage("Added LED pattern: " + newPattern->descrip());
             }
         }
 
         void listPatterns() {
             String msg = "LED Patterns: ";
             for (auto& pattern : patterns) {
-                msg += pattern->name() + ", ";
+                msg += pattern->descrip() + ", ";
             } 
             if (msg.endsWith(", ")) {
                 msg = msg.substring(0, msg.length() - 2);
