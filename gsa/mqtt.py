@@ -2,6 +2,7 @@ import paho.mqtt.client as paho_mqtt
 from geometry import Point, Vector
 
 import gsa.games.aura as aura
+import gsa.games.wave as wave_module
 import gsa.games.color_waves as color_waves
 import gsa.games.fairy as fairy
 import gsa.games.fun_screen_text as fun_screen_text
@@ -102,6 +103,10 @@ def HandleGameControlCommand(message, gameState):
 
     if command == "runGame/Aura":
         gameState.runStatefulGame(aura.Aura())
+        return
+
+    if command == "runGame/Wave":
+        gameState.runStatefulGame(wave_module.Wave())
         return
 
     if command == "runGame/Fairy":

@@ -30,6 +30,11 @@ $( document ).ready(function() {
         $('input[name="field_params"]').val("");
         $('#field_command_param_explanation').text("Starts the Aura game. No parameters. It only makes sense to have one instance.");
     });
+    $( "button#wave" ).click(function (event) {
+        $('input[name="field_command"]').val("runGame/Wave");
+        $('input[name="field_params"]').val("");
+        $('#field_command_param_explanation').text("Starts the Wave game. No parameters. It only makes sense to have one instance.");
+    });
     $( "button#funScreenText" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/FunScreenText");
         $('input[name="field_params"]').val("");
