@@ -6,7 +6,7 @@
 #
 # Sample usage:
 #   cd fof_tests
-#   tools/convert_flower_inventory_to_cpp.py server/config/inventory.csv
+#   utils/convert_flower_inventory_to_cpp.py server/config/inventory.csv
 
 import csv
 import sys
