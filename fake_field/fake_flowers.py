@@ -62,7 +62,7 @@ class FakeFlower:
     def showText(self, text, duration=900, startTime=None):
         self.text = text
         if startTime:
-            self.textStartTime = parseStartTime(self.controlMillis, startTime)
+            self.textStartTime = parseStartTime(self.controlMillis(), startTime)
         else:
             self.textStartTime = self.controlMillis()  # show immediately
         self.textExpirationTime = self.textStartTime + duration
