@@ -27,7 +27,9 @@ class Person():
         old_location = geometry.AveragePoint(self.recent_locations[:5])
         new_location = geometry.AveragePoint(self.recent_locations[5:])
         dist = old_location.distanceTo(new_location)
-        MOVING_DISTANCE_THRESHOLD = 100  # In field units which should be inches.
+        MOVING_DISTANCE_THRESHOLD = 10  # In field units which should be inches.
+        # if (dist < MOVING_DISTANCE_THRESHOLD):
+        #     print(f"{self.name} is not moving. Old avg: {old_location}, New avg: {new_location}, dist: {dist}")
         return dist > MOVING_DISTANCE_THRESHOLD
         
 
@@ -124,7 +126,7 @@ class RandomizedAssignments:
                 self.assignments[name] = self.chooseNextItem()
                 print(f"Assigned {self.assignments[name]} to {name}.")
 
-    def getAssignment(self, name: str) -> int:
+    def getAssignment(self, name: str) -> Any:
         if name not in self.assignments:
             print("WARNING: Requested assignment of unknown person, assigning new item.")
             self.assignments[name] = self.chooseNextItem()
