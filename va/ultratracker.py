@@ -2,15 +2,16 @@ from ultralytics import YOLO
 import cv2
 from person import Person
 
-#MODEL_FILE = "models/fof-yolov5mu-fullset.pt"
-MODEL_FILE = "models/yolov8n.pt"
+#MODEL_FILE = "models/fof-yolov5su-fullset.pt"
+#MODEL_FILE = "models/fof_yolov8n-secondbatch.pt"
+# MODEL_FILE = "models/yolov8n-seg.pt"
 
 class UltraTracker:
 
     def __init__(self, bg_subtractor):
         self.model = YOLO(MODEL_FILE)
 
-    def track(self, frame, personTracker, hudframe):
+    def track(self, frame, detections, conf, hudframe, personTracker):
         results = self.model.track(frame, persist=True, classes=1, tracker="bytetrack.yaml", conf=0.1, iou=0.3)
         for res in results:
             if  results[0].boxes.id !=  None:

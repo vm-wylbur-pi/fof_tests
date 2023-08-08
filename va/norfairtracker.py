@@ -41,7 +41,7 @@ class NorfairTracker:
             )
             cnt += 1
 
-        tracked_objects = self.nt.update(detections=norfair_detections)
+        tracked_objects = self.nt.update(detections=norfair_detections, period=1)
 
         ids = []
 
