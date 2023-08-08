@@ -18,7 +18,9 @@ namespace version {
     //
     // "PartyTime" for the version used at the fundraising party in
     // Patrick's backyord on 2023-06-17.
-    const String Name = "PartyTime";
+    //
+    // "DressMeUp" for the version used at the dress rehearsal on 2023-08-08
+    const String Name = "DressMeUp";
 }
 
 #endif // VERSION_H
