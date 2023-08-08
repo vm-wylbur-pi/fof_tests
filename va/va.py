@@ -14,6 +14,7 @@ from norfair import Detection, Paths, Tracker
 
 from ultradetector import UltraDetector
 from norfairtracker import NorfairTracker
+from simpletracker import SimpleTracker
 
 import paho.mqtt.client as paho_mqtt
 import datetime
@@ -38,7 +39,8 @@ MQTT_PEOPLE_TOPIC = 'people-locations/'
 
 # open up the channel that we're reading from
 CHANNEL = 'vids/lots-adults-four-lights.mp4'
-# CHANNEL = 1
+# CHANNEL = '../../../vids/ptest2/big-initial.mp4'
+#CHANNEL = 1
 
 CALIBRATION = 'calibration_parameters.npz'
 DEPLOYMENT_FILE = '../fake_field/playa_test_2.yaml'
@@ -85,7 +87,9 @@ bg_subtractor = cv2.createBackgroundSubtractorKNN(detectShadows=True, history=50
 # tracker = UltraTracker(bg_subtractor)
 
 detector = UltraDetector(bg_subtractor)
-tracker = NorfairTracker()
+tracker = SimpleTracker()
+
+#tracker = NorfairTracker()
 
 #if WRITE_FILE:
 #    video_writer = cv2.VideoWriter(output_file, cv2.VideoWriter_fourcc(*'MJPG'), fps, (tracker.output_width, tracker.output_height))
