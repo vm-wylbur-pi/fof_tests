@@ -76,37 +76,30 @@ namespace led_control {
         FastLED.show();
     }
 
-    // UpdatableColor is a special-case pattern.  When we receive a request to show
-    // this pattern, we should:
-    //   - If this is the first UpdatableColor command, instantiate it.
-    //   - If we already have one showing, update it in-place.
-    void handleUpdatableColor(const String& parameters) {
-        std::unique_ptr<led_patterns::Pattern> newPattern = led_patterns::makePattern("UpdatableColor", parameters);
-        bool alreadyHaveOne = false;
-        for (std::unique_ptr<led_patterns::Pattern>& pattern : patterns) {
-            if (pattern->name() == "UpdatableColor") {
-                alreadyHaveOne = true;
-                pattern = std::move(newPattern);
-            }
-        }
-        if (!alreadyHaveOne) {
-            patterns.push_back(std::move(newPattern));
-        }
-    }
-
     namespace commands {
 
         void addPattern(const String &patternName, const String &parameters) {
-            if (patternName == "UpdatableColor") {
-                handleUpdatableColor(parameters);
+            std::unique_ptr<led_patterns::Pattern> pattern = led_patterns::makePattern(patternName, parameters);
+            if (pattern != nullptr) {
+                comms::sendDebugMessage("Adding LED pattern: " + pattern->name());
+                patterns.push_back(std::move(pattern));
             } else {
-                std::unique_ptr<led_patterns::Pattern> pattern = led_patterns::makePattern(patternName, parameters);
-                if (pattern != nullptr) {
-                    comms::sendDebugMessage("Adding LED pattern: " + pattern->name());
-                    patterns.push_back(std::move(pattern));
-                } else {
-                    comms::sendDebugMessage("Failed to initialize LED pattern.");
+                comms::sendDebugMessage("Failed to initialize LED pattern.");
+            }
+        }
+
+        void updatePattern(const String &patternName, const String &parameters) {
+            std::unique_ptr<led_patterns::Pattern> newPattern = led_patterns::makePattern(patternName, parameters);
+            bool alreadyHaveOne = false;
+            for (std::unique_ptr<led_patterns::Pattern>& pattern : patterns) {
+                if (pattern->name() == patternName) {
+                    alreadyHaveOne = true;
+                    pattern = std::move(newPattern);
                 }
+            }
+            if (!alreadyHaveOne) {
+                patterns.push_back(std::move(newPattern));
+                comms::sendDebugMessage("Adding LED pattern: " + newPattern->name());
             }
         }
 

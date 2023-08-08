@@ -110,6 +110,13 @@ namespace comms
             led_control::commands::addPattern(patternName, parameters);
             return;
         }
+        if (command.startsWith("leds/updatePattern/")) {
+            // Delegate parameter interpretation to the led control module, where all
+            // the led patterns are defined.
+            String patternName = command.substring(String("leds/updatePattern/").length());
+            led_control::commands::updatePattern(patternName, parameters);
+            return;
+        }
         if (command == "leds/setBrightness") {
             uint8_t newBrightness = led_control::DEFAULT_BRIGHTNESS;
             if (parameters != "") {
