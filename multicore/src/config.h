@@ -11,8 +11,8 @@ namespace config {
     // Name and password for the wifi. Modify this in your local copy
     // of the file, but don't commit, until we're working with the
     // deployment router.
-    const String WIFI_SSID = "FILL_ME_IN";
-    const String WIFI_PASSWORD = "FILL_ME_IN";
+    const String WIFI_SSID = "Pretty Fly for a WiFi";
+    const String WIFI_PASSWORD = "fearandloathing";
 
     // This is used to configure:
     //   - the MQTT client
