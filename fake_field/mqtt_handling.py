@@ -74,6 +74,13 @@ def send_commands_to_flowers(mqtt_message, flowers):
             if flower.id == which_flower or which_flower == "all":
                 flower.addPattern(pattern_name, pattern_params)
 
+    elif command.startswith("leds/updatePattern"):
+        unused_leds, unused_addPattern, pattern_name = command.split('/')
+        pattern_params = payload
+        for flower in flowers:
+            if flower.id == which_flower or which_flower == "all":
+                flower.updatePattern(pattern_name, pattern_params)
+
     elif command.startswith("audio/playSoundFile"):
         audio_filename, start_time = None, None
         params = payload.split(',')

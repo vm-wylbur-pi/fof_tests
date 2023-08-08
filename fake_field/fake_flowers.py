@@ -74,26 +74,28 @@ class FakeFlower:
         return millis_since_epoch - self.reference_time
     
     def addPattern(self, pattern_name, str_params):
+        self.patterns.append(self.constructPattern(pattern_name, str_params))
+
+    def updatePattern(self, pattern_name, str_params):
+        newInstance = self.constructPattern(pattern_name, str_params)
+        idx_of_existing_pattern = None
+        for idx, pattern in enumerate(self.patterns):
+            if pattern.__class__.__name__ == pattern_name:
+                idx_of_existing_pattern = idx
+        if idx_of_existing_pattern:
+            self.patterns[idx_of_existing_pattern] = newInstance
+        else:
+            self.patterns.append(newInstance)
+
+    def constructPattern(self, pattern_name, str_params):
         if pattern_name == "HuePulse":
-            self.patterns.append(HuePulse(self.controlMillis(), str_params))
-            #print(f"Flower {self.id} added HuePulse({str_params})")
+            return HuePulse(self.controlMillis(), str_params)
         if pattern_name == "FairyVisit":
-            self.patterns.append(FairyVisit(self.controlMillis(), str_params))
             print(f"Flower {self.id} added FairyVisit({str_params})")
+            return FairyVisit(self.controlMillis(), str_params)
         if pattern_name == "UpdatableColor":
-            h,s,v,a = map(int, str_params.split(','))
-            color = HSVAColor(h, s, v, a)
-            # Special case of a pattern that is only instantiated once. The
-            # handling is similar in the real flowers.
-            for p in self.patterns:
-                if p.__class__.__name__ == "UpdatableColor":
-                    p.setColor(color)
-                    #if int(self.id[-2:], base=16) % 20 == 0:
-                    #    print(f"Flower {self.id} modified UpdatableColor({str_params})")
-                    break
-            else:
-                self.patterns.append(UpdatableColor(color))
-                #print(f"Flower {self.id} added UpdatableColor({str_params})")
+            return UpdatableColor(str_params)
+        print(f"ERROR: LED Pattern {pattern_name} is not supported by the fake field.")
 
 
     def clearPatterns(self):
@@ -162,12 +164,10 @@ class FlowerPattern:
    pass
 
 class UpdatableColor(FlowerPattern):
-    def __init__(self, color: HSVAColor):
-        self.setColor(color)
-
-    def setColor(self, color: HSVAColor):
-        self.color = color  # used for alpha only
-        self.pycolor = hsv255ToPyGameColor(color.hue, color.sat, color.val) # used for other components
+    def __init__(self, str_params):
+        h, s, v, a = map(int, str_params.split(','))
+        self.color = HSVAColor(h, s, v, a)  # Just used for alpha during rendering
+        self.pycolor = hsv255ToPyGameColor(self.color.hue, self.color.sat, self.color.val)  # used for other components
 
     def isDone(self, time: int):
         return False
