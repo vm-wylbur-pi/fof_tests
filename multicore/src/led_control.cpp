@@ -94,13 +94,13 @@ namespace led_control {
             for (std::unique_ptr<led_patterns::Pattern>& pattern : patterns) {
                 if (pattern->name() == patternName) {
                     alreadyHaveOne = true;
+                    comms::sendDebugMessage("Updating LED pattern: " + newPattern->descrip());
                     pattern = std::move(newPattern);
-                    comms::sendDebugMessage("Updated LED pattern: " + newPattern->descrip());
                 }
             }
             if (!alreadyHaveOne) {
+                comms::sendDebugMessage("Adding LED pattern: " + newPattern->descrip());
                 patterns.push_back(std::move(newPattern));
-                comms::sendDebugMessage("Added LED pattern: " + newPattern->descrip());
             }
         }
 
