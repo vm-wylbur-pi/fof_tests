@@ -31,14 +31,18 @@ class Pattern {
     // This will cause the pattern to be unloaded to free memory.
     // If this method is not overridden, the pattern will run forever.
     virtual bool isDone(uint32_t time) { return false; }
+    // Should always be the subclass name. Used for polymorphism.
     virtual String name() = 0;
+    // Discrption of the pattern, including parameters.
+    virtual String descrip() { return name(); };
 };
 
 // Solid hue at full saturation, sent to the LEDs exactly once, at the start time.
 class SolidHue : public Pattern {
   public:
     SolidHue(uint8_t hue, uint32_t start_time) : _hue(hue), _start_time(start_time) {};
-    String name();
+    String name() { return "SolidHue"; };
+    String descrip() override;
     void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
   private:
     uint8_t _hue;
@@ -77,7 +81,8 @@ class Raindrops : public Pattern {
     Raindrops(uint8_t raindropsPerSecond, uint16_t fadeSpeed) :
       _raindropsPerSecond(raindropsPerSecond), _fadeSpeed(fadeSpeed) {};
     void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
-    String name();
+    String name() {return "Raindrops";};
+    String descrip() override;
   private:
     uint8_t _raindropsPerSecond;
     uint16_t _fadeSpeed;
@@ -120,7 +125,8 @@ class HuePulse : public Pattern {
           _peakDuration(peakDuration), _brightness(brightness){};
     void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
     bool isDone(uint32_t time) override;
-    String name();
+    String name() {return "HuePulse";};
+    String descrip() override;
   private:
     uint8_t _hue;
     uint32_t _startTime;
@@ -141,7 +147,8 @@ class UpdatableColor : public Pattern {
       : _color(color), _alpha(alpha) {};
     void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
     bool isDone(uint32_t time) override;
-    String name();
+    String name() {return "UpdatableColor";};
+    String descrip() override;
   private:
     CHSV _color;
     uint8_t _alpha;
@@ -153,7 +160,8 @@ class FairyVisit : public Pattern {
         : _visitDuration(visitDuration), _fairySpeed(fairySpeed) {};
     void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
     bool isDone(uint32_t time) override;
-    String name();
+    String name() {return "FairyVisit";};
+    String descrip() override;
   private:
     uint32_t _visitDuration;
     uint32_t _startTime = 0;

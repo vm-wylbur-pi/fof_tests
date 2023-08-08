@@ -61,7 +61,7 @@ const CRGBPalette16 leafyGreensPalette = LEAFY_GREENS_GP;
 
 namespace led_patterns {
 
-String SolidHue::name() {
+String SolidHue::descrip() {
     return "SolidHue(" + String(_hue) + ", " + String(_start_time) + ")";
 }
 
@@ -76,7 +76,7 @@ void MaxBrightnessWhite::run(uint32_t time, CRGB leds[NUM_LEDS]) {
     FastLED.setBrightness(255);
 }
 
-String HuePulse::name() {
+String HuePulse::descrip() {
     return "HuePulse(hue=" + String(_hue) + ", brightness=" + String(_brightness) + 
            ", startTime=" + String(_startTime) + ", rampDuration=" + String(_rampDuration) +
            ", peakDuration=" + String(_peakDuration) + ")";
@@ -173,13 +173,14 @@ bool UpdatableColor::isDone(uint32_t time) {
     return false;
 }
 
-String UpdatableColor::name() {
+String UpdatableColor::descrip() {
     // Simple, invariant name, since we check for equality against this to get 
     // some polymorphism in led_control::commands::addPattern
-    return "UpdatableColor";
+    return "UpdatableColor( hsva=" + String(_color.hue) + ", " + String(_color.sat) +
+      ", " + String(_color.val) + ", " + String(_alpha) + ")";
 }
 
-String FairyVisit::name() {
+String FairyVisit::descrip() {
     return "FairyVisit(visitDuration=" + String(_visitDuration) + 
         ", fairySpeed=" + String(_fairySpeed, 1) + ")";
 }
@@ -257,7 +258,7 @@ IndependentIdle::IndependentIdle() {
     }
 }
 
-String Raindrops::name() {
+String Raindrops::descrip() {
     return "Raindrops(" + String(_raindropsPerSecond) + ", " + String(_fadeSpeed) + ")";
 }
 
