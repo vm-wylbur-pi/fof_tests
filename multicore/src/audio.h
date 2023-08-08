@@ -24,10 +24,14 @@ namespace audio
 
     namespace commands {
         void setVolume(float newVolume);
-        // filename must be a file in the SD card root directory.
-        void playSoundFile(const String& filename);
+        // filename must be a path relative to the SD card root directory.
+        // startTime is absolute and checked against time_sync::controlMillis()
+        void playSoundFile(const String filename, uint32_t startTime);
+        // Start playback of the specified sound file immediately.
+        void startSoundFile(const String& filename);
         void stopSoundFile();
         // Send a listing of files in the SD card over the MQTT debug channel
+        // Only includes files in the root directory.
         // Any of these files ending in .wav is probably playable.
         void listSoundFiles();
 

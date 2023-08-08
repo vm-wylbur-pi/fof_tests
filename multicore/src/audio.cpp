@@ -2,6 +2,7 @@
 
 #include "comms.h"
 #include "music_sync.h"
+#include "time_sync.h"
 #include "screen.h"
 #include "storage.h"
 
@@ -13,6 +14,7 @@
 #include "AudioOutputMixer.h"
 
 #include <cstdint>
+#include <vector>
 
 // TODO: Address click/pop issue at the start of playback.
 // Based on others' experience, it's possible but requires
@@ -62,6 +64,14 @@ namespace audio
     // corresponds to uint8_t=256, which rolls over. So to avoid this
     // we need a slightly lower ceiling.
     const float MAX_GAIN = 4.0 * 255.0/256.0;
+
+    // Sounds that are scheduled to play in the future. When each starts
+    // playing, it will stop any other currently playing sound.
+    struct FutureSound {
+        String fileName;
+        uint32_t startTime;
+    };
+    std::vector<FutureSound> futureSounds;
 
     void setupAudio() {
         // Audio Input (WAV-file data from the SD card)
@@ -122,6 +132,19 @@ namespace audio
             } 
         }
 
+        // Check to see whether it is time to start playing any sounds
+        uint32_t now = time_sync::controlMillis();
+        for (FutureSound& sound : futureSounds) {
+            if (now > sound.startTime) {
+                commands::startSoundFile(sound.fileName);
+            }
+        }
+        // Remove sounds that have already been started from the schedule.
+        futureSounds.erase(
+            std::remove_if(futureSounds.begin(), futureSounds.end(),
+                           [&](const FutureSound &fs) { return now > fs.startTime; }),
+            futureSounds.end());
+
         // This is where I could put code for tracking progress through
         // the current sound, notifications for when sounds finish, etc.
     }
@@ -144,7 +167,7 @@ namespace audio
     }
 
     void beatHappened(uint32_t beatControlTime) {
-        //commands::playSoundFile("mono-kick-full-one-shot_110bpm_C.wav");
+        //commands::startSoundFile("mono-kick-full-one-shot_110bpm_C.wav");
     }
 
     // These functions are generally called from the networking thread
@@ -161,7 +184,11 @@ namespace audio
             volume = newVolume;
         }
 
-        void playSoundFile(const String &filename) {
+        void playSoundFile(const String filename, uint32_t startTime) {
+            futureSounds.push_back(FutureSound{filename, startTime});
+        }
+
+        void startSoundFile(const String &filename) {
             stopSoundFile();
             const String filePath = "/" + filename;
             if (sdAudioSource->open(filePath.c_str())) {

@@ -10,6 +10,7 @@
 #include "sleep.h"
 #include "storage.h"
 #include "time_sync.h"
+#include "util.h"
 #include "music_sync.h"
 
 #include <Arduino.h>  // For String type
@@ -124,7 +125,12 @@ namespace comms
             return;
         }
         if (command == "audio/playSoundFile") {
-            audio::commands::playSoundFile(parameters);
+            std::vector<String> params = util::splitCommaSepString(parameters);
+            String fileName = "";
+            uint32_t startTime = util::parseStartTime("+0");  // Default is play right away.            
+            if (params.size() >= 1) { fileName = params[0]; }
+            if (params.size() >= 2) { startTime = util::parseStartTime(params[1]); }
+            audio::commands::playSoundFile(fileName, startTime);
             return;
         }
         if (command == "audio/stopSoundFile"){
