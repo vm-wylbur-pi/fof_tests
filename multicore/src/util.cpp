@@ -6,6 +6,8 @@
 #include <string>
 #include <cstring>
 
+#include "time_sync.h"
+
 namespace util {
 
 std::vector<String> splitString(String input, char sep) {
@@ -21,6 +23,15 @@ std::vector<String> splitString(String input, char sep) {
 
 std::vector<String> splitCommaSepString(String input) {
     return splitString(input, ',');
+}
+
+uint32_t parseStartTime(const String &startTimeParameter) {
+    if (startTimeParameter.startsWith("+")) {
+        const uint32_t offset = startTimeParameter.substring(1).toInt();
+        return time_sync::controlMillis() + offset;
+    } else {
+        return startTimeParameter.toInt();
+    }
 }
 
 } // namespace util

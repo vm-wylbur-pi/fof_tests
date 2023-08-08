@@ -304,15 +304,6 @@ void BeatFlash::run(uint32_t time, CRGB leds[NUM_LEDS]) {
     }
 }
 
-uint32_t parseStartTime(const String &startTimeParameter) {
-    if (startTimeParameter.startsWith("+")) {
-        const uint32_t offset = startTimeParameter.substring(1).toInt();
-        return time_sync::controlMillis() + offset;
-    } else {
-        return startTimeParameter.toInt();
-    }
-}
-
 std::unique_ptr<Pattern> makePattern(const String& patternName, const String& parameters) {
     std::vector<String> params = util::splitCommaSepString(parameters);
 
@@ -323,7 +314,7 @@ std::unique_ptr<Pattern> makePattern(const String& patternName, const String& pa
         uint8_t hue = 0;
         uint32_t start_time = 0;
         if (params.size() >= 1) { hue = params[0].toInt(); }
-        if (params.size() >= 2) { start_time = parseStartTime(params[1]); }
+        if (params.size() >= 2) { start_time = util::parseStartTime(params[1]); }
         return std::unique_ptr<Pattern>(new SolidHue(hue, start_time));
     }
     if (patternName == "MaxBrightnessWhite") {
@@ -339,12 +330,12 @@ std::unique_ptr<Pattern> makePattern(const String& patternName, const String& pa
     // brightness: how bright to get 0-255
     if (patternName == "HuePulse") {
         uint8_t hue = 160;
-        uint32_t startTime = parseStartTime("+0");
+        uint32_t startTime = util::parseStartTime("+0");
         uint32_t rampDuration = 300;
         uint32_t peakDuration = 200;
         uint8_t brightness = 200;
         if (params.size() >= 1) { hue = params[0].toInt(); }
-        if (params.size() >= 2) { startTime = parseStartTime(params[1]); }
+        if (params.size() >= 2) { startTime = util::parseStartTime(params[1]); }
         if (params.size() >= 3) { rampDuration = params[2].toInt(); }
         if (params.size() >= 4) { peakDuration = params[3].toInt(); }
         if (params.size() >= 5) { brightness = params[4].toInt(); }

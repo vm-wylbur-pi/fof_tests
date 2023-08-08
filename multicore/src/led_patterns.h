@@ -148,11 +148,6 @@ class FairyVisit : public Pattern {
     float _fairySpeed = 80.0;
 };
 
-// Interpret a string parameter as a moment in time. There are two formats:
-//  +1234:  Run the pattern starting 1234 milliseconds in the future.
-//  1234:   Run the pattern at absolute control time 1234.
-uint32_t parseStartTime(const String& startTimeParameter);
-
 // Construct a pattern object of the specified name and parameters.
 std::unique_ptr<Pattern> makePattern(const String& patternName, const String& parameters);
 
