@@ -37,9 +37,10 @@ class Flower:
         print(f"{n} closest flowers to {self.id} are {[f.id for f in n_closest]}")
         return n_closest
 
-    def PlaySoundFile(self, filename):
+    def PlaySoundFile(self, filename, startTime):
         # print(f"{self.id} playing sound file {filename}")
-        self.sendMQTTCommand(command="audio/playSoundFile", params=filename)
+        params = ",".join([filename, startTime])
+        self.sendMQTTCommand(command="audio/playSoundFile", params=params)
 
     def HuePulse(self, hue, startTime, rampDuration, peakDuration, brightness):
         params = f"{hue},{startTime},{rampDuration},{peakDuration},{brightness}"
