@@ -55,7 +55,7 @@ class Flower:
             time.time() - self.timeOfColorUpdate > self.MAX_AGE_OF_COLOR_UPDATE):
             #print(f"Updating color for {self.id}, old={self.currentUpdatableColor}, new={c}")
             params = f"{c.hue},{c.sat},{c.val},{c.alpha}"
-            self.sendMQTTCommand(command="leds/addPattern/UpdatableColor", params=params)
+            self.sendMQTTCommand(command="leds/updatePattern/UpdatableColor", params=params)
             self.currentUpdatableColor = c
             self.timeOfColorUpdate = time.time()
 
