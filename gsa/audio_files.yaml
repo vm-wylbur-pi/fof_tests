@@ -38,9 +38,9 @@ Fairy:
 
 Wave:
   # These are the sounds that play as each wave of color arrives at a flower.
-
+  #
   # Nat specified that each of these works together as an alternating pair.
-  # Each string here must appear as a key in the Syllables dit below
+  # Each string here must appear as a key in the Syllables dict below
   SyllablePairs:
     - [Hi, yeahUP]
     - [OO, mm]
