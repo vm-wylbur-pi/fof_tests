@@ -56,6 +56,7 @@ class NorfairTracker:
                 else:
                     personTracker[id] = Person(pid=id,bb=bbarray)
 
+                print(bbarray)
                 personTracker[id].draw(hudframe)
 
         personTrackerKeys = set(personTracker.keys())
