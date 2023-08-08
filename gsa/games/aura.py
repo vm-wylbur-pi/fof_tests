@@ -66,7 +66,7 @@ class Aura(game.StatefulGame):
             hue, sat = 0, 255
             if len(blobs) == 0:
                 # This flower is not in any blob
-                flower.SetUpdatableColor(Aura.TRANSPARENT)
+                flower.SetBlossomColor(Aura.TRANSPARENT)
                 continue
             elif len(blobs) == 1:
                 # This flower is near a single person; use their color
@@ -80,7 +80,7 @@ class Aura(game.StatefulGame):
                 hue, sat = 0, 255
 
             alpha = int(round(255 * Aura.blobFalloff(distToPerson)))
-            flower.SetUpdatableColor(HSVAColor(hue, sat, 255, alpha))
+            flower.SetBlossomColor(HSVAColor(hue, sat, 255, alpha))
 
 
     def isDone(self):

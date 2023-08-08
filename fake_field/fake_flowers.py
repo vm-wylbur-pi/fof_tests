@@ -93,8 +93,8 @@ class FakeFlower:
         if pattern_name == "FairyVisit":
             print(f"Flower {self.id} added FairyVisit({str_params})")
             return FairyVisit(self.controlMillis(), str_params)
-        if pattern_name == "UpdatableColor":
-            return UpdatableColor(str_params)
+        if pattern_name == "BlossomColor":
+            return BlossomColor(str_params)
         print(f"ERROR: LED Pattern {pattern_name} is not supported by the fake field.")
 
 
@@ -163,7 +163,7 @@ def makeFakeFieldFromDeploymentYAML(yaml_file_name):
 class FlowerPattern:
    pass
 
-class UpdatableColor(FlowerPattern):
+class BlossomColor(FlowerPattern):
     def __init__(self, str_params):
         h, s, v, a = map(int, str_params.split(','))
         self.color = HSVAColor(h, s, v, a)  # Just used for alpha during rendering

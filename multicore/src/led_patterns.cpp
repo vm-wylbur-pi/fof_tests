@@ -158,7 +158,7 @@ void HuePulse::run(uint32_t time, CRGB leds[NUM_LEDS]) {
     }
 }
 
-void UpdatableColor::run(uint32_t time, CRGB leds[NUM_LEDS]) {
+void BlossomColor::run(uint32_t time, CRGB leds[NUM_LEDS]) {
     // Alpha blend against the blossom only.
     for (int i=BLOSSOM_START; i<BLOSSOM_END; i++) {
         CRGB target = _color;
@@ -168,15 +168,8 @@ void UpdatableColor::run(uint32_t time, CRGB leds[NUM_LEDS]) {
     }
 }
 
-bool UpdatableColor::isDone(uint32_t time) {
-    // Keep the flower at the specified color until the pattern is cleared explicitly.
-    return false;
-}
-
-String UpdatableColor::descrip() {
-    // Simple, invariant name, since we check for equality against this to get 
-    // some polymorphism in led_control::commands::addPattern
-    return "UpdatableColor( hsva=" + String(_color.hue) + ", " + String(_color.sat) +
+String BlossomColor::descrip() {
+    return "BlossomColor( hsva=" + String(_color.hue) + ", " + String(_color.sat) +
       ", " + String(_color.val) + ", " + String(_alpha) + ")";
 }
 
@@ -367,7 +360,7 @@ std::unique_ptr<Pattern> makePattern(const String& patternName, const String& pa
     // alpha: blending param with existing LED state larger means
     //        this pattern's color will be more dominant.
     // All four parameters are in the range [0-255]
-    if (patternName == "UpdatableColor") {
+    if (patternName == "BlossomColor") {
         uint8_t hue = 160;
         uint8_t sat = 255;
         uint8_t val = 255;
@@ -376,7 +369,7 @@ std::unique_ptr<Pattern> makePattern(const String& patternName, const String& pa
         if (params.size() >= 2) { sat = params[1].toInt(); }
         if (params.size() >= 3) { val = params[2].toInt(); }
         if (params.size() >= 4) { alpha = params[3].toInt(); }
-        return std::unique_ptr<Pattern>(new UpdatableColor(CHSV(hue, sat, val), alpha));
+        return std::unique_ptr<Pattern>(new BlossomColor(CHSV(hue, sat, val), alpha));
     }
     
     // Parameters
