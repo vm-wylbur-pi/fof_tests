@@ -30,7 +30,7 @@ class StraightColorWave(game.StatelessGame):
                                  start_loc=startPoint,
                                  velocity=waveVelocity)
 
-    def run(self, flowers):
+    def run(self, flowers: 'list[Flower]'):
         print(f"Running wave: {self}")
         speed = self.velocity.magnitude()
 
@@ -54,15 +54,17 @@ class StraightColorWave(game.StatelessGame):
 
 
 # A circle of color that expands outward from (or contracts inward toward) a specified point.
+# Flowers will play one (randomly chosen from a list) sound when the wave reaches them.
 # You can use this in various ways:
-#    startRadius=0, positive velocity around 200: classic expanding wave of color after a step
-#    startRadius non zero,
+#    startRadius=0, positive velocity around 500: classic expanding wave of color after a step
+#    startRadius non zero: contracting circle that draws color in toward a point.
 @dataclass
 class CircularColorWave(game.StatelessGame):
     hue: int
     center: geometry.Point
     startRadius: float
     speed: float  # Positive is growing, Negative is Shrinking. units are cm/sec
+    soundFiles: 'list[str]' = None # Sounds to be triggered in flowers reached by the wave.
 
     @classmethod
     def randomInstance(cls, field: Field):
@@ -71,7 +73,8 @@ class CircularColorWave(game.StatelessGame):
         speed = random.randint(400, 700) * random.choice((1, -1))
         startRadius = 0 if speed > 0 else 700
         return CircularColorWave(hue=random.randint(0, 255),
-                                 center=center, startRadius=startRadius, speed=speed)
+                                 center=center, startRadius=startRadius, speed=speed,
+                                 soundFiles=None)
 
     def run(self, flowers: 'list[Flower]'):
         print(f"Running wave: {self}")
@@ -88,7 +91,9 @@ class CircularColorWave(game.StatelessGame):
                 brightness = 200
                 flower.HuePulse(hue=self.hue, startTime=f"+{millisToReachFlower}", rampDuration=rampDuration,
                                 peakDuration=peakDuration, brightness=brightness)
-                flower.SetScreenText(f"dfC: {round(distanceFromCenter)}")
+                if self.soundFiles:
+                    flower.PlaySoundFile(filename=random.choice(self.soundFiles),
+                                        startTime=f"+{millisToReachFlower}")
 
 
 # Showcase wave effects by running through them with randomized parameters.
