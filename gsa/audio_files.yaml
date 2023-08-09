@@ -13,28 +13,28 @@ Fairy:
   # Any one fairy instance is a randomly chosen fairy and will randomly choose
   # giggle sounds only from under that fairy name.
   Mikayla:
-    - FoF_MikaylaCantCatch.wav
-    - FoF_MikaylaGiggle1.wav
-    - FoF_MikaylaGiggle2.wav
-    - FoF_MikaylaGiggle3.wav
-    - FoF_MikaylaGiggle4.wav
-    - FoF_MikaylaGiggle5.wav
-    - FoF_MikaylaGiggle6.wav
-    - FoF_MikaylaGiggle7.wav
-    - FoF_MikaylaOverHere1.wav
-    - FoF_MikaylaOverHere2.wav
-    - FoF_MikaylaOverHere_DOUBLE.wav
-    - FoF_MikaylaThisWay1.wav
-    - FoF_MikaylaThisWay_DOUBLE.wav
+    - fairy/MikaylaCantCatch.wav
+    - fairy/MikaylaGiggle1.wav
+    - fairy/MikaylaGiggle2.wav
+    - fairy/MikaylaGiggle3.wav
+    - fairy/MikaylaGiggle4.wav
+    - fairy/MikaylaGiggle5.wav
+    - fairy/MikaylaGiggle6.wav
+    - fairy/MikaylaGiggle7.wav
+    - fairy/MikaylaOverHere1.wav
+    - fairy/MikaylaOverHere2.wav
+    - fairy/MikaylaOverHere_DOUBLE.wav
+    - fairy/MikaylaThisWay1.wav
+    - fairy/MikaylaThisWay_DOUBLE.wav
   Talia:
-    - FoF_TaliaCantCatch1.wav
-    - FoF_TaliaCmonThisWay.wav
-    - FoF_TaliaGiggle1.wav
-    - FoF_TaliaGiggle2.wav
-    - FoF_TaliaGiggle3.wav
-    - FoF_TaliaGiggle4.wav
-    - FoF_TaliaOverHere.wav
-    - FoF_TaliaOverHere2.wav
+    - fairy/TaliaCantCatch1.wav
+    - fairy/TaliaCmonThisWay.wav
+    - fairy/TaliaGiggle1.wav
+    - fairy/TaliaGiggle2.wav
+    - fairy/TaliaGiggle3.wav
+    - fairy/TaliaGiggle4.wav
+    - fairy/TaliaOverHere.wav
+    - fairy/TaliaOverHere2.wav
 
 Wave:
   # These are the sounds that play as each wave of color arrives at a flower.
