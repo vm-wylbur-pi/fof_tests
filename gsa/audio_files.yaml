@@ -112,3 +112,9 @@ Wave:
       - wave/He4.wav
       - wave/He5.wav
       - wave/He6.wav
+
+RainStorm:
+  crickets: nature/crickets.wav
+  lightRain: nature/lightRain.wav
+  frogs: nature/FrogSounds.wav
+  birds: nature/birds.wav
