@@ -10,7 +10,7 @@ import yaml
 broker_address = '127.0.0.1'
 broker_port = 1883
 topic = 'people-locations/'
-DEPLOYMENT_PATH = '/app/fake_field/gsa_testing_deployment.yaml'
+DEPLOYMENT_PATH = '/app/fake_field/dress_rehearsal_deployment.yaml'
 
 class Mob:
     def __init__(self):
