@@ -110,7 +110,7 @@ Wave:
       - wave/He2.wav
       - wave/He3.wav
       - wave/He4.wav
-      - wave/He5.wav
+      # The He syllable directory had no He5.wav file.
       - wave/He6.wav
 
 RainStorm:
