@@ -1,7 +1,7 @@
 from ultralytics import YOLO
 import cv2
 from person import Person
-
+# tehse are unused
 #MODEL_FILE = "models/fof-yolov5su-fullset.pt"
 #MODEL_FILE = "models/fof_yolov8n-secondbatch.pt"
 # MODEL_FILE = "models/yolov8n-seg.pt"

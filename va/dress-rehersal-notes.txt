@@ -1,0 +1,15 @@
+
+
+Print confidence for dialing in
+Alternate pretty-fly wifi.
+
+
+
+Good tracking
+MODEL_FILE = "models/fof-yolov8n-secondbatch.pt"
+PERSON_CONF = 0.3
+
+
+Slow, false positives, bad detection
+MODEL_FILE = "models/fof-yolov8x-fullset-600ms-mac.pt"
+PERSON_CONF = 0.5
