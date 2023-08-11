@@ -5,12 +5,12 @@
 #
 # It knows about flowers by listening for ther heartbeats over MQTT (This program should
 # run on the same network as the field and the MQTT broker; it doesn't need to be on the
-# same host as the MQTT broker or other FEDs).
+# same host as the MQTT broker).
 #
-# For each flower that it has heard a heartbeat from, it will use FTP to check which fiels
-# it already hase ("already has" means has a file with the same path and same size; we match
-# size to defend against partial uplads).  If a file is missing or wrong-sized, then it
-# is uploaded to that flower.
+# For each flower that it has heard a heartbeat from, it will use FTP to check which files
+# that flower already has ("already has" means has a file with the same path and with 
+# almost the same file size).  If a file is missing or wrong-sized, then it is uploaded to
+# that flower.
 #
 # It is given a source directory containing all the audio files, already converted into the
 # correct format (see wav-fo-fof.py).
@@ -40,6 +40,10 @@ MQTT_BROKER_IP = "192.168.1.72"  # You may need to change this to 127.0.0.1
 MAX_SIMULTANEOUS_FTP_THREADS = 10
 # TODO: Make this a command line argument.
 FTP_BINARY = "/usr/local/opt/tnftp/bin/ftp"
+# File sizes don't match between upload host and flower, so we can't check for exact
+# sizes to verify uploads. Instead, we check whether the files are within X% of one
+# another's size.
+ACCEPTABLE_FILE_SIZE_DIFF_THRESHOLD = 2.0  # percent difference
 
 @dataclass
 class AudioFile:
@@ -91,9 +95,14 @@ class Flower:
     def hasFile(self, targetFile: AudioFile):
         for existingFile in self.existingFiles:
             if existingFile.path == targetFile.path:
-                # I tried a version that checked whether the file sizes match too,
+                # I tried a version that checked whether the file sizes match exactly,
                 # but this didn't work; the flowers always report slightly different sizes
                 # than the file system on the my laptop.
+                existing_size_percent = 100 * existingFile.size / targetFile.size
+                if abs(100 - existing_size_percent) > ACCEPTABLE_FILE_SIZE_DIFF_THRESHOLD:
+                    # print(f"WARNING: {existingFile.path} was already on flower {self.num} but had "
+                    #       f"a size {round(existing_size_percent)}% of the correct size. Will re-upload.")
+                    return False
                 return True
         return False
 
@@ -191,7 +200,7 @@ def readRequiredFiles(referenceDir: Path) -> List[AudioFile]:
     return results
 
 
-def printProgressSummary(flowers: List[Flower]):
+def printProgressSummary(flowers: List[Flower]) -> bool:
     numKnown, numWithMissing, totalMissingFiles, totalMissingBytes = 0, 0, 0, 0
     for flower in flowers:
         if flower.existingFilesKnown():
@@ -207,6 +216,8 @@ def printProgressSummary(flowers: List[Flower]):
                 f" KB still need to be uploaded.")
     print(f"*   {numKnown-numWithMissing}/{len(flowers)} flowers have all needed files.")
     print('*' * 70 + "\n")
+    finished = len(flowers) > 0 and numKnown != 0 and numWithMissing == 0
+    return finished
 
 
 if __name__ == "__main__":
@@ -230,6 +241,7 @@ if __name__ == "__main__":
     ftpThreads: List[Thread] = []
  
     lastProgressSummaryTime: float = time.time()  # Seconds since epoch
+    finished = False
 
     def startFTPThread(flower: Flower, target: Callable):
         if len(ftpThreads) > MAX_SIMULTANEOUS_FTP_THREADS:
@@ -261,8 +273,12 @@ if __name__ == "__main__":
             ftpThreads.remove(thread)
 
         if time.time() - lastProgressSummaryTime > 20:   # seconds
-            printProgressSummary(flowers.values())
+            finished = printProgressSummary(flowers.values())
             lastProgressSummaryTime = time.time()
+
+        if finished:
+            print("\n\n########### FINISHED ###########")
+            sys.exit()
 
         # Most FTP threads take a few seconds to a few minutes to run, so we don't need
         # to poll very often.
