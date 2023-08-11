@@ -25,7 +25,7 @@
 from dataclasses import dataclass
 import json
 import ftplib
-from multiprocessing import Process
+from threading import Thread
 import os
 from pathlib import Path
 import random
@@ -36,9 +36,8 @@ from typing import Dict, List, Callable
 
 import paho.mqtt.client as mqtt
 
-MQTT_BROKER_IP = "192.168.1.72"
-MAX_SIMULTANEOUS_FTP_PROCESSES = 10
-
+MQTT_BROKER_IP = "192.168.1.72"  # You may need to change this to 127.0.0.1
+MAX_SIMULTANEOUS_FTP_THREADS = 10
 # TODO: Make this a command line argument.
 FTP_BINARY = "/usr/local/opt/tnftp/bin/ftp"
 
@@ -51,7 +50,7 @@ class AudioFile:
 def parseFileListLine(line: str) -> AudioFile:
     # This is very simple for now. Listing lines from the flower FTP serve look like this:
     # -rw-r--r-- 1 owner group         96974 Jan 01  1970 pb-rising-16.wav
-    # We also get lots of othe lines, like error codes and other messages.
+    # We also get lots of othe lines, for error codes and other messages.
     if not isinstance(line, str):
         print(f"ERROR: Tried to parse a non-string: {line}")
         return None
@@ -81,9 +80,7 @@ class Flower:
         self.heartbeat: Dict[str, str] = heartbeat_dict
         self.referenceDir: Path = referenceDir
         self.requiredFiles: List[AudioFile] = requiredFiles
-        # TEMP: for testing upload
-        #self.existingFiles: List[AudioFile] = None  # None means unknown
-        self.existingFiles: List[AudioFile] = []
+        self.existingFiles: List[AudioFile] = None  # None means unknown
 
     def makeFTPClient(self) -> ftplib.FTP:
         return ftplib.FTP(host=self.heartbeat['IP'], user='fof', passwd='fof')
@@ -91,10 +88,19 @@ class Flower:
     def existingFilesKnown(self) -> bool:
         return self.existingFiles is not None
  
+    def hasFile(self, targetFile: AudioFile):
+        for existingFile in self.existingFiles:
+            if existingFile.path == targetFile.path:
+                # I tried a version that checked whether the file sizes match too,
+                # but this didn't work; the flowers always report slightly different sizes
+                # than the file system on the my laptop.
+                return True
+        return False
+
     def missingFiles(self) -> List[AudioFile]:
         if self.existingFiles is None:
             return None  # unknown
-        return [f for f in self.requiredFiles if f not in self.existingFiles]
+        return [f for f in self.requiredFiles if not self.hasFile(f)]
  
     def runFTPCommands(self, ftpCommands):
         url = 'ftp://fof:fof@' + self.heartbeat['IP']
@@ -104,33 +110,37 @@ class Flower:
         return raw_output.decode('utf-8').splitlines()
 
     def queryFilesInDirectory(self, directory):
-        print(f"Flower {self.num} getting list of existing files in {directory}")
-        ftp_output = self.runFTPCommands(f'cd SD/{directory}\ndir\nbye\n')
+        dirPath = Path('SD').joinpath(directory)
+        # The mkdir fails harmlessly if the directory already exists.
+        ftp_output = self.runFTPCommands(f'mkdir {dirPath}\ncd {dirPath}\ndir\nbye\n')
         foundFiles = []
         for line in ftp_output:
             audioFile = parseFileListLine(line)
             if audioFile is not None:
                 audioFile.path = Path(directory).joinpath(audioFile.path)
                 foundFiles.append(audioFile)
-        print(f"Flower {self.num} found {len(foundFiles)} audio files in {directory}")
         return foundFiles
 
     def findOutExistingFiles(self):
         # Only supports 1-deep directories for now.  All audio files are either
         # in the SD folder (the root), or in a subdirectory of it, e.g. SD/fairy
         directories = ['/'] + list(set(f.path.parent for f in self.requiredFiles))
-        print(f"Checking directories: {directories}")
+        print(f"Flower {self.num}: querying for existing files in directories: " + 
+              ','.join(str(d) for d in directories))
         allFiles = []
         for directory in directories:
             allFiles.extend(self.queryFilesInDirectory(directory))
         self.existingFiles = allFiles
+        print(f"Flower {self.num} has a total of {len(self.existingFiles)} audio files " +
+              f"and is missing {len(self.missingFiles())} audio files.")
 
     def uploadOneNeededFile(self):
         fileToUpload = random.choice(self.missingFiles())
+        subdir = Path('SD').joinpath(fileToUpload.path.parent)
         print(f"Flower {self.num}: Uploading {str(fileToUpload.path)}")
         full_source_path = self.referenceDir.joinpath(fileToUpload.path).absolute()
         full_target_path = Path('SD').joinpath(fileToUpload.path)
-        self.runFTPCommands(f'put {full_source_path} {full_target_path}\nbye\n')
+        self.runFTPCommands(f'mkdir {subdir}\nput {full_source_path} {full_target_path}\nbye\n')
         # There doesn't seem to be any way to confirm the upload worked, so assume it did
         # We'll verify later with a full listing.
         self.existingFiles.append(fileToUpload)
@@ -181,12 +191,22 @@ def readRequiredFiles(referenceDir: Path) -> List[AudioFile]:
     return results
 
 
-def printStateSummary(flowers: List[Flower]):
-    print(f"Seen heartbeats from {len(flowers)} flowers.")
-    numKnown = sum(flower.existingFilesKnown for flower in flowers)
-    numWithMissing = sum(1 for f in flowers if f.existingFilesKnown and f.missingFiles)
-    print(f'{numKnown} flowers have been queried for their current files.')
-    print(f'{numWithMissing} of these need files uploaded.')
+def printProgressSummary(flowers: List[Flower]):
+    numKnown, numWithMissing, totalMissingFiles, totalMissingBytes = 0, 0, 0, 0
+    for flower in flowers:
+        if flower.existingFilesKnown():
+            numKnown += 1
+            missingFiles = flower.missingFiles()
+            numWithMissing += 1 if missingFiles else 0
+            totalMissingFiles += len(missingFiles)
+            totalMissingBytes += sum(f.size for f in missingFiles)
+    print(f"\n{'*'*30} Progress {'*' * 30}")
+    print(f"*   Seen heartbeats from {len(flowers)} flowers.")
+    print(f"*   {numKnown} flowers have been queried for their current files.")
+    print(f"*   {totalMissingFiles} total files totalling {round(totalMissingBytes/1024)}" +
+                f" KB still need to be uploaded.")
+    print(f"*   {numKnown-numWithMissing}/{len(flowers)} flowers have all needed files.")
+    print('*' * 70 + "\n")
 
 
 if __name__ == "__main__":
@@ -201,47 +221,49 @@ if __name__ == "__main__":
 
     # Keyed by flower sequence number (so we can only upload to flowers that have been
     # flashed with firmwhere that includes themselves.)
-    flowers: Dict[int, Dict] = {}
+    flowers: Dict[int, Flower] = {}
 
     mqtt_client = SetupMQTTClient(flowers, referenceAudioFileDir, requiredFiles)
     mqtt_client.loop_start()
 
-    # Pool of process for running ftp operations asyncronously. Keyed by flower number
-    # because the flower FTP servers can only handle a single client connection at once.
-    ftpProcesses: Dict[Flower, Process] = {}
+    # Pool of thread for running ftp operations asyncronously.
+    ftpThreads: List[Thread] = []
+ 
+    lastProgressSummaryTime: float = time.time()  # Seconds since epoch
 
-    def startFTPProcess(flower: Flower, target: Callable):
-        if len(ftpProcesses) > MAX_SIMULTANEOUS_FTP_PROCESSES:
+    def startFTPThread(flower: Flower, target: Callable):
+        if len(ftpThreads) > MAX_SIMULTANEOUS_FTP_THREADS:
             return
-        if flower in ftpProcesses:
-            # We're already running an FTP process to communicate with this flower.
+        flowers_nums_with_active_threads = [thread.name for thread in ftpThreads]
+        if flower.num in flowers_nums_with_active_threads:
+            # The flower FTP servers can only handle a single client connection at once.
             return
-        process = Process(target=target)
-        process.start()
-        ftpProcesses[flower] = process
+        thread = Thread(target=target, name=flower.num)
+        thread.start()
+        ftpThreads.append(thread)
 
     while True:
-        # printStateSummary(flowers)
-        # If no flower heartbeats yet, do nothing
-
         # If we have flowers without known contents, find out what they have
         for flower in flowers.values():
             if not flower.existingFilesKnown():
-                startFTPProcess(flower, flower.findOutExistingFiles)
+                # Only starts if no other process is already running for this flower.
+                startFTPThread(flower, flower.findOutExistingFiles)
 
         # If we need to upload anything, upload it.
         for flower in flowers.values():
             if flower.existingFilesKnown() and flower.missingFiles():
-                startFTPProcess(flower, flower.uploadOneNeededFile)
+                # Only starts if no other process is already running for this flower.
+                startFTPThread(flower, flower.uploadOneNeededFile)
         
-        # Clean up finished processes
-        finishedFTPProcesses = []
-        for flower, process in ftpProcesses.items():
-            if not process.is_alive():
-                # Process has finished, remove it from the set of active processes so another can start.
-                process.close()
-                finishedFTPProcesses.append(flower)
-        for flower in finishedFTPProcesses:
-            del ftpProcesses[flower]
+        # Clean up finished threads
+        finishedFTPThreads = [t for t in ftpThreads if not t.is_alive()]
+        for thread in finishedFTPThreads:
+            ftpThreads.remove(thread)
 
-        time.sleep(1)  # seconds
+        if time.time() - lastProgressSummaryTime > 10:
+            printProgressSummary(flowers.values())
+            lastProgressSummaryTime = time.time()
+
+        # Most FTP threads take a few seconds to a few minutes to run, so we don't need
+        # to poll very often.
+        time.sleep(0.5)  # seconds
