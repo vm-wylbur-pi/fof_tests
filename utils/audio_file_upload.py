@@ -260,7 +260,7 @@ if __name__ == "__main__":
         for thread in finishedFTPThreads:
             ftpThreads.remove(thread)
 
-        if time.time() - lastProgressSummaryTime > 10:
+        if time.time() - lastProgressSummaryTime > 20:   # seconds
             printProgressSummary(flowers.values())
             lastProgressSummaryTime = time.time()
 
