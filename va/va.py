@@ -34,17 +34,17 @@ pp = pprint.PrettyPrinter(indent=4)
 
 # TODO: Read this from config
 MQTT_ENABLED = True
-MQTT_BROKER_IP = "127.0.0.1"
+MQTT_BROKER_IP = "192.168.1.72"
 MQTT_PEOPLE_TOPIC = 'people-locations/'
 
 # open up the channel that we're reading from
-CHANNEL = 'vids/lots-adults-four-lights.mp4'
-# CHANNEL = '../../../vids/ptest2/big-initial.mp4'
-#CHANNEL = 1
+# CHANNEL = 'vids/lots-adults-four-lights.mp4'
+CHANNEL = '../../../vids/dress/dress-1.mp4'
+#CHANNEL = 0
 
 CALIBRATION = 'calibration_parameters.npz'
-DEPLOYMENT_FILE = '../fake_field/playa_test_2.yaml'
-MAX_FRAMES = 2500
+DEPLOYMENT_FILE = '../fake_field/dress_rehearsal_deployment.yaml'
+MAX_FRAMES = 1000
 SKIP_FRAMES = 1  # used to test intermittent frames from a live camera
 
 # consume the first X of these and generate a median frame
@@ -60,7 +60,7 @@ WEBSOCKET = True
 WEBSOCKET_RATE = 10 # how many frames to skip between emitting an image
 
 # saving videos for testing and debugging and posterity
-WRITE_FILE = False
+WRITE_FILE = True
 output_file = 'vids/output_video.avi'
 
 UNDISTORT = True
@@ -179,6 +179,8 @@ def draw_corners():
 
     return ref_points
 
+#print(draw_corners())
+#sys.exit()
 def detectCornerPoints(frame):
     grayFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -337,11 +339,12 @@ def viz_loop(fps=30.0):
 
         fcnt+= 1
 
-        if fcnt > MAX_FRAMES:
-            break
+        if MAX_FRAMES > -1:
+            if fcnt > MAX_FRAMES:
+                break
 
-        if fcnt % SKIP_FRAMES != 0:
-            continue
+        #if fcnt % SKIP_FRAMES != 0:
+        #    continue
 
         if MQTT_ENABLED and not mqtt_client.is_connected():
             mqtt_client.reconnect()
