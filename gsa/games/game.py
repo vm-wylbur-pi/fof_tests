@@ -24,13 +24,17 @@ class StatefulGame(Game):
     # This method is called once per game loop. When it returns true, the game
     # is stopped, and runLoop will never be called again.
     def isDone(self):
-        raise NotImplementedError
+        # Default behavior is to run indefinitely. Unless this
+        # method is overridden, the game is only stopped by
+        # running game-control/clearGames
+        return False
     
     # This method is called to end the game. It gives the game a chance to
     # clean up any external state, such as retained MQTT messages, and/or
     # sending commands to flowers to end indefinitely-running patterns.
     def stop(self, gameState):
-        raise NotImplementedError
+        # By default, no cleanup happens.
+        pass
 
 # Reads the configuration file containing the set of audio files available to games.
 # TODO: make this a class method of Game

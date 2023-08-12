@@ -121,12 +121,3 @@ class RandomIdle(game.StatefulGame):
             delay = random.normalvariate(self.effectGapSecsMean, self.effectGapSecsStDev)
             delay = max(delay, self.effectGapSecsMinimum)
             self.next_effect_time = now + delay
-
-    def isDone(self):
-        # Runs indefinitely, until explicitly stopped, usually through a
-        # clearGames command sent to the GSA
-        return False
-
-    def stop(self, unused_gameState):
-        # We're only running short-duration effects, so there's nothing to do when stopping
-        pass

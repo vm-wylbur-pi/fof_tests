@@ -54,11 +54,6 @@ class Fairy(game.StatefulGame):
             self.next_visit_time = now + visitDuration
             self.current_flower = next_flower
 
-    def stop(self, unused_gameState: GameState):
-        # The Fairy game only uses finite-duration patterns and audio clips, so
-        # there is nothing that needs to be cleaned up when it stops.
-        pass
-
     def isDone(self):
         # TODO: we could specify a duration. For now, the only way to end the game
         #       is to clear all games.

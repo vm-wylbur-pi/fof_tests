@@ -81,10 +81,3 @@ class Aura(game.StatefulGame):
 
             alpha = int(round(255 * Aura.blobFalloff(distToPerson)))
             flower.SetBlossomColor(HSVAColor(hue, sat, 255, alpha))
-
-
-    def isDone(self):
-        return False
-    
-    def stop(self, gameState):
-        pass

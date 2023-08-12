@@ -84,6 +84,3 @@ class Wave(game.StatefulGame):
                                          soundFiles=self.chooseSoundFiles(name))
                 wave.run(gameState.flowers)
                 self.lastWaveTimes[name] = now
-
-    def isDone(self):
-        return False  # run until explicitly cancelled

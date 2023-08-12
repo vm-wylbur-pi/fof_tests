@@ -19,10 +19,6 @@ class WholeFieldSleep(game.StatefulGame):
                                        retained=True)
             self.hasSetRetainedSleepCommand = True
 
-    def isDone(self):
-        # Keep the field asleep until this game is force-ended via the clearGames command
-        return False
-
     def stop(self, gameState: GameState):
         print("Clearing retained sleep commands.")
         for flower in gameState.flowers:

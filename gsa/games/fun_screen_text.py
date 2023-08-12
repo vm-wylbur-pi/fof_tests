@@ -56,9 +56,6 @@ class FunScreenText(game.StatefulGame):
                 delay = self.per_flower_change_interval_secs / len(gameState.flowers)
                 self.nextChangeTime = now + delay
 
-    def isDone(self):
-        return False  # Runs indefinitely
-
     def stop(self, gameState: GameState):
         # TODO: Add a screen/showFlowerInfo command to each flower, and call
         # it here, to return each flower display to the debug info showing
