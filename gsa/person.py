@@ -111,7 +111,7 @@ class RandomizedAssignments:
                 use_counts = [self.asignableItems.count(item) for item in self.asignableItems]
                 min_use_count = min(use_counts)
                 items_used_least = [item for item in self.asignableItems
-                                    if list.count(item) == min_use_count]
+                                    if self.asignableItems.count(item) == min_use_count]
                 return random.choice(items_used_least)
 
     def updateAssignments(self, activePersonNames):
