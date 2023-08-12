@@ -255,14 +255,18 @@ if __name__ == "__main__":
         ftpThreads.append(thread)
 
     while True:
+        # Loops over flowers here neet use "for flower in list(...)" because
+        # the content of the flowers dict can change if a new flower heartbeat
+        # arrives (the MQTT thread can write to the flowers dict.)
+
         # If we have flowers without known contents, find out what they have
-        for flower in flowers.values():
+        for flower in list(flowers.values()):
             if not flower.existingFilesKnown():
                 # Only starts if no other process is already running for this flower.
                 startFTPThread(flower, flower.findOutExistingFiles)
 
         # If we need to upload anything, upload it.
-        for flower in flowers.values():
+        for flower in list(flowers.values()):
             if flower.existingFilesKnown() and flower.missingFiles():
                 # Only starts if no other process is already running for this flower.
                 startFTPThread(flower, flower.uploadOneNeededFile)
