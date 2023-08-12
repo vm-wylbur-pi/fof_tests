@@ -44,7 +44,7 @@ CHANNEL = '../../../vids/dress/dress-1.mp4'
 
 CALIBRATION = 'calibration_parameters.npz'
 DEPLOYMENT_FILE = '../fake_field/dress_rehearsal_deployment.yaml'
-MAX_FRAMES = 1000
+MAX_FRAMES = -1
 #SKIP_FRAMES = -1  # used to test intermittent frames from a live camera
 
 # consume the first X of these and generate a median frame
@@ -318,7 +318,7 @@ for c in range(len(deployment['field']['corners'])):
 # medianFrame = ''
 
 # TODO:  load from deployment file
-output_points = np.float32([[0,0],[0,3300], [3300,3300],[3300,0]])
+output_points = np.float32([[0,0],[1000,0], [1000,1000],[0,1000]])
 
 
 def viz_loop(fps=30.0):
