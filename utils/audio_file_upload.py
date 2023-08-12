@@ -37,7 +37,7 @@ from typing import Dict, List, Callable
 import paho.mqtt.client as mqtt
 
 MQTT_BROKER_IP = "192.168.1.72"  # You may need to change this to 127.0.0.1
-MAX_SIMULTANEOUS_FTP_THREADS = 10
+MAX_SIMULTANEOUS_FTP_THREADS = 50
 # TODO: Make this a command line argument.
 FTP_BINARY = "/usr/local/opt/tnftp/bin/ftp"
 # File sizes don't match between upload host and flower, so we can't check for exact
