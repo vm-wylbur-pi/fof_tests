@@ -16,7 +16,7 @@ chronyd -x -n -f /etc/chrony/chrony.conf &
 
 # Start NanoMQ, our new MQTT broker
 echo "starting nanomq"
-nanomq start &
+nanomq start --conf /etc/nanomq.conf &
 
 # Start flask webserver
 echo "starting the FCC"

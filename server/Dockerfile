@@ -48,6 +48,9 @@ RUN apt-get update && apt-get install -y \
 # install our ntp server config
 COPY ./config/chrony.conf /etc/chrony/chrony.conf
 
+# copy over the nanomq config
+COPY ./config/nanomq.conf /etc/nanomq.conf
+
 # Install any needed packages specified in requirements.txt
 COPY ./requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
