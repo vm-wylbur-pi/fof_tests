@@ -6,7 +6,7 @@ import paho.mqtt.client as mqtt
 import sys
 import yaml
 
-broker_address = '127.0.0.1'
+broker_address = '192.168.1.144'
 broker_port = 1883
 topic = 'flower-heartbeats/'
 DEPLOYMENT_PATH = '../../fake_field/dress_rehearsal_deployment.yaml'
