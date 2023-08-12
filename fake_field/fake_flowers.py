@@ -26,6 +26,7 @@ class FakeFlower:
     y: int
     # MAC-address id for the flower, e.g. "AB:03:5D"
     id: str
+    num: str   # str for matching mqtt topic without conversion
     reference_time = 0
     patterns = []
     text: str = ""
@@ -154,8 +155,8 @@ def makeFakeFieldFromDeploymentYAML(yaml_file_name):
     yaml_file_path = os.path.join(os.path.dirname(__file__), yaml_file_name)
     with open(yaml_file_path, 'r') as yaml_file:
         config = yaml.safe_load(yaml_file)
-        for flower_id, flower in config['flowers'].items():
-            field.append(FakeFlower(x=flower['x'], y=flower['y'], id=flower_id))
+        for flower_mac, flower in config['flowers'].items():
+            field.append(FakeFlower(x=flower['x'], y=flower['y'], id=flower_mac, num=str(flower['id'])))
     return field
 
 # An LED pattern within a single flower.  Analagous to the led_patterns::Pattern class
@@ -183,6 +184,8 @@ class BlossomColor(FlowerPattern):
 class HuePulse(FlowerPattern):
     def __init__(self, control_time, str_params):
         params = str_params.split(',')
+        if params == ['']:
+            params = []
         self.hue = 160 if len(params) < 1 else int(params[0])
         self.startTime = parseStartTime(control_time, "+0") if len(params) < 2 else parseStartTime(control_time, params[1])
         self.rampDuration = 300 if len(params) < 3 else int(params[2])

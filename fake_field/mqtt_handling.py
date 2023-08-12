@@ -52,33 +52,38 @@ def send_commands_to_flowers(mqtt_message, flowers):
     # Here, I see which flower(s) are the recipent based on the message topic, 
     # then I make method calls to the fake flowers that are analogous to MQTT
     # commands received by the real flowers.
-    unused_flower_control, which_flower, command = mqtt_message.topic.split("/", maxsplit=2)
+    unused_flower_control, addressee, command = mqtt_message.topic.split("/", maxsplit=2)
     payload = mqtt_message.payload.decode('utf-8')
+
+    def for_flower(mqtt_target, flower):
+        # if flower.num == "9":
+        #     print(f"mqtt_target is {mqtt_target}, flower is {flower}, matches={mqtt_target == flower.id or mqtt_target == flower.num or mqtt_target == 'all'}")
+        return mqtt_target == flower.id or mqtt_target == flower.num or mqtt_target == "all"
 
     if command == "time/setEventReference":
         # "flower-control/*/time/setEventReference" has a single integer parameter
         new_reference_time = int(payload)
         for flower in flowers:
-            if flower.id == which_flower or which_flower == "all":
+            if for_flower(addressee, flower):
                 flower.setEventReference(new_reference_time)
 
     elif command == "leds/clearPatterns":
         for flower in flowers:
-            if flower.id == which_flower or which_flower == "all":
+            if for_flower(addressee, flower):
                 flower.clearPatterns()
 
     elif command.startswith("leds/addPattern"):
         unused_leds, unused_addPattern, pattern_name = command.split('/')
         pattern_params = payload
         for flower in flowers:
-            if flower.id == which_flower or which_flower == "all":
+            if for_flower(addressee, flower):
                 flower.addPattern(pattern_name, pattern_params)
 
     elif command.startswith("leds/updatePattern"):
         unused_leds, unused_addPattern, pattern_name = command.split('/')
         pattern_params = payload
         for flower in flowers:
-            if flower.id == which_flower or which_flower == "all":
+            if for_flower(addressee, flower):
                 flower.updatePattern(pattern_name, pattern_params)
 
     elif command.startswith("audio/playSoundFile"):
@@ -92,13 +97,13 @@ def send_commands_to_flowers(mqtt_message, flowers):
         if len(params) >= 2:
             start_time = params[1] 
         for flower in flowers:
-            if flower.id == which_flower or which_flower == "all":
+            if for_flower(addressee, flower):
                 flower.showText(audio_filename, startTime=start_time)
 
     elif command.startswith("screen/setText"):
         text_to_show_on_screen = payload
         for flower in flowers:
-            if flower.id == which_flower or which_flower == "all":
+            if for_flower(addressee, flower):
                 flower.showText(text_to_show_on_screen, duration=20000)
 
     else:
