@@ -18,6 +18,12 @@ RUN echo "Acquire::http::Pipeline-Depth 0;" > /etc/apt/apt.conf.d/99custom && \
     echo "Acquire::http::No-Cache true;"   >> /etc/apt/apt.conf.d/99custom && \
     echo "Acquire::BrokenProxy    true;" >> /etc/apt/apt.conf.d/99custom
 
+# Based on instructions at https://nanomq.io/downloads?os=Linux
+# curl is a dependency of the NanoMQ install script
+RUN apt-get update && apt-get install -y curl
+RUN curl -s https://assets.emqx.com/scripts/install-nanomq-deb.sh | bash
+RUN apt-get install nanomq
+
 RUN apt-get update && apt-get install -y \
     libgl1-mesa-glx \
     libglib2.0-0 \
