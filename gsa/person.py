@@ -2,7 +2,7 @@ from dataclasses import dataclass
 import json
 import random
 import time
-from typing import Any, List, Callable
+from typing import Any, List, Callable, Dict
 
 import paho.mqtt.client as mqtt
 
@@ -35,7 +35,7 @@ class Person():
 
 class People():
     def __init__(self):
-        self.people = {}
+        self.people: Dict[str, Person] = {}
         self.last_update = None
 
     def updateFromMQTT(self, mqtt_people_update: mqtt.MQTTMessage):
@@ -60,7 +60,7 @@ class People():
                 self.people[name] = person
             person.location = geometry.Point(location['x'], location['y'])
             person.recent_locations.add(person.location)
-            person.last_seen = update['timestamp']
+            person.last_seen = int(update['timestamp'])
 
     def removePeopleNotSeenForAWhile(self):
         # How much time can pass without seeing a person before they are 
