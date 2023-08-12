@@ -9,13 +9,13 @@ import yaml
 broker_address = '127.0.0.1'
 broker_port = 1883
 topic = 'flower-heartbeats/'
-DEPLOYMENT_PATH = '/app/fake_field/patricks_backyard_party_deployment.yaml'
+DEPLOYMENT_PATH = '../../fake_field/dress_rehearsal_deployment.yaml'
 
 
 if len(sys.argv) > 1:
     flowerCount = int(sys.argv[1])
 else:
-    flowerCount = 1
+    flowerCount = 130
 
 def get_fid(deployment, id):
     return list(deployment['flowers'])[int(id)]

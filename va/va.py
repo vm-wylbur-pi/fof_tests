@@ -33,18 +33,18 @@ import threading
 pp = pprint.PrettyPrinter(indent=4)
 
 # TODO: Read this from config
-MQTT_ENABLED = False
-MQTT_BROKER_IP = "192.168.1.72"
+MQTT_ENABLED = True
+MQTT_BROKER_IP = "127.0.0.1"
 MQTT_PEOPLE_TOPIC = 'people-locations/'
 
 # open up the channel that we're reading from
 # CHANNEL = 'vids/lots-adults-four-lights.mp4'
-# CHANNEL = 'vids/dress-1.mp4'
-CHANNEL = 1    #0 for mac, 1 or more for windows?
+CHANNEL = '../../../vids/dress/dress-1.mp4'
+#CHANNEL = 1    #0 for mac, 1 or more for windows?
 
 CALIBRATION = 'calibration_parameters.npz'
 DEPLOYMENT_FILE = '../fake_field/dress_rehearsal_deployment.yaml'
-MAX_FRAMES = -1
+MAX_FRAMES = 1000
 #SKIP_FRAMES = -1  # used to test intermittent frames from a live camera
 
 # consume the first X of these and generate a median frame
