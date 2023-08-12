@@ -23,7 +23,12 @@ $( document ).ready(function() {
     $( "button#addFairy" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/Fairy");
         $('input[name="field_params"]').val("");
-        $('#field_command_param_explanation').text("Adds one fairy. You can have many. Each is independent of the othres.");
+        $('#field_command_param_explanation').text("Adds one fairy. You can have many. Each is independent of the others.");
+    });
+    $( "button#rollCall" ).click(function (event) {
+        $('input[name="field_command"]').val("runGame/RollCall");
+        $('input[name="field_params"]').val("500");
+        $('#field_command_param_explanation').text("Each flower lights up and calls 'here', in order across the field. One param: millis between calls.");
     });
     $( "button#aura" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/Aura");

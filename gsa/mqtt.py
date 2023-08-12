@@ -6,6 +6,7 @@ import gsa.games.wave as wave_module
 import gsa.games.color_waves as color_waves
 import gsa.games.fairy as fairy
 import gsa.games.fun_screen_text as fun_screen_text
+import gsa.games.roll_call as roll_call
 import gsa.games.sleep_mode as sleep_mode
 
 # Used during development.
@@ -112,6 +113,14 @@ def HandleGameControlCommand(message, gameState):
     if command == "runGame/Fairy":
         # No parameters (yet) for the fairy game.  It runs indefinitely.
         gameState.runStatefulGame(fairy.Fairy())
+        return
+
+    if command == "runGame/RollCall":
+        # No parameters (yet) for the fairy game.  It runs indefinitely.
+        gapBetweenCallsMillis = 500
+        if len(params) >= 1:
+            gapBetweenCallsMillis = int(params[0])
+        gameState.runStatefulGame(roll_call.RollCall(gapBetweenCallsMillis))
         return
 
     if command == "runGame/RandomIdle":

@@ -36,6 +36,21 @@ Fairy:
     - fairy/TaliaOverHere.wav
     - fairy/TaliaOverHere2.wav
 
+RollCall:
+  # Each flower will play one of these at random when called.
+  - wave/Hi1.wav
+  - wave/Hi2.wav
+  - wave/Hi3.wav
+  - wave/Hi4.wav
+  - wave/Hi5.wav
+  - wave/Hi6.wav
+  - wave/yeah2.wav
+  - wave/yeah6.wav
+  - wave/yeahUP3.wav
+  - fairy/TaliaOverHere.wav
+  - fairy/MikaylaOverHere1.wav
+  - fairy/MikaylaOverHere2.wav
+
 Wave:
   # These are the sounds that play as each wave of color arrives at a flower.
   #
