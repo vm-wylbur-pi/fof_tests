@@ -33,19 +33,19 @@ import threading
 pp = pprint.PrettyPrinter(indent=4)
 
 # TODO: Read this from config
-MQTT_ENABLED = True
+MQTT_ENABLED = False
 MQTT_BROKER_IP = "192.168.1.72"
 MQTT_PEOPLE_TOPIC = 'people-locations/'
 
 # open up the channel that we're reading from
 # CHANNEL = 'vids/lots-adults-four-lights.mp4'
-CHANNEL = '../../../vids/dress/dress-1.mp4'
-#CHANNEL = 0
+# CHANNEL = 'vids/dress-1.mp4'
+CHANNEL = 1    #0 for mac, 1 or more for windows?
 
 CALIBRATION = 'calibration_parameters.npz'
 DEPLOYMENT_FILE = '../fake_field/dress_rehearsal_deployment.yaml'
-MAX_FRAMES = 1000
-SKIP_FRAMES = 1  # used to test intermittent frames from a live camera
+MAX_FRAMES = -1
+#SKIP_FRAMES = -1  # used to test intermittent frames from a live camera
 
 # consume the first X of these and generate a median frame
 # MEDIAN_FRAMES = 2500
@@ -296,6 +296,12 @@ def getPeoplePayload(M):
 #sys.exit()
 
 cap = cv2.VideoCapture(CHANNEL)
+
+# stretch image otherwise it gets smushed in windows
+if isinstance(CHANNEL,int):
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
+
 frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
@@ -399,7 +405,8 @@ def viz_loop(fps=30.0):
         if WEBSOCKET and fcnt % WEBSOCKET_RATE == 0:
             _, buffer = cv2.imencode('.jpg', hudframe)
             hudframe_base64 = base64.b64encode(buffer).decode('utf-8')
-
+            print("!!!!!!!!!!!!!!!!!!!!!!!!! emitting hudframe !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            print(len(hudframe_base64))
             # Emit the encoded image to connected clients via the websocket
             socketio.emit('hud_update', hudframe_base64)
 
