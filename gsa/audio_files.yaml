@@ -70,6 +70,13 @@ Wave:
     # There's plenty of redundancy in the file naming here.  We decided this
     # is preferable to computed filenames, since it leaves us more flexibility
     # to make changes later.
+    Hi:
+      - wave/Hi1.wav
+      - wave/Hi2.wav
+      - wave/Hi3.wav
+      - wave/Hi4.wav
+      - wave/Hi5.wav
+      - wave/Hi6.wav
     yeahUP:
       - wave/yeahUP1.wav
       - wave/yeahUP2.wav
