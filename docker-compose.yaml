@@ -10,6 +10,7 @@ services:
     ports:
       - 80:80
       - 1883:1883
+      - 8081:8081
       - 9001:9001
       - 123:123
       - 123:123/udp
@@ -28,13 +29,13 @@ services:
       - ./gsa:/app/gsa
       - ./va:/app/va
     command: ./startup.sh
-  nanomq:
-    image: emqx/nanomq:latest
-    container_name: nanomq
-    privileged: true
-    ports:
-      #- "1883:1883"
-      #- "9001:8083"
-      - "8883:8883"
-    restart: always
+  # nanomq:
+  #   image: emqx/nanomq:latest
+  #   container_name: nanomq
+  #   privileged: true
+  #   ports:
+  #     #- "1883:1883"
+  #     #- "9001:8083"
+  #     - "8883:8883"
+  #   restart: always
 
