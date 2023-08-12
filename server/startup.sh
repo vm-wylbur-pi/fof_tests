@@ -12,11 +12,11 @@ chronyd -x -n -f /etc/chrony/chrony.conf &
 
 # Start mosquitto, the old MQTT broker;  this shouldn't
 # be needed unless something went wrong with NanoMQ.
-# mosquitto -c config/mosquitto.conf &
+mosquitto -c config/mosquitto.conf &
 
 # Start NanoMQ, our new MQTT broker
-echo "starting nanomq"
-nanomq start --conf /etc/nanomq.conf &
+echo "not starting nanomq"
+# nanomq start --conf /etc/nanomq.conf &
 
 # Start flask webserver
 echo "starting the FCC"

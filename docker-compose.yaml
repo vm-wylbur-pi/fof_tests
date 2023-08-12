@@ -8,12 +8,12 @@ services:
     tmpfs:
       - /tmp:size=10m
     ports:
-      - 80:80
-      - 1883:1883
-      - 8081:8081
+      - 80:80        # FCC web server
+      - 1883:1883    # unencrypted MQTT
+      - 8081:8081    # NanoMQ HTTP rest api
       - 9001:9001
-      - 123:123
-      - 123:123/udp
+      - 123:123      # ntp
+      - 123:123/udp  # ntp broadcast (not needed?)
     logging:
       driver: "json-file"
       options:
