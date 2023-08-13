@@ -26,8 +26,13 @@ function connectToMQTT() {
 
     var connect_options = {
         timeout: 5,  // seconds
-        onSuccess: function() {
-            $( "#mqtt-status" ).append("Conncted to MQTT Broker.<br/>");
+        reconnect: true,  // exponential backoff maxing at 2-minute retry loop
+        onSuccess: function(reconnected) {
+            let msg = `Conncted to MQTT Broker at ${brokerIP}<br/>`
+            if (reconnected) {
+                msg = "Re-" + msg;
+            }
+            $( "#mqtt-status" ).append(msg);
             $( "#mqtt-button-nav")
                 // Remove the existing class 'btn-primary'
                 .removeClass("btn-danger")
