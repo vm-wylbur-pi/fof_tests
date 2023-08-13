@@ -27,7 +27,7 @@ class FakeFlower:
     # MAC-address id for the flower, e.g. "AB:03:5D"
     id: str
     num: str   # str for matching mqtt topic without conversion
-    reference_time = 0
+    reference_time = 0  # seconds since epoch
     patterns = []
     text: str = ""
 
@@ -70,9 +70,11 @@ class FakeFlower:
 
     def controlMillis(self):
         # System time is used as a stand-in for NTP-synced time
-        millis_since_epoch = int(round(time.time() * 1000))
+        nowSecs = int(round(time.time()))
         # Reference time behaves just like in the real flowers.
-        return millis_since_epoch - self.reference_time
+        timeSinceReferenceSecs = nowSecs - self.reference_time
+        timeSinceReferenceMillis = timeSinceReferenceSecs * 1000
+        return timeSinceReferenceMillis
     
     def addPattern(self, pattern_name, str_params):
         self.patterns.append(self.constructPattern(pattern_name, str_params))
