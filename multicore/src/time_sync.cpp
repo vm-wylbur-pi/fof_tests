@@ -33,36 +33,14 @@ namespace time_sync
     NTPClient ntpClient(ntpUDP, config::CONTROLLER_IP_ADDRESS,
                         NTP_OFFSET, NTP_UPDATE_PERIOD_MILLIS);
 
-    void syncWithNTP() {
-        // ntpClient.setServerPort(NTP_SERVER_PORT);
-        uint8_t num_attempts = 0;
-        Serial.println("Getting NTP Time...");
-        while (num_attempts++ < 3) {
-            delay(2000);
-            comms::sendDebugMessage("Attempting NTP sync...");
-            haveSyncedWithNTP = ntpClient.forceUpdate();
-            if (haveSyncedWithNTP) {
-                break;
-            }
-        }
-        if (haveSyncedWithNTP) {
-            comms::sendDebugMessage("Time from NTP: " + ntpClient.getFormattedTime());
-            screen::commands::appendText("Got global time from NTP\n");
-        } else {
-            Serial.println("Failed to get time from NTP.");
-            comms::sendDebugMessage("Failed to get time from NTP.");
-        }
-    }
-
     void setupNTPClientAndSync() {
         ntpClient.begin();
         ntpClient.setTimeout(NTP_TIMEOUT_MILLIS);
 
-        // This is the only time we run NTP syncing, since we know
-        // we'll have the whole CPU, and we don't expect clock drift
-        // to matter.  We could run this more often if we notice clock
-        // drift.
-        syncWithNTP();
+        // This is the first and probably most accurate NTP sync, since the current
+        // thread has the whole CPU. Resyncing later is possible, and necessary
+        // if the NTP server starts up after this flower does.
+        commands::syncWithNTP();
     }
 
     String getFormattedNTPTime() {
@@ -98,8 +76,28 @@ namespace time_sync
             eventReferenceTimeSec = referenceTimeSec;
         }
 
-        // void forceSetClockFromMQTT(uint32_t secsSinceEpoch, uint32_t additional_millis) {
-        //    
-        // }
+        void syncWithNTP() {
+            // ntpClient.setServerPort(NTP_SERVER_PORT);
+            uint8_t num_attempts = 0;
+            bool syncSuccessful = false;
+            Serial.println("Getting NTP Time...");
+            while (num_attempts++ < 3) {
+                delay(2000);
+                comms::sendDebugMessage("Attempting NTP sync...");
+                syncSuccessful = ntpClient.forceUpdate();
+                if (syncSuccessful) {
+                    break;
+                }
+            }
+            if (syncSuccessful) {
+                haveSyncedWithNTP = true;
+                comms::sendDebugMessage("Time from NTP: " + ntpClient.getFormattedTime());
+                screen::commands::appendText("Got global time from NTP\n");
+            }
+            else {
+                Serial.println("Failed to get time from NTP.");
+                comms::sendDebugMessage("Failed to get time from NTP.");
+            }
+        }
     }
 }

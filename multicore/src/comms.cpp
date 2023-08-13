@@ -81,6 +81,10 @@ namespace comms
             }
             sleep_mode::commands::enterDeepSleep(millisToSleep);
         }
+        if (command == "time/syncWithNTP") {
+            time_sync::commands::syncWithNTP();
+            return;
+        }
         // Reference time for flower events, in seconds since unix epoch.
         // # This command should generally be "retained", so flowers will pick it up on reboot. 
         // EVT_REFERENCE_TIME=$(date +%s)

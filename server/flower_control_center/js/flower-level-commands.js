@@ -8,6 +8,8 @@ function populateCommandChoices() {
         // Hide this one during Patrick's party; running it with a bad or no params could break syncing.
         // ["time/setEventReference",
         // "one integer parameter, seconds since the Unix epoch. Should be in the last couple weeks."],
+        ["time/syncWithNTP",
+         "No parameters. Re-sync with NTP server on the Feds."],
         ["time/setBPM",
         "one integer parameter. Affects beat-flash tempo."],
         ["leds/listPatterns",

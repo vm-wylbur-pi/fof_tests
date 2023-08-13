@@ -7,7 +7,8 @@
 
 namespace time_sync
 {
-    // To be called at startup.
+    // To be called at startup. This is the highest-quality sync, when
+    // nothing else on the flower is competing for CPU.
     void setupNTPClientAndSync();
 
     // To be called from the heartbeat method
@@ -34,6 +35,10 @@ namespace time_sync
         // since the unix epoch.  This will be subtracted from the
         // true seconds since the epoch derived from NTP.
         void setEventReferenceTime(uint32_t referenceTimeSec);
+
+        // Attempt to fetch the absolute time reference from the NTP
+        // server.  The IP address to use is specified in config.h
+        void syncWithNTP();
     }
 }
 
