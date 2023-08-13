@@ -29,8 +29,8 @@ class StraightColorWave(game.StatelessGame):
         waveVelocity = target.diff(startPoint).norm().scale(waveSpeed)
         return StraightColorWave(hue=random.randint(0, 255),
                                  start_loc=startPoint,
-                                 velocity=waveVelocity
-                                 startTime:)
+                                 velocity=waveVelocity,
+                                 startTime=gameState.controlTimer())
 
     def run(self, flowers: 'list[Flower]'):
         print(f"Running wave: {self}")
@@ -47,11 +47,12 @@ class StraightColorWave(game.StatelessGame):
             if inFrontOfLine:
                 millisToReachFlower = int(
                     round(1000 * perpVectorToFlower.magnitude() / speed))
+                controlTimerHuePulseTime = self.startTime + millisToReachFlower
                 # ramp and peak time could be parameters of this Game, or computed based on speed
                 rampDuration = 100
                 peakDuration = 200
                 brightness = 200
-                flower.HuePulse(hue=self.hue, startTime=f"+{millisToReachFlower}", rampDuration=rampDuration,
+                flower.HuePulse(hue=self.hue, startTime=controlTimerHuePulseTime, rampDuration=rampDuration,
                                 peakDuration=peakDuration, brightness=brightness)
 
 
@@ -66,6 +67,7 @@ class CircularColorWave(game.StatelessGame):
     center: geometry.Point
     startRadius: float
     speed: float  # Positive is growing, Negative is Shrinking. units are cm/sec
+    startTime: int  # absolute control-timer time when the wave should start
     soundFiles: 'list[str]' = None # Sounds to be triggered in flowers reached by the wave.
 
     @classmethod
@@ -76,7 +78,7 @@ class CircularColorWave(game.StatelessGame):
         startRadius = 0 if speed > 0 else 700
         return CircularColorWave(hue=random.randint(0, 255),
                                  center=center, startRadius=startRadius, speed=speed,
-                                 soundFiles=None)
+                                 startTime=gameState.controlTimer(), soundFiles=None)
 
     def run(self, flowers: 'list[Flower]'):
         print(f"Running wave: {self}")
@@ -86,16 +88,17 @@ class CircularColorWave(game.StatelessGame):
             timeToReachFlower = distanceFromStart / self.speed
             if timeToReachFlower >= 0:
                 millisToReachFlower = int(round(1000 * timeToReachFlower))
+                controlTimerHuePulseTime = self.startTime + millisToReachFlower
                 # TODO: consider exposing hue pulse parameters as part of CircularColorWave, or maybe
                 #       just make each pulse shorter the faster the wave speed.
                 rampDuration = 100
                 peakDuration = 200
                 brightness = 200
-                flower.HuePulse(hue=self.hue, startTime=f"+{millisToReachFlower}", rampDuration=rampDuration,
+                flower.HuePulse(hue=self.hue, startTime=controlTimerHuePulseTime, rampDuration=rampDuration,
                                 peakDuration=peakDuration, brightness=brightness)
                 if self.soundFiles:
                     flower.PlaySoundFile(filename=random.choice(self.soundFiles),
-                                        startTime=f"+{millisToReachFlower}")
+                                         startTime=controlTimerHuePulseTime)
 
 
 # Showcase wave effects by running through them with randomized parameters.
@@ -119,6 +122,9 @@ class RandomIdle(game.StatefulGame):
         now = time.time()
         if now > self.next_effect_time:
             effect = random.choice(RandomIdle.field_effects_menu).randomInstance(gameState)
+            # Start in the future, to give time for communication to full field.
+            # This only works for StraightColorWave and CircularColorWave right now.
+            effect.startTime = gameState.controlTimer() + 5000
             effect.run(gameState.flowers)
             delay = random.normalvariate(self.effectGapSecsMean, self.effectGapSecsStDev)
             delay = max(delay, self.effectGapSecsMinimum)

@@ -62,6 +62,7 @@ def HandleMQTTMessage(message, gameState):
         gameState.people.updateFromMQTT(message)
     elif message.topic.startswith("flower-control/all/time/setEventReference"):
         # flower-control/*/time/setEventReference has a single integer parameter
+        # It is seconds since the epoch.
         gameState.control_timer_reference_time = int(message.payload)
         print(f"Set event reference time to {gameState.control_timer_reference_time}")
     else:
@@ -86,6 +87,8 @@ def HandleGameControlCommand(message, gameState):
             wave.start_loc = Point(int(params[1]), int(params[2]))
         if len(params) >= 5:
             wave.velocity = Vector(int(params[3]), int(params[4]))
+        if len(params) >= 6:
+            wave.startTime = gameState.parseStartTime(params[5])
         gameState.runStatelessGame(wave)
         return
 
@@ -99,6 +102,8 @@ def HandleGameControlCommand(message, gameState):
             wave.startRadius = int(params[3])
         if len(params) >= 5:
             wave.speed = int(params[4])
+        if len(params) >= 6:
+            wave.startTime = gameState.parseStartTime(params[5])
         gameState.runStatelessGame(wave)
         return
 

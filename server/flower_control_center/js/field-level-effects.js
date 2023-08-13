@@ -47,33 +47,33 @@ $( document ).ready(function() {
     });
     $( "button#leftToRight" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/StraightColorWave");
-        $('input[name="field_params"]').val("160,0,450,600,0");
-        $('#field_command_param_explanation').text("A wave specified by a point and a direction.  hue, startX, startY, velocityX, velocityY");
+        $('input[name="field_params"]').val("160,0,450,600,0,+4000");
+        $('#field_command_param_explanation').text("A wave specified by a point and a direction.  hue, startX, startY, velocityX, velocityY, startTime");
     });
     $( "button#rightToLeft" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/StraightColorWave");
-        $('input[name="field_params"]').val("110,700,450,-600,0");
-        $('#field_command_param_explanation').text("A wave specified by a point and a direction.  hue, startX, startY, velocityX, velocityY");
+        $('input[name="field_params"]').val("110,700,450,-600,0,+4000");
+        $('#field_command_param_explanation').text("A wave specified by a point and a direction.  hue, startX, startY, velocityX, velocityY, startTime");
     });
     $( "button#bottomToTop" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/StraightColorWave");
-        $('input[name="field_params"]').val("200,350,1000,0,-600");
-        $('#field_command_param_explanation').text("A wave specified by a point and a direction.  hue, startX, startY, velocityX, velocityY");
+        $('input[name="field_params"]').val("200,350,1000,0,-600,+4000");
+        $('#field_command_param_explanation').text("A wave specified by a point and a direction.  hue, startX, startY, velocityX, velocityY, startTime");
     });
     $( "button#topToBottom" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/StraightColorWave");
-        $('input[name="field_params"]').val("40,350,0,0,600");
-        $('#field_command_param_explanation').text("A wave specified by a point and a direction.  hue, startX, startY, velocityX, velocityY");
+        $('input[name="field_params"]').val("40,350,0,0,600,+4000");
+        $('#field_command_param_explanation').text("A wave specified by a point and a direction.  hue, startX, startY, velocityX, velocityY, startTime");
     });
     $( "button#expandingCircle" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/CircularColorWave");
-        $('input[name="field_params"]').val("180,300,450,0,600");
-        $('#field_command_param_explanation').text("A circle that grows or shrinks.  hue, centerX, centerY, startRadius, radiusSpeed");
+        $('input[name="field_params"]').val("180,300,450,0,600,+4000");
+        $('#field_command_param_explanation').text("A circle that grows or shrinks.  hue, centerX, centerY, startRadius, radiusSpeed, startTime");
     });
     $( "button#contractingCircle" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/CircularColorWave");
-        $('input[name="field_params"]').val("20,300,450,500,-600");
-        $('#field_command_param_explanation').text("A circle that grows or shrinks.  hue, centerX, centerY, startRadius, radiusSpeed");
+        $('input[name="field_params"]').val("20,300,450,500,-600,+4000");
+        $('#field_command_param_explanation').text("A circle that grows or shrinks.  hue, centerX, centerY, startRadius, radiusSpeed, startTime");
     });
 
 });
