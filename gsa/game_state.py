@@ -15,11 +15,10 @@ class GameState:
     # Returns the number of milliseconds that have passed since the 
     # globally shared event reference time.
     def controlTimer(self) -> int:
-        print(f"reference time is {self.control_timer_reference_time}")
-        nowSecs = int(round(time.time()))
+        nowSecs = time.time()
         timeSinceReferenceSecs = nowSecs - self.control_timer_reference_time
         timeSinceReferenceMillis = timeSinceReferenceSecs * 1000
-        return timeSinceReferenceMillis
+        return int(round(timeSinceReferenceMillis))
 
     def runStatelessGame(self, game):
         game.run(self.flowers)

@@ -70,11 +70,11 @@ class FakeFlower:
 
     def controlMillis(self):
         # System time is used as a stand-in for NTP-synced time
-        nowSecs = int(round(time.time()))
+        nowSecs = time.time()
         # Reference time behaves just like in the real flowers.
         timeSinceReferenceSecs = nowSecs - self.reference_time
         timeSinceReferenceMillis = timeSinceReferenceSecs * 1000
-        return timeSinceReferenceMillis
+        return int(round(timeSinceReferenceMillis))
     
     def addPattern(self, pattern_name, str_params):
         self.patterns.append(self.constructPattern(pattern_name, str_params))
