@@ -24,6 +24,10 @@ class Vector:
         return Vector(self.dx - v.dx, self.dy - v.dy)
 
     def norm(self):
+        # Protection from div-by-zero. This comes up very rarely, when randomizing
+        # points and velocities.
+        if self.magnitude() == 0:
+            return self
         return self.scale(1/self.magnitude())
 
     # Whether v added self has a smaller magnitude than self, or roughly
@@ -133,6 +137,15 @@ class TestContraryTo(unittest.TestCase):
         self.assertTrue(Vector(1, 1).contraryTo(Vector(-5, -2)))
         self.assertTrue(Vector(200, 0).contraryTo(Vector(-200, 0)))
 
+
+class TestVectorNorm(unittest.TestCase):
+
+    def test_norm_of_nonzero_vector(self):
+        self.assertEqual(Vector(5,0).norm(), Vector(1,0))
+        self.assertEqual(Vector(0,-5).norm(), Vector(0,-1))
+
+    def test_norm_of_zero_vector(self):
+        self.assertEqual(Vector(0,0), Vector(0,0).norm())
 
 if __name__ == '__main__':
     unittest.main()
