@@ -5,16 +5,18 @@ const HEARTBEAT_FRESHNESS_UPDATE_PERIOD = 1000; // milliseconds
 // The singleton Pah.MQTT.Client object.
 // Docs https://www.eclipse.org/paho/files/jsdoc/index.html
 var mqtt;
+var mqttIsConnected;  // For some reason, can't get this from the library.
 
 function connectToMQTT() {
     $( "#mqtt-status" ).text("");
     let brokerIP = $( "#mqtt-ip" ).val();
     $( "#mqtt-status" ).append("Connecting to MQTT Broker at " + brokerIP + ":" + MQTT_BROKER_PORT + "...<br/>");
     let randomClientNameSuffix = Math.floor(Math.random() * 10000);
-    mqtt = new Paho.MQTT.Client(brokerIP, MQTT_BROKER_PORT,
+    mqtt = new Paho.MQTT.Client(brokerIP, Number(MQTT_BROKER_PORT),
                                 `Flower_Control_Center_${randomClientNameSuffix}`);
 
     mqtt.onConnectionLost = function(context) {
+        mqttIsConnected = false;
         $( "#mqtt-status" ).append(`MQTT connection lost: ${context.errorMessage}<br/>`);
         $( "#mqtt-button-nav")
             // Remove the existing class 'btn-primary'
@@ -26,13 +28,9 @@ function connectToMQTT() {
 
     var connect_options = {
         timeout: 5,  // seconds
-        reconnect: true,  // exponential backoff maxing at 2-minute retry loop
-        onSuccess: function(reconnected) {
-            let msg = `Conncted to MQTT Broker at ${brokerIP}<br/>`
-            if (reconnected) {
-                msg = "Re-" + msg;
-            }
-            $( "#mqtt-status" ).append(msg);
+        onSuccess: function() {
+            mqttIsConnected = true;
+            $( "#mqtt-status" ).append(`Conncted to MQTT Broker at ${brokerIP}<br/>`);
             $( "#mqtt-button-nav")
                 // Remove the existing class 'btn-primary'
                 .removeClass("btn-danger")
@@ -41,6 +39,7 @@ function connectToMQTT() {
             subscribeToFlowerMessages();
         },
         onFailure: function(context) {
+            mqttIsConnected = false;
             $( "#mqtt-status" ).append(`MQTT connection failed: ${context.errorMessage}<br/>`);
             $( "#mqtt-button-nav")
                 // Remove the existing class 'btn-primary'
@@ -231,6 +230,13 @@ function sendMQTTMessage(topic, payload) {
     mqtt.publish(message);
 }
 
+function mqttConnectionMaintenance() {
+    // Maybe consider some exponential backoff here.
+    if (!mqttIsConnected) {
+        connectToMQTT();
+    }
+}
+
 $( document ).ready(function() {
     connectToMQTT();
 
@@ -241,4 +247,5 @@ $( document ).ready(function() {
     $('#flower-table').append(Heartbeat.headerRow());
 
     setInterval(updateFreshnessColumn, HEARTBEAT_FRESHNESS_UPDATE_PERIOD);
+    setInterval(mqttConnectionMaintenance, 1000);  // milliseconds
 });

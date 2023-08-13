@@ -247,6 +247,7 @@ $(document).ready(function() {
 
         var connect_options = {
             timeout: 15,  // seconds
+            reconnect: true,
             onSuccess: function() {
                 console.log("Field - Conncted to MQTT Broker.");
                 subscribeToPeopleMessages();
