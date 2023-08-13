@@ -79,7 +79,7 @@ def HandleGameControlCommand(message, gameState):
         return
 
     if command == "runGame/StraightColorWave":
-        wave = color_waves.StraightColorWave.randomInstance(gameState.field)
+        wave = color_waves.StraightColorWave.randomInstance(gameState)
         if len(params) >= 1:
             wave.hue = int(params[0])
         if len(params) >= 3:
@@ -90,7 +90,7 @@ def HandleGameControlCommand(message, gameState):
         return
 
     if command == "runGame/CircularColorWave":
-        wave = color_waves.CircularColorWave.randomInstance(gameState.field)
+        wave = color_waves.CircularColorWave.randomInstance(gameState)
         if len(params) >= 1:
             wave.hue = int(params[0])
         if len(params) >= 3:

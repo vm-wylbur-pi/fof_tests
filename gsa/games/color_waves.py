@@ -17,18 +17,20 @@ class StraightColorWave(game.StatelessGame):
     hue: int
     start_loc: geometry.Point
     velocity: geometry.Vector
+    startTime: int  # control-timer time when the wave should start
 
     @classmethod
-    def randomInstance(cls, field: Field):
-        startPoint = field.randomPointNearEdge()
+    def randomInstance(cls, gameState: GameState):
+        startPoint = gameState.field.randomPointNearEdge()
         # Head toward the middle of the field, so the wave doesn't just start
         # near the edge and head outward, which would not be noticeable as a wave.
-        target = field.center()
+        target = gameState.field.center()
         waveSpeed = random.randint(300, 700)
         waveVelocity = target.diff(startPoint).norm().scale(waveSpeed)
         return StraightColorWave(hue=random.randint(0, 255),
                                  start_loc=startPoint,
-                                 velocity=waveVelocity)
+                                 velocity=waveVelocity
+                                 startTime:)
 
     def run(self, flowers: 'list[Flower]'):
         print(f"Running wave: {self}")
@@ -67,8 +69,8 @@ class CircularColorWave(game.StatelessGame):
     soundFiles: 'list[str]' = None # Sounds to be triggered in flowers reached by the wave.
 
     @classmethod
-    def randomInstance(cls, field: Field):
-        center = field.randomPoint()
+    def randomInstance(cls, gameState: GameState):
+        center = gameState.field.randomPoint()
         # We want to grow or shrink, but neither too fast nor noo slow.
         speed = random.randint(400, 700) * random.choice((1, -1))
         startRadius = 0 if speed > 0 else 700
@@ -116,7 +118,7 @@ class RandomIdle(game.StatefulGame):
     def runLoop(self, gameState: GameState):
         now = time.time()
         if now > self.next_effect_time:
-            effect = random.choice(RandomIdle.field_effects_menu).randomInstance(gameState.field)
+            effect = random.choice(RandomIdle.field_effects_menu).randomInstance(gameState)
             effect.run(gameState.flowers)
             delay = random.normalvariate(self.effectGapSecsMean, self.effectGapSecsStDev)
             delay = max(delay, self.effectGapSecsMinimum)

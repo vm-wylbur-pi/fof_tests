@@ -7,7 +7,7 @@ from ..field import Field
 class Game:
     # Factory method to construct a randomized instance of a game.
     @classmethod
-    def randomInstance(cls, field: Field):
+    def randomInstance(cls, gameState):
         raise NotImplementedError
 
 class StatelessGame(Game):
