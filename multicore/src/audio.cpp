@@ -12,6 +12,7 @@
 #include "AudioGeneratorWAV.h"
 #include "AudioOutputI2S.h"
 #include "AudioOutputMixer.h"
+#include "math.h"  // Arduino math library.
 
 #include <cstdint>
 #include <vector>
@@ -182,10 +183,21 @@ namespace audio
     // after a server command is received. Dispatch is in comms.cpp
     namespace commands {
         void setVolume(float newVolume) {
+            // Within this function "volume" is the user-visible logical
+            // volume used in the FCC, and "Gain" is the hardware setting
+            // understood by the audio board.
             if (newVolume < MIN_VOLUME) newVolume = MIN_VOLUME;
             if (newVolume > MAX_VOLUME) newVolume = MAX_VOLUME;
             
-            float newGain = MAX_GAIN * newVolume / MAX_VOLUME;
+            // The speakers behave somewhat non-linearly, in that at medium gains they
+            // sound rather loud.  To make the MIN_VOLUME - MAX_VOLUME more perceptually
+            // uniform, I'm using a power correction (similar to gamma correction for images.)
+            // Exponent choice: 1.5 didn't quiet the mid-range enough. 2.5 led to silence
+            //                  at vol==1.  2.0 is a good balance.
+            float volumeOnZeroOneScale = (newVolume - MIN_VOLUME) / MAX_VOLUME;
+            volumeOnZeroOneScale = pow(volumeOnZeroOneScale, 2);
+
+            float newGain = MAX_GAIN * volumeOnZeroOneScale;
             i2sAudioOutput->SetGain(newGain);
 
             // State variable used for volume reporting and mute restoration.
