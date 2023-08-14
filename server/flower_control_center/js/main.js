@@ -360,6 +360,10 @@ $( document ).ready(function() {
 
     $('#flower-table').append(Heartbeat.headerRow());
 
+    // I think the new table has all the needed functions, but in case, we're keeping 
+    // the old one and just hiding it.
+    $('#flower-table').hide();
+
     setInterval(updateFreshnessColumn, HEARTBEAT_FRESHNESS_UPDATE_PERIOD);
     setInterval(mqttConnectionMaintenance, 1000);  // milliseconds
 });
