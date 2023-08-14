@@ -27,23 +27,50 @@ namespace networking {
     // For throttlng OTA update progress messages
     uint32_t lastProgressUpdate = 0;
 
-    void setupWiFi() {
-        Serial.println("Connecting to WiFi (" + config::WIFI_SSID + ")");
-        WiFi.mode(WIFI_STA);
-        WiFi.begin(config::WIFI_SSID.c_str(), config::WIFI_PASSWORD.c_str());
-        while (WiFi.waitForConnectResult() != WL_CONNECTED) {
-            String failure_message = "WiFi Connection to\n" + config::WIFI_SSID + " failed.\nRebooting in 5 sec.";
-            Serial.println(failure_message);
-            screen::commands::setText(failure_message);
-            delay(5000);
-            ESP.restart();
-        }
+    const uint16_t WIFI_TIMEOUT_MILLIS = 5000;
 
-        Serial.println("WiFi Ready");
-        Serial.print("IP address: ");
-        Serial.println(WiFi.localIP());
-        screen::commands::appendText("WiFi Connected\n");
+    void tryToConnectToWifi(String ssid, String password) {
+        WiFi.mode(WIFI_STA);
+        // Workaround for library bug: https://github.com/espressif/arduino-esp32/issues/7095
+        WiFi._setStatus(WL_NO_SHIELD); 
+        WiFi.begin(ssid.c_str(), password.c_str());
+        int status = WiFi.waitForConnectResult(WIFI_TIMEOUT_MILLIS);
+        if (status != WL_CONNECTED) {
+            String msg = "\nWiFi\n" + ssid + "\nfailed.\nError:\n";
+            switch (WiFi.status()) {
+                case WL_NO_SSID_AVAIL: msg += "SSID\nnot there"; break;
+                case WL_CONNECT_FAILED: msg += "couldn't\nconnect"; break;
+                default: msg += "other\nstatus=" + String(status);
+            }
+            screen::commands::setText(msg);
+            delay(3000); // For a chance to read the failure message
+        }
     };
+
+    void setupWiFi() {
+        // This will loop forever if the flower can't connect to any wifi networks.
+        while(!WiFi.isConnected()) {
+            tryToConnectToWifi(selectSSID(), config::PRIMARY_WIFI_PASSWORD);
+            if (!WiFi.isConnected()) {
+                screen::commands::setText("Trying\nfallback\nWifi\n" + 
+                                          String(config::FALLBACK_SSID) + "\n");
+                tryToConnectToWifi(config::FALLBACK_SSID, config::FALLBACK_SSID_PASSWORD);
+                if (!WiFi.isConnected()) {
+                    screen::commands::appendText("\nFallback\nfailed.\nRetrying.");
+                    delay(3000);
+                }
+            }
+        }
+        screen::commands::appendText("WiFi\nConnected\n");
+    };
+
+    String selectSSID() {
+        uint8_t flower_num = flower_info::flowerInfo().sequenceNum;
+        // Flower numbers range from 1 to about 165, without many gaps. This
+        // makes a good hashing domain.  If this is a new flower without an
+        // inventory entry, we get -1, which will give the last SSID in the list.
+        return config::SSIDs[flower_num % config::NUM_WIFI_SSIDs];
+    }
 
     void setupOTA() {
         // Port defaults to 3232

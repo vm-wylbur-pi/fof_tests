@@ -5,8 +5,13 @@
 
 namespace networking {
   // Should be called from the main app setup().  Should be called before
-  // any other networking:: functions.
+  // any other networking:: functions.  NOTE: This will loop forever waiting
+  // for one of the configured WiFi networks to be available.
   void setupWiFi();
+
+  // Called by setupWifi to select the SSID this flower will attempt to
+  // connect to.  It falls back on the SSID in config.h
+  String selectSSID();
 
   // Should be called from the main app setup(), after setupWiFi
   void setupOTA();

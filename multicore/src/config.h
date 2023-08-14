@@ -8,11 +8,15 @@
 // easy to find and modify.
 namespace config {
 
-    // Name and password for the wifi. Modify this in your local copy
-    // of the file, but don't commit, until we're working with the
-    // deployment router.
-    const String WIFI_SSID = "Pretty Fly for a WiFi";
-    const String WIFI_PASSWORD = "fearandloathing";
+    // Each flower is assigned to one of these SSIDs based on its sequence number. 
+    const uint8_t NUM_WIFI_SSIDs = 4;
+    const String SSIDs[NUM_WIFI_SSIDs] = {"Sun", "Moon", "Stars", "Comet"};
+    const String PRIMARY_WIFI_PASSWORD = "fof12345"; // For the four networks here.
+
+    // If this flower fails to connect to the SSID from SSIDs above which it is 
+    // assigned to by networking::selectSSID, it will fallback to using this one.
+    const String FALLBACK_SSID = "Pretty Fly for a WiFi";
+    const String FALLBACK_SSID_PASSWORD = "fearandloathing";
 
     // This is used to configure:
     //   - the MQTT client
