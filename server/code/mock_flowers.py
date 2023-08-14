@@ -6,7 +6,7 @@ import paho.mqtt.client as mqtt
 import sys
 import yaml
 
-broker_address = '192.168.1.144'
+broker_address = '127.0.0.1'
 broker_port = 1883
 topic = 'flower-heartbeats/'
 DEPLOYMENT_PATH = '../../fake_field/dress_rehearsal_deployment.yaml'
@@ -15,7 +15,7 @@ DEPLOYMENT_PATH = '../../fake_field/dress_rehearsal_deployment.yaml'
 if len(sys.argv) > 1:
     flowerCount = int(sys.argv[1])
 else:
-    flowerCount = 130
+    flowerCount = 10
 
 def get_fid(deployment, id):
     return list(deployment['flowers'])[int(id)]
@@ -53,11 +53,13 @@ def main():
             flower_id = get_fid(deployment, client.id)
             payload = json.dumps({
                 'flower_id': flower_id,
-                'uptime': 1,
+                'sequence_num': flower_id,
+                'uptime': 2,
+                'version_name': 'bork 123',
                 'IP': '127.0.0.1',
                 'wifi_signal': "great",
                 'sd_card': 10,
-                'volume': 10,
+                'volume': 5,
                 'ntp_time': int(time.time()),
                 'control_timer': 10,
                 'FastLED_fps': 10
@@ -65,7 +67,7 @@ def main():
             res = client.publish(topic, payload)
             print(f'Published: {payload}')
             print(f'Return Code: {res.rc}')
-        time.sleep(1)
+        time.sleep(5)
 
 if __name__ == '__main__':
     main()
