@@ -177,7 +177,7 @@ def SetupMQTTClient(flowers, referenceAudioFileDir, requiredFiles):
         if result_code != 0:
             print("Unexpected MQTT disconnection.")
 
-    client = mqtt.Client(client_id="fake_flowers")
+    client = mqtt.Client(client_id="audio_upload_manager")
     client.on_pre_connect = on_pre_connect
     client.on_connect = on_connect
     client.on_disconnect = on_disconnect
