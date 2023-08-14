@@ -81,14 +81,15 @@ class TabulatorTable {
                 {title: "Status Infoz", field: "status_infoz", html: true}
             ]
         })
-
-        this.table.on('rowUpdated', function(row){
-            //this is where the cool flashy green goes.
-        })
     }
     update(heartbeat_payload) {
         let heartbeat_json = this.fixup(heartbeat_payload)
-        let row = this.table.updateOrAddRow(heartbeat_json['id'],heartbeat_json)
+        this.table.updateOrAddRow(heartbeat_json['id'],heartbeat_json)
+        // Green Heartbeat pulse effect
+        let row = this.table.getRow(heartbeat_json['id'])
+        $( row.getElement() )
+             .css( { backgroundColor: "#0f0" } )
+             .animate( { backgroundColor: "#eee" }, 500 );
     }
 
     fixup(heartbeat_payload){
