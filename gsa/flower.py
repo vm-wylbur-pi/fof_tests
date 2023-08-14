@@ -30,13 +30,17 @@ class Flower:
         self.mqtt_client.publish(topic, payload=params, retain=retained, qos=0)
 
     # Setting n = 1 returns the closest flower to self.
-    def findNClosestFlowers(self, flowers, n):
+    def findNClosestFlowers(self, flowers, n: int):
         others = [f for f in flowers if f is not self]
         others.sort(key=lambda f: f.location.diff(self.location).magnitude())
         max_index = min(n, len(flowers))  # Can't return more neighbors than there are other flowers.
         n_closest = others[:max_index]
-        print(f"{n} closest flowers to {self.id} are {[f.id for f in n_closest]}")
+        # print(f"{n} closest flowers to {self.id} are {[f.id for f in n_closest]}")
         return n_closest
+
+    def SetVolume(self, volume: float):
+        params = f"{volume:.1f}" # Format with one decimal place, e.g. "3.0"
+        self.sendMQTTCommand(command="audio/setVolume", params=params)
 
     def PlaySoundFile(self, filename, startTime):
         #print(f"{self.id} playing sound file {filename} at {startTime}")

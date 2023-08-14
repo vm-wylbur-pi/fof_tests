@@ -135,6 +135,20 @@ Wave:
       # The He syllable directory had no He5.wav file.
       - wave/He6.wav
 
+# Every now and then, two adjacent flowers will be picked randomly, and one
+# of the following pairs of sound files will be picked randomly. Then each
+# flower plays one of the two sounds. The files are set up so that each one
+# is one of the two sides of a gossipy conversation.
+Gossip:
+  D1: [gossip/Gossip_D1_A_J_S.wav, gossip/Gossip_D1_B_J_S.wav]
+  D2: [gossip/Gossip_D2_A_S_N.wav, gossip/Gossip_D2_B_S_N.wav]
+  D3: [gossip/Gossip_D3_A_J_N.wav, gossip/Gossip_D3_B_J_N.wav]
+  D4: [gossip/Gossip_D4_A_J_S.wav, gossip/Gossip_D4_B_J_S.wav]
+  # Skipped D5, since it has 3 parts, and I needed to save time coding.
+  D6: [gossip/Gossip_D6_french_A.wav, gossip/Gossip_D6_french_B.wav]
+  D7: [gossip/Gossip_D7_garbled_A.wav, gossip/Gossip_D7_garbled_B.wav]
+  D8: [gossip/Gossip_D8_garbled_A.wav, gossip/Gossip_D8_garbled_B.wav]
+
 RainStorm:
   crickets: nature/crickets.wav
   lightRain: nature/lightRain.wav

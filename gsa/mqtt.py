@@ -5,6 +5,7 @@ import gsa.games.aura as aura
 import gsa.games.wave as wave_module
 import gsa.games.color_waves as color_waves
 import gsa.games.fairy as fairy
+import gsa.games.gossip as gossip
 import gsa.games.fun_screen_text as fun_screen_text
 import gsa.games.roll_call as roll_call
 import gsa.games.sleep_mode as sleep_mode
@@ -113,6 +114,16 @@ def HandleGameControlCommand(message, gameState):
 
     if command == "runGame/Wave":
         gameState.runStatefulGame(wave_module.Wave())
+        return
+
+    if command == "runGame/Gossip":
+        gapBetweenGossipsSecs = 60
+        volume = 3.0
+        if len(params) >= 1:
+            gapBetweenGossipsSecs = int(params[0])
+        if len(params) >= 2:
+            volume = float(params[1])
+        gameState.runStatefulGame(gossip.Gossip(gapBetweenGossipsSecs, volume))
         return
 
     if command == "runGame/Fairy":

@@ -40,6 +40,11 @@ $( document ).ready(function() {
         $('input[name="field_params"]').val("");
         $('#field_command_param_explanation').text("Starts the Wave game. No parameters. It only makes sense to have one instance.");
     });
+    $( "button#gossip" ).click(function (event) {
+        $('input[name="field_command"]').val("runGame/Gossip");
+        $('input[name="field_params"]').val("60, 3.0");
+        $('#field_command_param_explanation').text("Starts the Gossip game. Parameters are seconds between gossips and volume (0-11)");
+    });
     $( "button#funScreenText" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/FunScreenText");
         $('input[name="field_params"]').val("");
