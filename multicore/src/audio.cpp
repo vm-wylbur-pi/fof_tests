@@ -111,6 +111,14 @@ namespace audio
 
         comms::sendDebugMessage("Audio initialized");
         screen::commands::appendText("Audio initialized");
+
+        // Play a boot-up sound, so we can tell whether the speakers are turned on.
+        // This will do nothing (and the flower will send a debug message) if this
+        // sound file is not present on the SD card.
+        // This depends on storage::setupSDCard() being called before
+        // audio::setupAudio() in main.cc.
+        uint32_t now = time_sync::controlMillis();
+        commands::playSoundFile("punctuation/PunctuationUP.wav", now);
     }
 
     void mainLoop() {
