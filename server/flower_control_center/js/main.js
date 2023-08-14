@@ -59,7 +59,7 @@ class TabulatorTable {
                 {title: "Status", field: "status"},
                 {title: "Flower ID", field: "flower_id"},
                 {title: "Flower Num", field: "sequence_num"},
-                //{title: "Debug Messages", field: ""},
+                {title: "Debug Messages", field: "debug_msg_show"},
                 {title: "HB Age", field:"pretty_heartbeat_age"},
                 {title: "HeartBeat Age Seconds", field: "heartbeat_age", visible:false},
                 {title: "Creation Timestamp", field:"creation_timestamp", visible:false},
@@ -90,6 +90,11 @@ class TabulatorTable {
         $( row.getElement() )
              .css( { backgroundColor: "#0f0" } )
              .animate( { backgroundColor: "#eee" }, 500 );
+        // Clickable cell for showing debug messages
+        $( row.getCell("debug_msg_show").getElement() ).click(function (event) {
+            let debugDiv = findOrCreateDebugDiv(heartbeat_json['id']);
+            debugDiv.show();
+        });
     }
 
     fixup(heartbeat_payload){
@@ -97,6 +102,7 @@ class TabulatorTable {
         heartbeat_json['id'] = heartbeat_json['flower_id']
         heartbeat_json['creation_timestamp'] = Date.now()
         heartbeat_json['heartbeat_age'] = Date.now() - heartbeat_json['creation_timestamp']
+        heartbeat_json['debug_msg_show'] = "click here"
         healthCheckRow(heartbeat_json)
         return heartbeat_json
     }
