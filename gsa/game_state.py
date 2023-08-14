@@ -3,12 +3,13 @@ import time
 import flower
 import field
 import person
+from typing import List
 
 class GameState:
     def __init__(self, deployment_file):
-        self.flowers = flower.readFlowersFromDeploymentYAML(deployment_file)
-        self.field = field.Field(deployment_file)
-        self.people = person.People()
+        self.flowers: List[flower.Flower] = flower.readFlowersFromDeploymentYAML(deployment_file)
+        self.field: field.Field = field.Field(deployment_file)
+        self.people: person.People = person.People()
         self.stateful_games = []
         self.control_timer_reference_time: int = None  # seconds since the epoch
 
