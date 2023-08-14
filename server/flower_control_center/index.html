@@ -9,6 +9,8 @@
     <script src="lib/jquery.color-2.1.2.js"></script>
 
     <script src="lib/bootstrap-5.3.0.min.js"></script>
+    <script src="lib/tabulator.min.js"></script>
+
     <link rel="stylesheet" href="css/bootstrap-5.3.0.min.css">
 
     <script src="lib/paho-mqtt.js"></script>
@@ -21,6 +23,8 @@
     <script src="lib/cytoscape-grid-guide.js"></script>
 
     <link rel="stylesheet" href="css/fcc.css">
+    <link rel="stylesheet" href="css/tabulator_bootstrap5.min.css">
+
 
 <body>
     <div class="container-flex">
@@ -28,6 +32,19 @@
             <div id="navigation" class="col d-flex justify-content-center"></div>
         </div>
 
+        <div class="row" id="mqttROW">
+            <div class="col d-flex justify-content-center">
+                <p id="mqtt-status"></p>
+            </div>
+        </div>
+
+        <div class="row" id="reconnectROW">
+            <div class="col d-flex justify-content-center">
+                MQTT Broker IP:
+                <input type="text" id="mqtt-ip" value="192.168.1.72" />
+                <button id="mqtt-reconnect">Reconnect</button>
+            </div>
+        </div>
         <div class="row" id="fieldRow">
             <div class="col d-flex justify-content-center" >
                 <div id="field"></div>
@@ -120,20 +137,21 @@
                 </div>
             </div>
         </div>
-
-        <div class="row" id="mqttROW">
+        <div class="row" id="tabulatorROW">
             <div class="col d-flex justify-content-center">
-                <p id="mqtt-status"></p>
+                    <div class="btn-group" role="group" aria-label="Filter buttons">
+                        <button type="button" class="btn btn-secondary">Healthy</button>
+                        <button type="button" class="btn btn-primary">Unhealthy</button>
+                        <button type="button" class="btn btn-primary">Unknown</button>
+                        <button type="button" class="btn btn-danger">Clear filter</button>
+                    </div>
             </div>
         </div>
-        <div class="row" id="reconnectROW">
+        <div class="row" id="tabulatorROW">
             <div class="col d-flex justify-content-center">
-                MQTT Broker IP:
-                    <input type="text" id="mqtt-ip" value="192.168.1.72" />
-                    <button id="mqtt-reconnect">Reconnect</button>
+                <div id="tabulator-table"></div>
             </div>
         </div>
-
     </div>
 
     <button id="flash-all-flowers">OTA flash all flowers</button>

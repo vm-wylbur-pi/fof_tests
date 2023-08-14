@@ -52,6 +52,103 @@ function connectToMQTT() {
     mqtt.connect(connect_options);
 }
 
+class TabulatorTable {
+    constructor(){
+        this.table = new Tabulator("#tabulator-table", {
+            layout: "fitDataTable",
+            columns: [
+                {title: "Status", field: "status"},
+                {title: "Flower ID", field: "flower_id"},
+                {title: "Flower Num", field: "sequence_num"},
+                //{title: "Debug Messages", field: ""},
+                {title: "HB Age", field:"pretty_heartbeat_age"},
+                {title: "HeartBeat Age Seconds", field: "heartbeat_age", visible:false},
+                {title: "Creation Timestamp", field:"creation_timestamp", visible:false},
+                {title: "Uptime", field: "uptime"},
+                {title: "FW Version", field: "version_name"},
+                {title: "IP", field: "IP"},
+                {title: "WiFi Strength", field: "wifi_signal"},
+                {title: "SD Card", field: "sd_card"},
+                {title: "Volume", field: "volume", formatter:"progress", formatterParams:{
+                        min:0,
+                        max:11.0,
+                        color:["red", "orange", "green"],
+                        legendColor:"#000000",
+                        legendAlign:"center"
+                }},
+                {title: "NTP Time", field: "ntp_time"},
+                {title: "Ctrl Timer", field: "control_timer"},
+                {title: "FL FPS", field: "FastLED_fps"},
+                {title: "Status Infoz", field: "status_infoz", html: true}
+            ]
+        })
+
+        this.table.on('rowUpdated', function(row){
+            //this is where the cool flashy green goes.
+        })
+    }
+    update(heartbeat_payload) {
+        let heartbeat_json = this.fixup(heartbeat_payload)
+        let row = this.table.updateOrAddRow(heartbeat_json['id'],heartbeat_json)
+    }
+
+    fixup(heartbeat_payload){
+        let heartbeat_json = JSON.parse(heartbeat_payload)
+        heartbeat_json['id'] = heartbeat_json['flower_id']
+        heartbeat_json['creation_timestamp'] = Date.now()
+        heartbeat_json['heartbeat_age'] = Date.now() - heartbeat_json['creation_timestamp']
+        healthCheckRow(heartbeat_json)
+        return heartbeat_json
+    }
+}
+
+function heartBeatTick(){
+    var rows = ttable.table.getRows()
+    rows.forEach( row => {
+        let rd = row.getData()
+        rd['heartbeat_age'] += 1
+        let hba = rd['heartbeat_age']
+
+        let min = Math.floor(hba / 60)
+        if(min == 0){
+            min = ''
+        }
+        let sec = hba % 60;
+        if (sec < 10) {
+            sec = '0' + sec
+        }
+
+        rd['pretty_heartbeat_age'] = min + ":" + sec
+        row.update(rd)
+    })
+}
+// Called periodically in the interval
+function healthCheck(heartbeat_json){
+    var rows = ttable.table.getRows()
+    rows.forEach( row => {
+        let rd = row.getData()
+        healthCheckRow(rd)
+        row.update(rd)
+    })
+}
+
+function healthCheckRow(heartbeat_json){
+    heartbeat_json['status_infoz'] = ''
+
+    if (heartbeat_json['flower_id'][0] != 'B'){
+        heartbeat_json['status'] = "Healthy"
+    }else{
+        heartbeat_json['status'] = "Broke"
+        heartbeat_json['status_infoz'] = "Name starts with b which is sus"
+    }
+
+    if(heartbeat_json['ntp_time'] + 10000 > Date.now() ){
+        heartbeat_json['status'] = "Broke"
+        heartbeat_json['status_infoz'] += "<br> NTP time is old"
+    }
+    console.log('called for row ' + heartbeat_json['flower_id'])
+}
+
 class Heartbeat {
     constructor(heartbeat_json) {
         const data = JSON.parse(heartbeat_json);
@@ -160,6 +257,7 @@ function handleHeartbeatMessage(message) {
     try {
         let heartbeat = new Heartbeat(message.payloadString);
         insertOrUpdateFlowerRow(heartbeat);
+        ttable.update(message.payloadString)
     } catch(e) {
         console.log(`Error handling heartbeat message from ${message.destinationName}`);
         console.log(e);
@@ -231,7 +329,16 @@ function sendMQTTMessage(topic, payload) {
     mqtt.publish(message);
 }
 
+//# todo
+//v/ar ttable;
+
 $( document ).ready(function() {
+
+    // defined on the global namespace.
+    ttable = new TabulatorTable()
+    setInterval(healthCheck,10000)
+    setInterval(heartBeatTick, HEARTBEAT_FRESHNESS_UPDATE_PERIOD)
+
     connectToMQTT();
 
     $( "#mqtt-reconnect" ).click(function( event ) {

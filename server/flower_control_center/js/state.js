@@ -1,7 +1,6 @@
 var table = new Tabulator("#status-table", {
     //height:"400px",
     layout:"fitData",
-    movableRows:true,
     groupBy:"suite",
     //ajaxURL: "/api/state/test/json",
     columns:[
