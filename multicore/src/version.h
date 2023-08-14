@@ -16,13 +16,14 @@ namespace version {
     // events.  Generally, after you've finalized the build for each
     // named version, you should also make a git release branch for it.
     //
-    // "PartyTime" for the version used at the fundraising party in
-    // Patrick's backyord on 2023-06-17.
+    // Only a name 10 characters or fewer will fit on the screen without wra
+    // pping.
     //
+    // "PartyTime": used at fundraising party in Patrick's backyord, 2023-06-17
     // "DressMeUp" for the version used at the dress rehearsal on 2023-08-08
-    //
     // "NewToePaint": added NTP sync for testing on 2023-08-12
-    const String Name = "NewToePaint";
+    // "FourSquare": added assigned SSID for testing on 2023-08-14
+    const String Name = "FourSquare";
 }
 
 #endif // VERSION_H
