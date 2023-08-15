@@ -17,6 +17,7 @@ namespace screen
     {
         void setText(const String &newScreenText);
         void appendText(const String &textToAdd);
+        void resetToFlowerSummary(); // Show flower id, build, network status, etc.
     } // namespace commands
 } // namespace screen
 

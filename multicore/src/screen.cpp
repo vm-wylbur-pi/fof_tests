@@ -1,6 +1,7 @@
 #include "screen.h"
 
 #include "comms.h"
+#include "flower_info.h"
 
 #include <Arduino.h> // For String type
 #include <Wire.h>    // For global Wire object needed For I2C-connected screen
@@ -78,6 +79,9 @@ namespace screen
         void appendText(const String &textToAdd) {
             currentText += textToAdd;
             drawText(currentText);
+        };
+        void resetToFlowerSummary() {
+            setText(flower_info::summaryForScreen());
         };
     } // namespace commands
 } // namespace screen

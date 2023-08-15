@@ -164,6 +164,10 @@ namespace comms
             screen::commands::appendText(parameters);
             return;
         }
+        if (command == "screen/resetToFlowerSummary") {
+            screen::commands::resetToFlowerSummary();
+            return;
+        }
         // Other commands are ignored.
         Serial.println("Unhandled command: " + command + " - " + parameters);
         sendDebugMessage("Unhandled command: " + command + " - " + parameters);

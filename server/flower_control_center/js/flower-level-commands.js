@@ -51,6 +51,8 @@ function populateCommandChoices() {
         "One string parameter (no commas). Show the given text on the tiny screen in the birdhouse."],
         ["screen/appendText",
         "One string parameter (no commas). Add the given text to whatever is currently shown on the tiny screen."],
+        ["screen/resetToFlowerSummary",
+        "Show the flower summary info (id, build, network status) on the screen. No parameters."],
     ]);
     commands.forEach((instructions, command) => {
         $('#command-dropDown').append(`<option value="${command}">${command}</option>`);

@@ -87,8 +87,7 @@ void setup()
   storage::setupFTP();
   buttons::setupButtons();
 
-  // Set the screen to its default description.
-  screen::commands::setText(flower_info::description());
+  screen::commands::resetToFlowerSummary();
 
   startTask(TaskLED, "LED Control", CORE_FOR_LED_CONTROL);
   startTask(TaskOTA, "OTA", CORE_FOR_EVERYTHING_ELSE);
