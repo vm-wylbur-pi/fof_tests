@@ -60,7 +60,9 @@ class People():
                 self.people[name] = person
             person.location = geometry.Point(location['x'], location['y'])
             person.recent_locations.add(person.location)
-            person.last_seen = int(update['timestamp'])
+            # TODO: get from timestamp, not from GSA clock
+            #person.last_seen = int(update['timestamp'])
+            person.last_seen = time.time() * 1000
 
     def removePeopleNotSeenForAWhile(self):
         # How much time can pass without seeing a person before they are 
