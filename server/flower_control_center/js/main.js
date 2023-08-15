@@ -65,7 +65,9 @@ class TabulatorTable {
                 {title: "Creation Timestamp", field:"creation_timestamp", visible:false},
                 {title: "Uptime", field: "uptime"},
                 {title: "FW Version", field: "version_name"},
+                 {title: "Build Time", field: "build_timestamp"},                
                 {title: "IP", field: "IP"},
+                {title: "SSID", field: "SSID"},
                 {title: "WiFi Strength", field: "wifi_signal"},
                 {title: "SD Card", field: "sd_card"},
                 {title: "Volume", field: "volume", formatter:"progress", formatterParams:{
