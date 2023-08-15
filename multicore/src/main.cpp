@@ -70,20 +70,22 @@ void setup()
   if (sleep_mode::wokeFromSleep()) {
     screen::commands::appendText("(woke from sleep)\n");
   }
+  // The order here is important.
   led_control::setupFastLED();
-  networking::setupWiFi();
-  networking::setupOTA();
-  networking::setupMQTT();
-  storage::setupSDCard();
-  storage::setupFTP();
-  audio::setupAudio();
-  buttons::setupButtons();
-
+  networking::setupWiFi();  // needed for OTA, MQTT, and FTP
+  networking::setupOTA();   // as soon as possible, for recovery rubustness.
+  storage::setupSDCard();   // needed for audio (playing boot sound)
+  audio::setupAudio();      // needed for MQTT (playing connection sound)
+  
   // We want to give this a non-contended shot at the CPU, so we run
   // one sync here, before starting up all the separate tasks. For now,
   // this is the only NTP sync that runs, since we trust later NTP sync
   // runs less (because of the other running tasks).
   time_sync::setupNTPClientAndSync();
+
+  networking::setupMQTT();  // after NTP sync, so we can schedule the MQTT success audio.
+  storage::setupFTP();
+  buttons::setupButtons();
 
   // All boot-time setup is complete.
   // Extra newlines at the start to push the text low enough to be readable
