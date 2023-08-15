@@ -1,3 +1,7 @@
+# NOTE: This game does not work well, so it is not hooked up to any
+#       GSA commands. We can try it again if/when we get high-quality
+#       person tracking. A simplified version is in wave.py.
+#
 # An interactive game in which waves of color spread outward from
 # each person in the field. The waves are circular and spread outwards.
 # Each person is assigned a color and waves starting from them are
@@ -20,7 +24,7 @@ from ..game_state import GameState
 from ..person import RandomizedAssignments
 
 
-class Wave(game.StatefulGame):
+class WaveInteractive(game.StatefulGame):
 
     WAVE_SPEED = 500
     # How long to wait in between waves from the same person. As long as a person
