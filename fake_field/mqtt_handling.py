@@ -4,7 +4,7 @@ import fake_flowers
 
 # Used during development.
 # TODO: Read this from config
-MQTT_BROKER_IP = "127.0.0.1"
+MQTT_BROKER_IP = "192.168.1.72"
 
 def SetupMQTTClient(flowers, people):
     # Required by paho, but unused
