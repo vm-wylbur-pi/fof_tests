@@ -70,7 +70,7 @@ namespace audio
     // playing, it will stop any other currently playing sound.
     struct FutureSound {
         String fileName;
-        uint32_t startTime;
+        uint32_t startTime;  // accourding to controlMillis(). Zero means play immediately.
     };
     std::vector<FutureSound> futureSounds;
 
@@ -118,8 +118,7 @@ namespace audio
         // sound file is not present on the SD card.
         // This depends on storage::setupSDCard() being called before
         // audio::setupAudio() in main.cc.
-        uint32_t now = time_sync::controlMillis();
-        commands::playSoundFile("punctuation/PunctuationUP.wav", now);
+        commands::playSoundFile("punctuation/PunctuationUP.wav");
     }
 
     void mainLoop() {
@@ -144,7 +143,7 @@ namespace audio
         // Check to see whether it is time to start playing any sounds
         uint32_t now = time_sync::controlMillis();
         for (FutureSound& sound : futureSounds) {
-            if (now > sound.startTime) {
+            if (now > sound.startTime || sound.startTime == 0) {
                 commands::startSoundFile(sound.fileName);
             }
         }

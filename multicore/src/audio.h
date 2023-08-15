@@ -26,7 +26,8 @@ namespace audio
         void setVolume(float newVolume);
         // filename must be a path relative to the SD card root directory.
         // startTime is absolute and checked against time_sync::controlMillis()
-        void playSoundFile(const String filename, uint32_t startTime);
+        // If starteTime is zero, the sound will be played right away.
+        void playSoundFile(const String filename, uint32_t startTime=0);
         // Start playback of the specified sound file immediately.
         void startSoundFile(const String& filename);
         void stopSoundFile();
