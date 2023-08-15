@@ -8,6 +8,11 @@ from ..flower import Flower
 from ..game_state import GameState
 from .. import geometry
 
+# If you tell a flower to light up and to play audio at the exact
+# same time, latency in the audio system means the sound comes
+# a little late. To compensate. we delay the instruction to light
+# up by this much.
+SOUND_TO_HUEPULSE_OFFSET_MILLIS = 200
 
 # A straight line of color that propagates perpendicular to itself.
 # This is cool in itself and a useful building block for other effects.
@@ -100,8 +105,11 @@ class CircularColorWave(game.StatelessGame):
                 rampDuration = 100
                 peakDuration = 200
                 brightness = 200
-                flower.HuePulse(hue=self.hue, startTime=controlTimerHuePulseTime, rampDuration=rampDuration,
-                                peakDuration=peakDuration, brightness=brightness)
+                flower.HuePulse(hue=self.hue,
+                                startTime=controlTimerHuePulseTime + SOUND_TO_HUEPULSE_OFFSET_MILLIS,
+                                rampDuration=rampDuration,
+                                peakDuration=peakDuration,
+                                brightness=brightness)
                 if self.soundFiles:
                     flower.PlaySoundFile(filename=random.choice(self.soundFiles),
                                          startTime=controlTimerHuePulseTime)
