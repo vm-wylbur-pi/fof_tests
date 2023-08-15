@@ -9,8 +9,8 @@
 namespace config {
 
     // Each flower is assigned to one of these SSIDs based on its sequence number. 
-    const uint8_t NUM_WIFI_SSIDs = 4;
-    const String SSIDs[NUM_WIFI_SSIDs] = {"Sun", "Moon", "Stars", "Comet"};
+    const uint8_t NUM_WIFI_SSIDs = 3;
+    const String SSIDs[NUM_WIFI_SSIDs] = {"Sun", "Moon", "Stars" /*, "Comet"*/};
     const String PRIMARY_WIFI_PASSWORD = "fof12345"; // For the four networks here.
 
     // If this flower fails to connect to the SSID from SSIDs above which it is 
