@@ -87,13 +87,8 @@ void setup()
   storage::setupFTP();
   buttons::setupButtons();
 
-  // All boot-time setup is complete.
-  // Extra newlines at the start to push the text low enough to be readable
-  // without bending down too low.
-  screen::commands::setText("\n\nHello JOBI\n\n");
-  screen::commands::appendText("I'm " + flower_info::description() + "\n\n");
-  screen::commands::appendText("Version:\n" + version::Name + "\n");
-  screen::commands::appendText("Built\n" + version::getBuildTime() + "\n");
+  // Set the screen to its default description.
+  screen::commands::setText(flower_info::description());
 
   startTask(TaskLED, "LED Control", CORE_FOR_LED_CONTROL);
   startTask(TaskOTA, "OTA", CORE_FOR_EVERYTHING_ELSE);

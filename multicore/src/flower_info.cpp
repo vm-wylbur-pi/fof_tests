@@ -3,9 +3,11 @@
 #include <map>
 
 #include <Arduino.h>
-#include <WiFi.h> // For macAddress used in flowerID
+#include <WiFi.h> // For macAddress used in flowerID, and SSID for description
 
 #include "comms.h"
+#include "networking.h"
+#include "version.h"
 
 // This definition was gerated by tools/convert_flower_inventory_to_cpp.py
 std::map<String, flower_info::FlowerInfo> FlowerInventory = {
@@ -196,8 +198,23 @@ namespace flower_info {
 
     String description() {
         FlowerInfo info = flowerInfo();
-        return "#" + String(info.sequenceNum) + "\n" + info.id + "\n"
-               + String(speciesNames[info.species]);
+
+        // Extra newlines at the start to push the text low enough to be readable
+        // without bending down too low.
+        String descrip = "\n\n";
+        descrip += "I'm # " + String(info.sequenceNum) + "\n" + info.id + "\n";
+        descrip += String(speciesNames[info.species]) + "\n\n";
+
+        descrip += version::Name + "\n";
+        descrip += "Built\n" + version::getBuildTime() + "\n\n";
+
+        descrip += WiFi.SSID() + "\n";
+        if (networking::isMQTTConnected()) {
+            descrip += "MQTT OK\n";
+        } else {
+            descrip += "MQTT bad\n";
+        }
+        return descrip;
     }
 
 } // namespace flower_info
