@@ -1,8 +1,11 @@
 #include "networking.h"
+
+#include "audio.h"  // For signalling connection status through sound.
 #include "comms.h"  // For dispatching Server commands
 #include "config.h" // For Wifi name/password and the server IP address
 #include "flower_info.h"
 #include "screen.h"
+#include "time_sync.h"
 
 #include <Arduino.h> // For String type.
 #include <ArduinoOTA.h>
@@ -28,6 +31,7 @@ namespace networking {
     // understand, connection works better after rebooting.
     uint8_t mqtt_connection_failures = 0;
     const uint8_t MAX_MQTT_CONNECTION_FAILURES = 5;
+    bool ota_underway = false;
 
     // For throttlng OTA update progress messages
     uint32_t lastProgressUpdate = 0;
@@ -67,6 +71,10 @@ namespace networking {
             }
         }
         screen::commands::appendText("WiFi\nConnected\n");
+        // This doesn't work, because we can't schedule for the future without
+        // control time from MQTT.
+        // audio::commands::playSoundFile("punctuation/PunctuationFlutter.wav",
+        //                                time_sync::controlMillis() + 5000);
     };
 
     String selectSSID() {
@@ -104,12 +112,14 @@ namespace networking {
             Serial.println("Start updating " + type);
             comms::sendDebugMessage("Receiving OTA update.");
             screen::commands::setText("Receiving OTA update.\n");
+            ota_underway = true;
         })
         .onEnd([]()
         {
             Serial.println("\nEnd");
             comms::sendDebugMessage("OTA Update complete.  Rebooting...");
             screen::commands::appendText("OTA Update complete.  Rebooting...");
+            ota_underway = false;
         })
         .onProgress([](uint32_t progress, uint32_t total)
         {
@@ -166,6 +176,14 @@ namespace networking {
             // Control commands directed at just this flower.
             mqtt_client.subscribe("flower-control/" + flower_info::flowerID() + "/#");
             mqtt_client.subscribe("flower-control/" + String(flower_info::flowerInfo().sequenceNum) + "/#");
+            //comms::sendDebugMessage("control timer is " + String(time_sync::controlMillis()));
+            mqttSendReceive();  // To get the control timer established, so we can schedule the sound below.
+            //comms::sendDebugMessage("control timer is " + String(time_sync::controlMillis()));
+
+            // Let the world know.  Delay by a couple seconds, so that if this is
+            // the very first connection, the boot sound has a chance to play.
+            audio::commands::playSoundFile("punctuation/OKallset_jill.wav",
+                                           time_sync::controlMillis() + 2000);
 
             // A good connection resets the failure count.
             mqtt_connection_failures = 0;
@@ -173,11 +191,16 @@ namespace networking {
             // TODO: This is where we should reset screen to basic info
         } else {
             mqtt_connection_failures++;
+            if (mqtt_connection_failures == 1) {
+                // Signal MQTT problems through sound, but only once so it's not annoying.
+                // No control timer without MQTT, so can only play sounds immediately.
+                audio::commands::playSoundFile("punctuation/whereiseverybody_jill.wav");
+            }
             String mqttFailureMessage = "\nFailed to\nconnect to\nMQTT\n"
                 + String(mqtt_connection_failures) + " times\n";
             screen::commands::setText(mqttFailureMessage);
             // Bail out and reboot after too many failures.
-            if (mqtt_connection_failures > MAX_MQTT_CONNECTION_FAILURES) {
+            if (mqtt_connection_failures > MAX_MQTT_CONNECTION_FAILURES && !ota_underway) {
                 ESP.restart();
             }
         }
