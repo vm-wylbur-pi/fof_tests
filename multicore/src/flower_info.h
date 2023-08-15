@@ -33,12 +33,20 @@ namespace flower_info {
     // see flower_info.cpp for details.
     FlowerInfo flowerInfo();
 
-    // Return a formatted string containing all of this flower's inventory info
-    // Example (narrow for fitting on the screen)
-    //  #103
-    //  FO:6D:8C
-    //  poppy
-    String description();
+    // Return a formatted string used for showing a summary of the flower's
+    // identity and status on the esp32 screen, in vertical orientatin.
+    // Example
+    //    I'm # 103
+    //    FO:6D:8C
+    //    poppy
+    //
+    //    FourSquare
+    //    Built
+    //    2023-08-15 12:38 PM
+    //
+    //    Stars
+    //    MQTT OK
+    String summaryForScreen();
 
 } // namespace util
 

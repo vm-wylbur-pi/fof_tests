@@ -196,7 +196,7 @@ namespace flower_info {
     // These must be in the same order as in the enum definition in flower_info.h
     String speciesNames[4] = {"unknown", "poppy", "geranium", "aster"};
 
-    String description() {
+    String summaryForScreen() {
         FlowerInfo info = flowerInfo();
 
         // Extra newlines at the start to push the text low enough to be readable
