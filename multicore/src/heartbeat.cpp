@@ -37,6 +37,7 @@ String Heartbeat::_makeHeartbeatMessage() {
     msg += "  \"version_name\": \"" + version::Name + "\",\n";
     msg += "  \"build_timestamp\": \"" + version::getBuildTime() + "\",\n";
     msg += "  \"IP\": \"" + WiFi.localIP().toString() + "\",\n";
+    msg += "  \"SSID\": \"" + WiFi.SSID() + "\",\n";
     msg += "  \"wifi_signal\": \"" + networking::signalStrength() + "\",\n";
     msg += "  \"sd_card\": \"" + storage::formatStorageUsage() + "\",\n";
     msg += "  \"volume\": \"" + audio::formattedVolume() + "\",\n";
