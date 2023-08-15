@@ -188,7 +188,10 @@ namespace networking {
             // A good connection resets the failure count.
             mqtt_connection_failures = 0;
 
-            // TODO: This is where we should reset screen to basic info
+            // In case this was a reconnect after disconnection, recover the screen to
+            // it's default of showing summary info.  If fun-screen-text is happening,
+            // this flower will get back to it at the next update.
+            screen::commands::resetToFlowerSummary();
         } else {
             mqtt_connection_failures++;
             if (mqtt_connection_failures == 1) {
