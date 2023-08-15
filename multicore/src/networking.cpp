@@ -23,6 +23,11 @@ namespace networking {
     // Network state objects.
     WiFiClient wifi_client;
     MQTTClient mqtt_client(MAX_MQTT_MESSAGE_BYTES);
+    // Used for bailing out frmo the MQTT reconnect loop via reboot if
+    // MQTT reconnection fails too many times. For some reason we don't
+    // understand, connection works better after rebooting.
+    uint8_t mqtt_connection_failures = 0;
+    const uint8_t MAX_MQTT_CONNECTION_FAILURES = 5;
 
     // For throttlng OTA update progress messages
     uint32_t lastProgressUpdate = 0;
@@ -140,7 +145,7 @@ namespace networking {
     }
 
     void connectToMQTTBroker() {
-        String mqttAttemptMessage = "connecting to MQTT...\n";
+        String mqttAttemptMessage = "connecting\nto MQTT...\n";
         Serial.print(mqttAttemptMessage);
         screen::commands::appendText(mqttAttemptMessage);
 
@@ -161,11 +166,20 @@ namespace networking {
             // Control commands directed at just this flower.
             mqtt_client.subscribe("flower-control/" + flower_info::flowerID() + "/#");
             mqtt_client.subscribe("flower-control/" + String(flower_info::flowerInfo().sequenceNum) + "/#");
+
+            // A good connection resets the failure count.
+            mqtt_connection_failures = 0;
+
+            // TODO: This is where we should reset screen to basic info
         } else {
-            String mqttFailureMessage = "\nFailed to connect to MQTT broker at\n"
-                + config::CONTROLLER_IP_ADDRESS.toString() + "\n";
-            Serial.println(mqttFailureMessage);
+            mqtt_connection_failures++;
+            String mqttFailureMessage = "\nFailed to\nconnect to\nMQTT\n"
+                + String(mqtt_connection_failures) + " times\n";
             screen::commands::setText(mqttFailureMessage);
+            // Bail out and reboot after too many failures.
+            if (mqtt_connection_failures > MAX_MQTT_CONNECTION_FAILURES) {
+                ESP.restart();
+            }
         }
     }
 
