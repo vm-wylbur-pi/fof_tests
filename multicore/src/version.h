@@ -23,7 +23,8 @@ namespace version {
     // "DressMeUp" for the version used at the dress rehearsal on 2023-08-08
     // "NewToePaint": added NTP sync for testing on 2023-08-12
     // "FourSquare": added assigned SSID for testing on 2023-08-14
-    const String Name = "FourSquare";
+    // "Macbeth": 2023-08-15. MQTT reboot recovery & status sounds, improved summary screen
+    const String Name = "Macbeth";
 }
 
 #endif // VERSION_H
