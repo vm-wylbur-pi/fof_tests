@@ -81,6 +81,7 @@ class Wave(game.StatefulGame):
                                          center=person.location,
                                          startRadius=0,
                                          speed=Wave.WAVE_SPEED,
+                                         startTime=gameState.controlTimer(),
                                          soundFiles=self.chooseSoundFiles(name))
                 wave.run(gameState.flowers)
                 self.lastWaveTimes[name] = now
