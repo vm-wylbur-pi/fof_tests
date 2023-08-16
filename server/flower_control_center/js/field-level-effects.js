@@ -55,6 +55,11 @@ $( document ).ready(function() {
         $('input[name="field_params"]').val("");
         $('#field_command_param_explanation').text("Shows fun messages that occasionally change on the flower screens.");
     });
+    $( "button#bouncingBlob" ).click(function (event) {
+        $('input[name="field_command"]').val("runGame/BouncingBlob");
+        $('input[name="field_params"]').val("200,150");
+        $('#field_command_param_explanation').text("A blob of color bouncing aronud.  blobSpeed (inches/sec), blobSize (inches)");
+    });
     $( "button#leftToRight" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/StraightColorWave");
         $('input[name="field_params"]').val("160,0,450,600,0,+4000");

@@ -2,6 +2,7 @@ import paho.mqtt.client as paho_mqtt
 from geometry import Point, Vector
 
 import gsa.games.aura as aura
+import gsa.games.bouncing_blob as bouncing_blob
 import gsa.games.wave as wave_module
 import gsa.games.chorus_circle as chorus_circle
 import gsa.games.color_waves as color_waves
@@ -142,8 +143,17 @@ def HandleGameControlCommand(message, gameState):
         gameState.runStatefulGame(fairy.Fairy())
         return
 
+    if command == "runGame/BouncingBlob":
+        blobSpeed = 200  # inches per second
+        blobRadius = 150  # inches
+        if len(params) >= 1:
+            blobSpeed = int(params[0])
+        if len(params) >= 2:
+            blobRadius = int(params[1])
+        gameState.runStatefulGame(bouncing_blob.BouncingBlob(blobSpeed, blobRadius))
+        return
+
     if command == "runGame/RollCall":
-        # No parameters (yet) for the fairy game.  It runs indefinitely.
         gapBetweenCallsMillis = 500
         if len(params) >= 1:
             gapBetweenCallsMillis = int(params[0])
