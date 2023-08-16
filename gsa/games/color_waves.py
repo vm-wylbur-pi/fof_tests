@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import random
 import time
+from typing import Callable, Dict
  
 from . import game
 from ..field import Field
@@ -12,17 +13,31 @@ from .. import geometry
 # same time, latency in the audio system means the sound comes
 # a little late. To compensate. we delay the instruction to light
 # up by this much.
-SOUND_TO_HUEPULSE_OFFSET_MILLIS = 200
+SOUND_TO_PULSE_OFFSET_MILLIS = 200
 
-# A straight line of color that propagates perpendicular to itself.
-# This is cool in itself and a useful building block for other effects.
-#    velocity units are cm per second
+
+# Superclass for StraightPulseWave and CircularPulseWave
+# Flowers will play one (randomly chosen from a list) sound when the wave reaches them.
 @dataclass
-class StraightColorWave(game.StatelessGame):
-    hue: int
-    start_loc: geometry.Point
-    velocity: geometry.Vector
+class PulseWave(game.StatelessGame):
     startTime: int  # control-timer time when the wave should start
+    pulseRampDuration = 100
+    pulsePeakDuration = 200
+    # Sounds to be triggered in flowers reached by the wave.
+    soundFiles: 'list[str]' = None
+    def callPulseOn(self, flower: Flower, controlTime: int):
+        # To be overridden by final child classes, to specialize for
+        # HuePulse vs SatValPulse
+        raise NotImplementedError
+
+
+# A straight line of pulse that propagates perpendicular to itself.
+# This is cool in itself and a useful building block for other effects.
+#    velocity units are inches per second
+@dataclass
+class StraightPulseWave(PulseWave):
+    start_loc: geometry.Point = None
+    velocity: geometry.Vector = None
 
     @classmethod
     def randomInstance(cls, gameState: GameState):
@@ -32,8 +47,7 @@ class StraightColorWave(game.StatelessGame):
         target = gameState.field.center()
         waveSpeed = random.randint(300, 700)
         waveVelocity = target.diff(startPoint).norm().scale(waveSpeed)
-        return StraightColorWave(hue=random.randint(0, 255),
-                                 start_loc=startPoint,
+        return StraightPulseWave(start_loc=startPoint,
                                  velocity=waveVelocity,
                                  startTime=gameState.controlTimer())
 
@@ -52,28 +66,43 @@ class StraightColorWave(game.StatelessGame):
             if inFrontOfLine:
                 millisToReachFlower = int(
                     round(1000 * perpVectorToFlower.magnitude() / speed))
-                controlTimerHuePulseTime = self.startTime + millisToReachFlower
-                # ramp and peak time could be parameters of this Game, or computed based on speed
-                rampDuration = 100
-                peakDuration = 200
-                brightness = 200
-                flower.HuePulse(hue=self.hue, startTime=controlTimerHuePulseTime, rampDuration=rampDuration,
-                                peakDuration=peakDuration, brightness=brightness)
+                controlTimerPulseTime = self.startTime + millisToReachFlower
+                self.callPulseOn(flower, controlTimerPulseTime +
+                                 SOUND_TO_PULSE_OFFSET_MILLIS)
+                if self.soundFiles:
+                    flower.PlaySoundFile(filename=random.choice(self.soundFiles),
+                                         startTime=controlTimerPulseTime)
+
+@dataclass
+class StraightColorWave(StraightPulseWave):
+    hue: int = 150 # 0-255
+    brightness: int = 200 # 0-255
+
+    @classmethod
+    def randomInstance(cls, gameState: GameState):
+        base = StraightPulseWave.randomInstance(gameState)
+        return StraightColorWave(hue=random.randint(0, 255),
+                                 start_loc=base.start_loc,
+                                 velocity=base.velocity,
+                                 startTime=base.startTime)
+    
+    def callPulseOn(self, flower: Flower, controlTime: int):
+        flower.HuePulse(hue=self.hue,
+                        startTime=controlTime,
+                        rampDuration=self.pulseRampDuration,
+                        peakDuration=self.pulsePeakDuration,
+                        brightness=self.brightness)
 
 
-# A circle of color that expands outward from (or contracts inward toward) a specified point.
-# Flowers will play one (randomly chosen from a list) sound when the wave reaches them.
+# A circle of pulse that expands outward from (or contracts inward toward) a specified point.
 # You can use this in various ways:
 #    startRadius=0, positive velocity around 500: classic expanding wave of color after a step
 #    startRadius non zero: contracting circle that draws color in toward a point.
 @dataclass
-class CircularColorWave(game.StatelessGame):
-    hue: int
-    center: geometry.Point
-    startRadius: float
-    speed: float  # Positive is growing, Negative is Shrinking. units are cm/sec
-    startTime: int  # absolute control-timer time when the wave should start
-    soundFiles: 'list[str]' = None # Sounds to be triggered in flowers reached by the wave.
+class CircularPulseWave(PulseWave):
+    center: geometry.Point = None
+    startRadius: float = 0.0
+    speed: float = 400 # Positive is growing, Negative is Shrinking. units are in/sec
 
     @classmethod
     def randomInstance(cls, gameState: GameState):
@@ -81,9 +110,8 @@ class CircularColorWave(game.StatelessGame):
         # We want to grow or shrink, but neither too fast nor noo slow.
         speed = random.randint(400, 700) * random.choice((1, -1))
         startRadius = 0 if speed > 0 else 700
-        return CircularColorWave(hue=random.randint(0, 255),
-                                 center=center, startRadius=startRadius, speed=speed,
-                                 startTime=gameState.controlTimer(), soundFiles=None)
+        return CircularPulseWave(center=center, startRadius=startRadius,
+                                 speed=speed, startTime=gameState.controlTimer())
 
     def run(self, flowers: 'list[Flower]'):
         print(f"Running wave: {self}")
@@ -93,21 +121,34 @@ class CircularColorWave(game.StatelessGame):
             timeToReachFlower = distanceFromStart / self.speed
             if timeToReachFlower >= 0:
                 millisToReachFlower = int(round(1000 * timeToReachFlower))
-                controlTimerHuePulseTime = self.startTime + millisToReachFlower
-                # TODO: consider exposing hue pulse parameters as part of CircularColorWave, or maybe
-                #       just make each pulse shorter the faster the wave speed.
-                rampDuration = 100
-                peakDuration = 200
-                brightness = 200
-                flower.HuePulse(hue=self.hue,
-                                startTime=controlTimerHuePulseTime + SOUND_TO_HUEPULSE_OFFSET_MILLIS,
-                                rampDuration=rampDuration,
-                                peakDuration=peakDuration,
-                                brightness=brightness)
+                controlTimerPulseTime = self.startTime + millisToReachFlower
+                # Delegate to subclass to call either HuePulse or SatValPulse
+                self.callPulseOn(flower, controlTimerPulseTime + SOUND_TO_PULSE_OFFSET_MILLIS)
                 if self.soundFiles:
                     flower.PlaySoundFile(filename=random.choice(self.soundFiles),
-                                         startTime=controlTimerHuePulseTime)
+                                         startTime=controlTimerPulseTime)
 
+
+@dataclass
+class CircularColorWave(CircularPulseWave):
+    hue: int = 120
+    brightness: int = 200
+
+    @classmethod
+    def randomInstance(cls, gameState: GameState):
+        base = CircularPulseWave.randomInstance(gameState)
+        return CircularColorWave(hue=random.randint(0, 255),
+                                 center=base.center,
+                                 startRadius=base.startRadius,
+                                 speed=base.speed,
+                                 startTime=base.startTime)
+
+    def callPulseOn(self, flower: Flower, controlTime: int):
+        flower.HuePulse(hue=self.hue,
+                        startTime=controlTime,
+                        rampDuration=self.pulseRampDuration,
+                        peakDuration=self.pulsePeakDuration,
+                        brightness=self.brightness)
 
 # Showcase wave effects by running through them with randomized parameters.
 @dataclass
