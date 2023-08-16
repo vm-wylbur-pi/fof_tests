@@ -113,25 +113,50 @@ class BeatFlash : public Pattern {
     uint32_t _flashDurationMillis = 50;  // could be made a parameter in the future.
 };
 
+// Abstract superclass for patterns that have some kind of parameterized "pulse"
+// which moves up the flower.
+class Pulse : public Pattern {
+  public:
+    Pulse(uint32_t startTime, uint32_t rampDuration, uint32_t peakDuration)
+        : _startTime(startTime), _rampDuration(rampDuration),
+          _peakDuration(peakDuration) {};
+    // Computes the "pulse progress" for each LED in each frame
+    // and writes it to the progress praameter. Subclasses should
+    // call this method in their run() implementation. progress is
+    // owned by the caller.
+    void pulseProgress(uint32_t time, fract8 progress[NUM_LEDS]);
+    // void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
+    // Returns whether the pulse is currently happening. If this
+    // returns false, then PulseProgress would return all zeros.
+    // To be used for early exit from run() in subclasses.
+    bool isInPulse(uint32_t time);
+    // All subclasses will finish at the same time so can use
+    // this override and don't need to define isDone themselves.
+    bool isDone(uint32_t time) override;
+    // String name() { return "HuePulse"; };
+    // String descrip() override;
+  protected:
+    uint32_t _startTime;
+    uint32_t _rampDuration;
+    uint32_t _peakDuration;
+};
+
 // Pulse once, from black through to the given hue, then back to black.
 // Has a spatial progression, moving up through the leaves to the blossom,
 // then back down.
 // fades up and down from black, so this pattern can be applied on top of an idling background.
-class HuePulse : public Pattern {
+class HuePulse : public Pulse {
   public:
     HuePulse(uint8_t hue, uint32_t startTime, uint32_t rampDuration,
              uint32_t peakDuration, uint8_t brightness)
-        : _hue(hue), _startTime(startTime), _rampDuration(rampDuration),
-          _peakDuration(peakDuration), _brightness(brightness){};
+        : Pulse(startTime, rampDuration, peakDuration),
+          _hue(hue), _brightness(brightness){};
     void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
-    bool isDone(uint32_t time) override;
+    // bool isDone(uint32_t time) override;
     String name() {return "HuePulse";};
     String descrip() override;
   private:
     uint8_t _hue;
-    uint32_t _startTime;
-    uint32_t _rampDuration;
-    uint32_t _peakDuration;
     uint8_t _brightness;
     fract8 _alpha[NUM_LEDS];
 };

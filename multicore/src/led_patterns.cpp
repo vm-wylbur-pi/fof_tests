@@ -76,23 +76,13 @@ void MaxBrightnessWhite::run(uint32_t time, CRGB leds[NUM_LEDS]) {
     FastLED.setBrightness(255);
 }
 
-String HuePulse::descrip() {
-    return "HuePulse(hue=" + String(_hue) + ", brightness=" + String(_brightness) + 
-           ", startTime=" + String(_startTime) + ", rampDuration=" + String(_rampDuration) +
-           ", peakDuration=" + String(_peakDuration) + ")";
+bool Pulse::isInPulse(uint32_t time) {
+    // TODO: replace 600, which is hard-coded as the max delayDueToHeight
+    return (   (time > _startTime)
+            && (time < _startTime + 2*_rampDuration + _peakDuration + 600));
 }
 
-bool HuePulse::isDone(uint32_t time) {
-    return time > (_startTime + 2*_rampDuration + _peakDuration + 600);
-}
-
-void HuePulse::run(uint32_t time, CRGB leds[NUM_LEDS]) {
-    // Nothing to do yet.
-    if (time < _startTime) return;
-    // Full pattern has finished; don't do any unnecessary work.
-    // TODO: replace 60, which is hard-coded as the max delayDueToHeight
-    if (time > _startTime + 2*_rampDuration + _peakDuration + 600) return;
-
+void Pulse::pulseProgress(uint32_t time, fract8 alpha[NUM_LEDS]) {
     for (int i=0; i<NUM_LEDS; i++) {
         uint8_t height = LED_HEIGHTS[i];
         // TODO: This could be more sophisticated. For now, accept the arbitrary height
@@ -103,8 +93,7 @@ void HuePulse::run(uint32_t time, CRGB leds[NUM_LEDS]) {
 
         // The pattern follows a trapezoid shape: linear ramp up to flat peak, linear ramp down
         // The leaves ramp down right after ramping up; only the blossom holds at the peak.
-        // The vertical axis here is alpha, the compositing parameter. The pattern is drawn in
-        // constant brightness but blended a varying amount with the background pattern(s).
+        // The vertical axis here is alpha, the progress parameter.
         //   |     _________________________
         //   |    /\                        \      
         // α |   /  \                        \
@@ -113,14 +102,15 @@ void HuePulse::run(uint32_t time, CRGB leds[NUM_LEDS]) {
         //   |-----------------------------------------------------------------
         //    increasing patternTime ->
 
-        // Default alpha is zero, which means leave the background pattern unchanged.
-        _alpha[i] = 0;
+        // Default progress is zero, which subclasses can use to
+        // leave the corresponding LED unchanged.
+        alpha[i] = 0;
 
         // Case 0: pulse hasn't reached this part of the flower yet.
         if (patternTime < 0) continue;
         // Case 1: ramping up. Same for leaves and blossom.
         if (patternTime < _rampDuration) {
-            _alpha[i] = 255 * patternTime / _rampDuration;
+            alpha[i] = 255 * patternTime / _rampDuration;
             continue;
         }
         // Split behavior between the leaves and blossom
@@ -129,25 +119,48 @@ void HuePulse::run(uint32_t time, CRGB leds[NUM_LEDS]) {
             if (patternTime < 2 * _rampDuration) {
                 // Ramp the leaves back down to black
                 uint32_t timeIntoRamp = patternTime - _rampDuration;
-                _alpha[i] = 255 - 255 * timeIntoRamp / _rampDuration;
+                alpha[i] = 255 - 255 * timeIntoRamp / _rampDuration;
                 continue;
             }
         } else {
-            // Blossom: hold at peak brightness for the given duration
+            // Blossom: hold at peak alpha for the given duration
             if (patternTime < _rampDuration + _peakDuration) {
-                // Hold at peak brightness
-                _alpha[i] = _brightness;
+                // Hold at peak alpha
+                alpha[i] = 255;
                 continue;
             }
             if (patternTime < _rampDuration + _peakDuration + _rampDuration) {
                 // Ramp the blossom back down to black
                 uint32_t timeIntoRamp = patternTime - _rampDuration - _peakDuration;
-                _alpha[i] = 255 - 255 * timeIntoRamp / _rampDuration;
+                alpha[i] = 255 - 255 * timeIntoRamp / _rampDuration;
                 continue;
             }
         }
     }
+}
 
+String HuePulse::descrip() {
+    return "HuePulse(hue=" + String(_hue) + ", brightness=" + String(_brightness) + 
+           ", startTime=" + String(_startTime) + ", rampDuration=" + String(_rampDuration) +
+           ", peakDuration=" + String(_peakDuration) + ")";
+}
+
+bool Pulse::isDone(uint32_t time) {
+    return time > (_startTime + 2*_rampDuration + _peakDuration + 600);
+}
+
+void HuePulse::run(uint32_t time, CRGB leds[NUM_LEDS]) {
+    if (!Pulse::isInPulse(time)) {
+        // Nothing to do yet.
+        return;
+    }
+
+    // Use superclass method to measure progress through pulse for each LED.
+    Pulse::pulseProgress(time, _alpha);
+
+    // The pattern is drawn in constant brightness but blended a
+    //varying amount with the background pattern(s).
+    //
     // Alpha-compositing with patterns under this one.
     // I tried this in HSV space; it looked worse.
     for (int i=0; i<NUM_LEDS; i++) {
