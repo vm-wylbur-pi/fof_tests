@@ -176,14 +176,13 @@ namespace networking {
             // Control commands directed at just this flower.
             mqtt_client.subscribe("flower-control/" + flower_info::flowerID() + "/#");
             mqtt_client.subscribe("flower-control/" + String(flower_info::flowerInfo().sequenceNum) + "/#");
-            //comms::sendDebugMessage("control timer is " + String(time_sync::controlMillis()));
-            mqttSendReceive();  // To get the control timer established, so we can schedule the sound below.
-            //comms::sendDebugMessage("control timer is " + String(time_sync::controlMillis()));
 
-            // Let the world know.  Delay by a couple seconds, so that if this is
-            // the very first connection, the boot sound has a chance to play.
-            audio::commands::playSoundFile("punctuation/OKallset_jill.wav",
-                                           time_sync::controlMillis() + 2000);
+            // We tried using this to give audible feedback of MQTT status. But it turned out
+            // that something in the combination of our MQTT broker, the this MQTT client, and our
+            // flaky crowded wireless networking causes the MQTT connection to sometimes be repeatedly
+            // lost and regained. This sound got old fast.
+            // audio::commands::playSoundFile("punctuation/OKallset_jill.wav",
+            //                                time_sync::controlMillis() + 2000);
 
             // A good connection resets the failure count.
             mqtt_connection_failures = 0;
