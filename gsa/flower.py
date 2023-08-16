@@ -39,7 +39,7 @@ class Flower:
         params = f"{volume:.1f}" # Format with one decimal place, e.g. "3.0"
         self.sendMQTTCommand(command="audio/setVolume", params=params)
 
-    def PlaySoundFile(self, filename, startTime):
+    def PlaySoundFile(self, filename, startTime="+0"):
         #print(f"{self.id} playing sound file {filename} at {startTime}")
         params = f"{filename},{startTime}"
         self.sendMQTTCommand(command="audio/playSoundFile", params=params)
