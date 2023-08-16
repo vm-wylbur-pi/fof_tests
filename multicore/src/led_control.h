@@ -31,6 +31,10 @@ namespace led_control
         //   - Otherwise, instantiate a new one with the given parameters.
         void updatePattern(const String &patternName, const String &parameters);
 
+        // All patterns with given name are removed from the current LED
+        // pattern stack.
+        void removePattern(const String &patternName);
+
         // Echo the set of patterns, in order from bottom to top, as an MQTT debug message.
         void listPatterns();
 

@@ -121,6 +121,12 @@ namespace comms
             led_control::commands::updatePattern(patternName, parameters);
             return;
         }
+        if (command == "leds/removePattern") {
+            // Single parameter is a string naming the pattern.
+            String patternName = parameters;
+            led_control::commands::removePattern(patternName);
+            return;
+        }
         if (command == "leds/setBrightness") {
             uint8_t newBrightness = led_control::DEFAULT_BRIGHTNESS;
             if (parameters != "") {

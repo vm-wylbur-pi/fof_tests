@@ -104,6 +104,25 @@ namespace led_control {
             }
         }
 
+        void removePattern(const String &patternName) {
+            auto sizeBefore = patterns.size();
+            patterns.erase(std::remove_if(
+                patterns.begin(), patterns.end(),
+                [&patternName](const std::unique_ptr<led_patterns::Pattern>& p) {
+                    bool removed = p->name() == patternName;
+                    if (removed) {
+                        comms::sendDebugMessage("Removing pattern: " + p->descrip());
+                    }
+                    return removed;
+                }
+            ), 
+            patterns.end());
+            auto numRemoved = sizeBefore - patterns.size();
+            if (numRemoved == 0) {
+                comms::sendDebugMessage("No current patterns named " + patternName);
+            }
+        }
+
         void listPatterns() {
             String msg = "LED Patterns: ";
             for (auto& pattern : patterns) {
