@@ -144,7 +144,8 @@ class Pulse : public Pattern {
 // Pulse once, from black through to the given hue, then back to black.
 // Has a spatial progression, moving up through the leaves to the blossom,
 // then back down.
-// fades up and down from black, so this pattern can be applied on top of an idling background.
+// This works by drawing on top of underlying patterns, using the pulse
+// progress paramter as an alpha compositing value.
 class HuePulse : public Pulse {
   public:
     HuePulse(uint8_t hue, uint32_t startTime, uint32_t rampDuration,
@@ -152,13 +153,31 @@ class HuePulse : public Pulse {
         : Pulse(startTime, rampDuration, peakDuration),
           _hue(hue), _brightness(brightness){};
     void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
-    // bool isDone(uint32_t time) override;
     String name() {return "HuePulse";};
     String descrip() override;
   private:
     uint8_t _hue;
     uint8_t _brightness;
     fract8 _alpha[NUM_LEDS];
+};
+
+// Pulse that changes the flower's current saturation and value 
+// according to the given multipliers.
+class SatValPulse : public Pulse {
+  public:
+    SatValPulse(float satChange, float valChange, uint32_t startTime,
+                uint32_t rampDuration, uint32_t peakDuration)
+        : Pulse(startTime, rampDuration, peakDuration),
+          _satChange(satChange), _valChange(valChange){};
+    void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
+    String name() { return "SatValPulse"; };
+    String descrip() override;
+  private:
+    // Multiply current by change, then truncate to [0,255] and round.
+    uint8_t computeTarget(uint8_t current, float change);
+    float _satChange;
+    float _valChange;
+    fract8 _progress[NUM_LEDS];
 };
 
 // Sets the blossom to a specified HSVA Color.

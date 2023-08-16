@@ -139,14 +139,14 @@ void Pulse::pulseProgress(uint32_t time, fract8 alpha[NUM_LEDS]) {
     }
 }
 
-String HuePulse::descrip() {
-    return "HuePulse(hue=" + String(_hue) + ", brightness=" + String(_brightness) + 
-           ", startTime=" + String(_startTime) + ", rampDuration=" + String(_rampDuration) +
-           ", peakDuration=" + String(_peakDuration) + ")";
-}
-
 bool Pulse::isDone(uint32_t time) {
     return time > (_startTime + 2*_rampDuration + _peakDuration + 600);
+}
+
+String HuePulse::descrip() {
+    return "HuePulse(hue=" + String(_hue) + 
+           ", startTime=" + String(_startTime) + ", rampDuration=" + String(_rampDuration) +
+           ", peakDuration=" + String(_peakDuration) + ")";
 }
 
 void HuePulse::run(uint32_t time, CRGB leds[NUM_LEDS]) {
@@ -159,7 +159,7 @@ void HuePulse::run(uint32_t time, CRGB leds[NUM_LEDS]) {
     Pulse::pulseProgress(time, _alpha);
 
     // The pattern is drawn in constant brightness but blended a
-    //varying amount with the background pattern(s).
+    // varying amount with the background pattern(s).
     //
     // Alpha-compositing with patterns under this one.
     // I tried this in HSV space; it looked worse.
@@ -168,6 +168,41 @@ void HuePulse::run(uint32_t time, CRGB leds[NUM_LEDS]) {
         leds[i].r = lerp8by8(leds[i].r, target.r, _alpha[i]);
         leds[i].g = lerp8by8(leds[i].g, target.g, _alpha[i]);
         leds[i].b = lerp8by8(leds[i].b, target.b, _alpha[i]);
+    }
+}
+
+String SatValPulse::descrip() {
+    return "SatValPulse(satChange=" + String(_satChange) + ", valChange=" + String(_valChange) +
+           ", startTime=" + String(_startTime) + ", rampDuration=" + String(_rampDuration) +
+           ", peakDuration=" + String(_peakDuration) + ")";
+}
+
+uint8_t SatValPulse::computeTarget(uint8_t current, float change) {
+    float target = current * _satChange;
+    if (target < 0) target = 0;
+    if (target > 255) target = 255;
+    return static_cast<uint8_t>(std::round(target));
+}
+
+void SatValPulse::run(uint32_t time, CRGB leds[NUM_LEDS]) {
+    if (!Pulse::isInPulse(time)) {
+        // Nothing to do yet.
+        return;
+    }
+
+    // Use superclass method to measure progress through pulse for each LED.
+    Pulse::pulseProgress(time, _progress);
+
+    for (int i=0; i<NUM_LEDS; i++) {
+        CHSV currentColor = rgb2hsv_approximate(leds[i]);
+        // Target is the Sat Val reached at peak pulse, when _progress is 255
+        float targetSat = computeTarget(currentColor.sat, _satChange);
+        float targetVal = computeTarget(currentColor.val, _valChange);
+        CHSV newColor;
+        newColor.hue = currentColor.hue;
+        newColor.sat = lerp8by8(currentColor.sat, targetSat, _progress[i]);
+        newColor.val = lerp8by8(currentColor.val, targetVal, _progress[i]);
+        leds[i] = CRGB(newColor);
     }
 }
 
@@ -348,11 +383,11 @@ std::unique_ptr<Pattern> makePattern(const String& patternName, const String& pa
     if (patternName == "MaxBrightnessWhite") {
         return std::unique_ptr<Pattern>(new MaxBrightnessWhite());
     }
-    // hue: What color the pulse consists off 0-255
+    // hue: What color the pulse consists of 0-255
     // startTime: control timer value to begin the pulse
     // rampDuration: ms from start of pulse to peak
     //               The time from startTime to the beginning of peak brightness
-    //               at the blossom is rampDuration + TODO ms (time for the pulse)
+    //               at the blossom is rampDuration + 600 ms (time for the pulse)
     //               to rise up the stem.
     // peakDuration: ms to hold the flower at beak brightness
     // brightness: how bright to get 0-255
@@ -368,6 +403,28 @@ std::unique_ptr<Pattern> makePattern(const String& patternName, const String& pa
         if (params.size() >= 4) { peakDuration = params[3].toInt(); }
         if (params.size() >= 5) { brightness = params[4].toInt(); }
         return std::unique_ptr<Pattern>(new HuePulse(hue, startTime, rampDuration, peakDuration, brightness));
+    }
+    // satChange: Saturation multiplier for the pulse. 1.0 is unchanged
+    // valChange: Brightness multiplier for the pulse. 1.0 is unchanged
+    // startTime: control timer value to begin the pulse
+    // rampDuration: ms from start of pulse to peak
+    //               The time from startTime to the beginning of full transition
+    //               to the given sat,val is rampDuration + 600 ms (time for the pulse)
+    //               to rise up the stem.
+    // peakDuration: ms to hold the flower at the given sat,val
+    if (patternName == "SatValPulse") {
+        float satChange = 0.8;
+        float valChange = 0.8;
+        uint32_t startTime = util::parseStartTime("+0");
+        uint32_t rampDuration = 300;
+        uint32_t peakDuration = 200;
+        if (params.size() >= 1) { satChange = params[0].toFloat(); }
+        if (params.size() >= 2) { valChange = params[1].toFloat(); }
+        if (params.size() >= 3) { startTime = util::parseStartTime(params[2]); }
+        if (params.size() >= 4) { rampDuration = params[3].toInt(); }
+        if (params.size() >= 5) { peakDuration = params[4].toInt(); }
+        return std::unique_ptr<Pattern>(
+            new SatValPulse(satChange, valChange, startTime, rampDuration, peakDuration));
     }
     // hue, sat, val: which color to show
     // alpha: blending param with existing LED state larger means

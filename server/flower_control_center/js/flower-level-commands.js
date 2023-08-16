@@ -19,6 +19,8 @@ function populateCommandChoices() {
         "Set the global brightness of FastLED (via temporal dithering) (0-255). Affects all other patterns."],
         ["leds/addPattern/HuePulse",
         "A surge of color that moves up the flower. Params: hue (0-255), startTime ('+0' for right now), fadeInTime (ms), holdTime (ms), brightness (0-255)"],
+        ["leds/addPattern/SatValPulse",
+        "A pulsed change in the flower's current saturation & value Params: satChange (0.0-3.0, 1.0 is neutral), valChange (0.0-3.0, 1.0 is neutral), startTime ('+0' for right now), fadeInTime (ms), holdTime (ms)"],
         ["leds/addPattern/FairyVisit",
         "A dancing spot of yellow light.  Two params: visitDuration (ms), fairySpeed (LEDS/sec)"],
         ["leds/addPattern/IndependentIdle",
