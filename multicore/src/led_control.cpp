@@ -63,7 +63,7 @@ namespace led_control {
                 [](const std::unique_ptr<led_patterns::Pattern>& p) {
                     bool done = p->isDone(time_sync::controlMillis());
                     if (done) {
-                        comms::sendDebugMessage("Unloading finished pattern: " + p->name());
+                        comms::sendDebugMessage("Unloading finished pattern: " + p->descrip());
                     }
                     return done;
                 }
@@ -81,7 +81,7 @@ namespace led_control {
         void addPattern(const String &patternName, const String &parameters) {
             std::unique_ptr<led_patterns::Pattern> pattern = led_patterns::makePattern(patternName, parameters);
             if (pattern != nullptr) {
-                comms::sendDebugMessage("Adding LED pattern: " + pattern->name());
+                comms::sendDebugMessage("Adding LED pattern: " + pattern->descrip());
                 patterns.push_back(std::move(pattern));
             } else {
                 comms::sendDebugMessage("Failed to initialize LED pattern.");
