@@ -51,6 +51,17 @@ RollCall:
   - fairy/MikaylaOverHere1.wav
   - fairy/MikaylaOverHere2.wav
 
+# A group of 6 flowers is chosen somewhere in the field. One of these lists is chosen randomly. One
+# flower sings the first file in the list, then others follow one at a time singing the others.
+# Each overlaps with the others a bit.
+ChorusCircle:
+  aww: [wave2/aww1.wav, wave2/aww2.wav, wave2/aww3.wav, wave2/aww4.wav, wave2/aww5.wav, wave2/aww6.wav]
+  mmm: [wave2/mmm1.wav, wave2/mmm2.wav, wave2/mmm3.wav, wave2/mmm4.wav, wave2/mmm5.wav, wave2/mmm6.wav]
+  ooo: [wave2/ooo1.wav, wave2/ooo2.wav, wave2/ooo3.wav, wave2/ooo4.wav, wave2/ooo5.wav, wave2/ooo6.wav]
+  woo: [wave2/woo1.wav, wave2/woo2.wav, wave2/woo3.wav, wave2/woo4.wav, wave2/woo5.wav, wave2/woo6.wav]
+  ooUP: [wave2/ooUP1.wav, wave2/ooUP2.wav, wave2/ooUP3.wav, wave2/ooUP4.wav, wave2/ooUP5.wav, wave2/ooUP6.wav]
+  whoa: [wave2/whoa1.wav, wave2/whoa2.wav, wave2/whoa3.wav, wave2/whoa4.wav, wave2/whoa5.wav, wave2/whoa6.wav]
+
 Wave:
   # These are the sounds that play as each wave of color arrives at a flower.
   #

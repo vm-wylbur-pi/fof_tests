@@ -3,6 +3,7 @@ from geometry import Point, Vector
 
 import gsa.games.aura as aura
 import gsa.games.wave as wave_module
+import gsa.games.chorus_circle as chorus_circle
 import gsa.games.color_waves as color_waves
 import gsa.games.fairy as fairy
 import gsa.games.gossip as gossip
@@ -114,6 +115,16 @@ def HandleGameControlCommand(message, gameState):
 
     if command == "runGame/Wave":
         gameState.runStatefulGame(wave_module.Wave())
+        return
+
+    if command == "runGame/ChorusCircle":
+        gapBetweenSongsSecs = 60
+        volume = 5.0
+        if len(params) >= 1:
+            gapBetweenSongsSecs = int(params[0])
+        if len(params) >= 2:
+            volume = float(params[1])
+        gameState.runStatefulGame(chorus_circle.ChorusCircle(gapBetweenSongsSecs, volume))
         return
 
     if command == "runGame/Gossip":
