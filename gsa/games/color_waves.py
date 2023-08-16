@@ -86,12 +86,6 @@ class CircularColorWave(game.StatelessGame):
                                  startTime=gameState.controlTimer(), soundFiles=None)
 
     def run(self, flowers: 'list[Flower]'):
-        # TEMP HACK to test sound-with-wave, without relying on the Wave game yet.
-        # TODO: remove this.
-        if self.hue == 123:
-            self.soundFiles = ["wave/ha1.wav", "wave/ha2.wav", "wave/ha3.wav",
-                               "wave/ha4.wav", "wave/ha5.wav", "wave/ha6.wav"]
-
         print(f"Running wave: {self}")
         for flower in flowers:
             distanceFromCenter = self.center.diff(flower.location).magnitude()
