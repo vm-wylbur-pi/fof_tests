@@ -81,6 +81,10 @@ class People():
                 print(f"Forgetting about {name}, who hasn't been seen in a while.")
                 del self.people[name]
 
+    def pickOneAtRandom(self):
+        if not self.people:
+            return None
+        return random.choice(list(self.people.values()))
 
 # Class to track the association of some set of items (hues, sounds, etc) with 
 # each person on the field. Handles the assignment of an item to new people
