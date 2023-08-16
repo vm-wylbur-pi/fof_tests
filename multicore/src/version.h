@@ -19,11 +19,14 @@ namespace version {
     // Only a name 10 characters or fewer will fit on the screen without wra
     // pping.
     //
-    // "PartyTime": used at fundraising party in Patrick's backyord, 2023-06-17
-    // "DressMeUp" for the version used at the dress rehearsal on 2023-08-08
-    // "NewToePaint": added NTP sync for testing on 2023-08-12
-    // "FourSquare": added assigned SSID for testing on 2023-08-14
-    // "Macbeth": 2023-08-15. MQTT reboot recovery & status sounds, improved summary screen
+    // "PartyTime": 2023-06-17 used at fundraising party in Patrick's backyard
+    // "DressMeUp" 2023-08-08 used at the dress rehearsal
+    // "NewToePaint" 2023-08-12 added NTP sync for testing
+    // "FourSquare" 2023-08-14 added assigned SSID (Sun, Moon, Stars)
+    // "Macbeth" 2023-08-15 MQTT reboot recovery & status sounds, improved summary screen
+    //
+    // Versions below (named for beaches) are versions meant for use on the playa.
+    // "Venice": 2023-08-16. Add SatValPulse, leds/removePattern; remove MQTT recovery sound
     const String Name = "Macbeth";
 }
 
