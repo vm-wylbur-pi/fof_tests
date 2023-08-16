@@ -2,6 +2,7 @@ import time
 
 import flower
 import field
+from geometry import Point
 import person
 from typing import List
 
@@ -49,3 +50,7 @@ class GameState:
             return self.controlTimer() + offset
         else:
             return int(startTimeParameter)
+
+    def closestFlowerTo(self, point: Point) -> flower.Flower:
+        flowersByDistance = sorted(self.flowers, key=lambda f: point.distanceTo(f.location))
+        return flowersByDistance[0]
