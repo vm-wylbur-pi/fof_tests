@@ -25,13 +25,11 @@ class ChorusCircle(game.StatefulGame):
         # State variables
         self.nextSongTime: float = 0  # seconds since epoch, as returned by time.time()
         self.lastSingers: List[Flower] = None
-        self.backgroundColor = HSVAColor(random.randint(0, 255), 100, 100, 255)
         self.firstRun = True
 
     def runLoop(self, gameState: GameState):
         if self.firstRun:
-            for flower in gameState.flowers:
-                flower.SetBlossomColor(self.backgroundColor)
+            self.setAllToTransparent(gameState.flowers)
             self.firstRun = False
 
         now = time.time()
@@ -39,8 +37,7 @@ class ChorusCircle(game.StatefulGame):
             
             if self.lastSingers is not None:
                 print(f"resetting last singers: {self.lastSingers}")
-                for flower in self.lastSingers:
-                    flower.SetBlossomColor(self.backgroundColor)
+                self.setAllToTransparent(self.lastSingers)
 
             # Chose where to have the chorus:
             startingFlower = None
@@ -53,7 +50,6 @@ class ChorusCircle(game.StatefulGame):
             otherSingers = startingFlower.findNClosestFlowers(gameState.flowers, 5)
             singers = [startingFlower] + otherSingers
             parts = random.choice(list(self.audioFiles.values()))
-            # brighter and more saturated than the background
             chorusColor = HSVAColor(random.randint(0, 255), 255, 250, 255)
 
             print(f"Starting chorus on flowers {[f.num for f in singers]} singing {parts}")
@@ -66,3 +62,11 @@ class ChorusCircle(game.StatefulGame):
 
             self.lastSingers = singers
             self.nextSongTime = now + self.gapBetweenSongs
+
+    def setAllToTransparent(self, flowers):            
+        transparent = HSVAColor(0, 0, 0, 0) # only alpha=0 matters here
+        for flower in flowers:
+            flower.SetBlossomColor(transparent)
+
+    def stop(self, gameState: GameState):
+        self.setAllToTransparent(gameState.flowers)
