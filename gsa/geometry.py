@@ -12,6 +12,10 @@ class Point:
     def distanceTo(self, p):
         return self.diff(p).magnitude()
 
+    def moveBy(self, v):
+        return Point(self.x + v.dx, self.y + v.dy)
+
+
 @dataclass
 class Vector:
     dx: int
