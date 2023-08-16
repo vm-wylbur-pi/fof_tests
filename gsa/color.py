@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import math
 
+# All values are on the 0-255 scale.
 @dataclass
 class HSVAColor:
     hue: int
