@@ -56,20 +56,35 @@ class TabulatorTable {
         this.table = new Tabulator("#tabulator-table", {
             layout: "fitDataTable",
             columns: [
-                {title: "Status", field: "status"},
-                {title: "Flower ID", field: "flower_id"},
-                {title: "Flower Num", field: "sequence_num"},
-                {title: "Debug Messages", field: "debug_msg_show"},
-                {title: "HB Age", field:"pretty_heartbeat_age"},
+                {title: "Status", field: "status", headerFilter:"input"},
+                {title: "Flower ID", field: "flower_id", headerFilter:"input"},
+                {title: "Flower Num", field: "sequence_num", headerFilter:"input"},
+                {title: "Debug Messages", field: "debug_msg_show", headerFilter:"input"},
+                {title: "HB Age", field:"pretty_heartbeat_age", headerFilter:"input"},
                 {title: "HeartBeat Age Seconds", field: "heartbeat_age", visible:false},
                 {title: "Creation Timestamp", field:"creation_timestamp", visible:false},
-                {title: "Uptime", field: "uptime"},
-                {title: "FW Version", field: "version_name"},
-                 {title: "Build Time", field: "build_timestamp"},                
-                {title: "IP", field: "IP"},
-                {title: "SSID", field: "SSID"},
-                {title: "WiFi Strength", field: "wifi_signal"},
-                {title: "SD Card", field: "sd_card"},
+                {title: "Uptime", field: "uptime", headerFilter:"input"},
+                {title: "FW Version", field: "version_name", headerFilter:"input"},
+                {title: "Build Time", field: "build_timestamp", headerFilter:"input"},
+                {title: "IP", field: "IP", headerFilter:"input", headerDblClick: function(e, column){
+                        let f = ttable.table.getHeaderFilters();
+                        let r = ttable.table.searchRows(f);
+                        let rips = r.map(row => {
+                            return row.getData()['IP']
+                        })
+
+                        var clipboardData = rips.join("\n");
+                        navigator.clipboard.writeText(clipboardData)
+                            .then(function() {
+                                console.log("Column data copied to clipboard");
+                            })
+                            .catch(function(error) {
+                                console.error("Error copying data to clipboard: ", error);
+                            });
+                    }},
+                {title: "SSID", field: "SSID", headerFilter:"input"},
+                {title: "WiFi Strength", field: "wifi_signal", headerFilter:"input"},
+                {title: "SD Card", field: "sd_card", headerFilter:"input"},
                 {title: "Volume", field: "volume", formatter:"progress", formatterParams:{
                         min:0,
                         max:11.0,
@@ -77,10 +92,10 @@ class TabulatorTable {
                         legendColor:"#000000",
                         legendAlign:"center"
                 }},
-                {title: "NTP Time", field: "ntp_time"},
-                {title: "Ctrl Timer", field: "control_timer"},
-                {title: "FL FPS", field: "FastLED_fps"},
-                {title: "Status Infoz", field: "status_infoz", html: true}
+                {title: "NTP Time", field: "ntp_time", headerFilter:"input"},
+                {title: "Ctrl Timer", field: "control_timer", headerFilter:"input"},
+                {title: "FL FPS", field: "FastLED_fps", headerFilter:"input"},
+                {title: "Status Infoz", field: "status_infoz", html: true, headerFilter:"input"}
             ]
         })
     }
