@@ -93,6 +93,8 @@ class FakeFlower:
     def constructPattern(self, pattern_name, str_params):
         if pattern_name == "HuePulse":
             return HuePulse(self.controlMillis(), str_params)
+        if pattern_name == "SatValPulse":
+            return SatValPulse(self.controlMillis(), str_params)
         if pattern_name == "FairyVisit":
             print(f"Flower {self.id} added FairyVisit({str_params})")
             return FairyVisit(self.controlMillis(), str_params)
@@ -226,6 +228,77 @@ class HuePulse(FlowerPattern):
         return LEDState(
             blossom_color=prevState.blossom_color.lerp(self.color, alpha),
             leaf_color=prevState.leaf_color.lerp(self.color, alpha),
+        )
+    
+# TODO: This was a copy-paste from HuePulse; it needs cleanup, but I need 
+# to move fast now. 
+class SatValPulse(FlowerPattern):
+    def __init__(self, control_time, str_params):
+        params = str_params.split(',')
+        if params == ['']:
+            params = []
+        self.satChange = 0.8 if len(params) < 1 else float(params[0])
+        self.valChange = 0.8 if len(params) < 2 else float(params[1])
+        self.startTime = parseStartTime(
+            control_time, "+0") if len(params) < 3 else parseStartTime(control_time, params[2])
+        self.rampDuration = 300 if len(params) < 4 else int(params[3])
+        self.peakDuration = 600 if len(params) < 5 else int(params[4])
+
+    def isDone(self, time: int):
+        return time > (self.startTime + 2*self.rampDuration + self.peakDuration + 100)
+
+    def modifyLEDState(self, time: int, prevState: LEDState) -> LEDState:
+        if time < self.startTime:
+            return prevState
+        # Full pattern has finished; don't do any unnecessary work.
+        if time > self.startTime + 2*self.rampDuration + self.peakDuration:
+            return prevState
+
+        patternTime = time - self.startTime
+        alpha = 0
+
+        # Case 0: pulse hasn't reached this part of the flower yet.
+        if patternTime < 0:
+            alpha = 0
+        # Case 1: ramping up. Same for leaves and blossom.
+        elif patternTime < self.rampDuration:
+            alpha = patternTime / self.rampDuration
+        elif patternTime < self.rampDuration + self.peakDuration:
+            alpha = 1  # During the peak
+        elif patternTime < self.rampDuration + self.peakDuration + self.rampDuration:
+            # Ramp the blossom back down to black
+            timeIntoRamp = patternTime - self.rampDuration - self.peakDuration
+            alpha = 1 - timeIntoRamp / self.rampDuration
+
+        def lerp(start, end, p):
+            return (p-1)*start + p*end
+        
+        def bound(val, min, max):
+            if val < min:
+                return min
+            elif val > max:
+                return max
+            else:
+                return val
+
+        bH, bS, bV, bA = prevState.blossom_color.hsva
+        lH, lS, lV, lA = prevState.leaf_color.hsva
+        # TODO: add bounding to target values
+        target_bS = self.satChange * bS
+        target_bV = self.valChange * bV
+        target_lS = self.satChange * lS
+        target_lV = self.valChange * lV
+        new_bS = bound(lerp(bS, target_bS, alpha), 0, 100)
+        new_bV = bound(lerp(bV, target_bV, alpha), 0, 100)
+        new_lS = bound(lerp(lS, target_lS, alpha), 0, 100)
+        new_lV = bound(lerp(lV, target_lV, alpha), 0, 100)
+        newBlossomColor = pygame.Color(1,1,1)
+        newLeafColor = pygame.Color(1,1,1)
+        newBlossomColor.hsva = (bH, new_bS, new_bV, bA)
+        newLeafColor.hsva = (lH, new_lS, new_lV, lA)
+        return LEDState(
+            blossom_color=newBlossomColor,
+            leaf_color=newLeafColor,
         )
 
 class FairyVisit(FlowerPattern):
