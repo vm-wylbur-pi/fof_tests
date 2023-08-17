@@ -27,7 +27,7 @@ namespace version {
     //
     // Versions below (named for beaches) are versions meant for use on the playa.
     // "Venice": 2023-08-16. Add SatValPulse, leds/removePattern; remove MQTT recovery sound
-    const String Name = "Macbeth";
+    const String Name = "Venice";
 }
 
 #endif // VERSION_H
