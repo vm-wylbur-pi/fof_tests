@@ -94,6 +94,28 @@ class StraightColorWave(StraightPulseWave):
                         brightness=self.brightness)
 
 
+@dataclass
+class StraightSatValWave(StraightPulseWave):
+    satChange: float = 0.8
+    valChange: float = 0.8
+
+    @classmethod
+    def randomInstance(cls, gameState: GameState):
+        base = StraightPulseWave.randomInstance(gameState)
+        # Random change between 0.5 (dimmer) and 1.5 (brighter)
+        return StraightSatValWave(satChange=random.random() + 0.5,
+                                  valChange=1.0,
+                                  start_loc=base.start_loc,
+                                  velocity=base.velocity,
+                                  startTime=base.startTime)
+
+    def callPulseOn(self, flower: Flower, controlTime: int):
+        flower.SatValPulse(satChange=self.satChange,
+                           valChange=self.valChange,
+                           startTime=controlTime,
+                           rampDuration=self.pulseRampDuration,
+                           peakDuration=self.pulsePeakDuration)
+
 # A circle of pulse that expands outward from (or contracts inward toward) a specified point.
 # You can use this in various ways:
 #    startRadius=0, positive velocity around 500: classic expanding wave of color after a step
@@ -149,6 +171,30 @@ class CircularColorWave(CircularPulseWave):
                         rampDuration=self.pulseRampDuration,
                         peakDuration=self.pulsePeakDuration,
                         brightness=self.brightness)
+        
+
+@dataclass
+class CircularSatValWave(CircularPulseWave):
+    satChange: float = 0.8
+    valChange: float = 0.8
+
+    @classmethod
+    def randomInstance(cls, gameState: GameState):
+        base = CircularPulseWave.randomInstance(gameState)
+        # Random change between 0.5 (dimmer) and 1.5 (brighter)
+        return CircularSatValWave(satChange=random.random() + 0.5,
+                                  valChange=1.0,
+                                  center=base.center,
+                                  startRadius=base.startRadius,
+                                  speed=base.speed,
+                                  startTime=base.startTime)
+
+    def callPulseOn(self, flower: Flower, controlTime: int):
+        flower.SatValPulse(satChange=self.satChange,
+                           valChange=self.valChange,
+                           startTime=controlTime,
+                           rampDuration=self.pulseRampDuration,
+                           peakDuration=self.pulsePeakDuration)
 
 # Showcase wave effects by running through them with randomized parameters.
 @dataclass

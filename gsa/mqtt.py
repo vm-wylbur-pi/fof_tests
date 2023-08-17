@@ -11,10 +11,11 @@ import gsa.games.gossip as gossip
 import gsa.games.fun_screen_text as fun_screen_text
 import gsa.games.roll_call as roll_call
 import gsa.games.sleep_mode as sleep_mode
+import gsa.games.wind as wind
 
 # Used during development.
 # TODO: Read this from config
-MQTT_BROKER_IP = "192.168.1.72"
+MQTT_BROKER_IP = "127.0.0.1"
 
 def SetupMQTTClient(gameState):
     # Required by paho, but unused
@@ -95,6 +96,21 @@ def HandleGameControlCommand(message, gameState):
         gameState.runStatelessGame(wave)
         return
 
+    if command == "runGame/StraightSatValWave":
+        wave = color_waves.StraightSatValWave.randomInstance(gameState)
+        if len(params) >= 1:
+            wave.satChange = float(params[0])
+        if len(params) >= 2:
+            wave.valChange = float(params[1])
+        if len(params) >= 4:
+            wave.start_loc = Point(int(params[2]), int(params[3]))
+        if len(params) >= 6:
+            wave.velocity = Vector(int(params[4]), int(params[5]))
+        if len(params) >= 7:
+            wave.startTime = gameState.parseStartTime(params[6])
+        gameState.runStatelessGame(wave)
+        return
+
     if command == "runGame/CircularColorWave":
         wave = color_waves.CircularColorWave.randomInstance(gameState)
         if len(params) >= 1:
@@ -107,6 +123,23 @@ def HandleGameControlCommand(message, gameState):
             wave.speed = int(params[4])
         if len(params) >= 6:
             wave.startTime = gameState.parseStartTime(params[5])
+        gameState.runStatelessGame(wave)
+        return
+
+    if command == "runGame/CircularSatValWave":
+        wave = color_waves.CircularSatValWave.randomInstance(gameState)
+        if len(params) >= 1:
+            wave.satChange = float(params[0])
+        if len(params) >= 2:
+            wave.valChange = float(params[1])
+        if len(params) >= 4:
+            wave.center = Point(int(params[2]), int(params[3]))
+        if len(params) >= 5:
+            wave.startRadius = int(params[4])
+        if len(params) >= 6:
+            wave.speed = int(params[5])
+        if len(params) >= 7:
+            wave.startTime = gameState.parseStartTime(params[6])
         gameState.runStatelessGame(wave)
         return
 
