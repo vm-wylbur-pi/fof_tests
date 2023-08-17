@@ -147,6 +147,11 @@ def HandleGameControlCommand(message, gameState):
         gameState.runStatefulGame(aura.Aura())
         return
 
+    if command == "runGame/Wind":
+        # TODO: expose some parameters, like wind direction from N S E W
+        gameState.runStatefulGame(wind.Wind())
+        return
+
     if command == "runGame/Wave":
         gameState.runStatefulGame(wave_module.Wave())
         return

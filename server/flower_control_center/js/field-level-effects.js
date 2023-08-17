@@ -55,6 +55,11 @@ $( document ).ready(function() {
         $('input[name="field_params"]').val("");
         $('#field_command_param_explanation').text("Shows fun messages that occasionally change on the flower screens.");
     });
+    $( "button#wind" ).click(function (event) {
+        $('input[name="field_command"]').val("runGame/Wind");
+        $('input[name="field_params"]').val("");
+        $('#field_command_param_explanation').text("Wind gusts from the west that dim the leaves. No parameters yet.");
+    });
     $( "button#bouncingBlob" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/BouncingBlob");
         $('input[name="field_params"]').val("200,150");

@@ -48,6 +48,10 @@ class Flower:
         params = f"{hue},{startTime},{rampDuration},{peakDuration},{brightness}"
         self.sendMQTTCommand(command="leds/addPattern/HuePulse", params=params)
 
+    def SatValPulse(self, satChange, valChange, startTime, rampDuration, peakDuration):
+        params = f"{satChange},{valChange},{startTime},{rampDuration},{peakDuration}"
+        self.sendMQTTCommand(command="leds/addPattern/SatValPulse", params=params)
+
     def SetBlossomColor(self, col: color.HSVAColor):
         # To avoid sending a color to every flower on every frame, we only send an
         # update if the flower color changes.  TODO(..only if it changes by a lot. Some
