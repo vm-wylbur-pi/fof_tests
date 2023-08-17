@@ -69,7 +69,7 @@ class a_localProcessTestCases(unittest.TestCase):
         self.assertTrue(pSuccess, test_result)
 
 class b_fccTestCases(unittest.TestCase):
-    fccURL = "http://127.0.0.1:8000"
+    fccURL = "http://127.0.0.1"
 
     def test_2_url_status_code(self):
         test_result = "Could not connect to web server on %s" % self.fccURL
@@ -172,6 +172,7 @@ class d_mosquittoTestCases(unittest.TestCase):
 
 class d_chronydTestCases(unittest.TestCase):
     suite = 'ntp'
+
     server = '127.0.0.1'
 
     def test_1_ntp_checks(self):
@@ -182,14 +183,14 @@ class d_chronydTestCases(unittest.TestCase):
         ntp_time = None
         try:
             # Request the time from the NTP server
-            response = client.request(self.server)
+
             # Get the NTP server's timestamp
             ntp_time = datetime.fromtimestamp(response.tx_time)
 
-            test_result = "Time check worked, evidently it's %s " % ntp_time
+            test_result = "Time check worked, evidently it's %s on server IP %s " % (ntp_time, self.server)
             test_end = True
         except Exception as e:
-            test_result = "time check fail for ntp server at %s  ntp time returned: %s" % (self.server, str(e))
+            test_result = "time check fail for ntp server at %s  ntp time returned: %s from IP" % (self.server, str(e), self.server)
             test_end = False
 
         addResult(self.suite,'Time Check', test_end, test_result)
