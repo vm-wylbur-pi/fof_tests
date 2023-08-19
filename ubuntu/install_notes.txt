@@ -7,19 +7,29 @@ system file to /etc/systemd/system/docker-compose.service
 sudo systemctl daemon-reload
 
 # Enable the service to start on boot
-sudo systemctl enable my-docker-service.service
+sudo systemctl enable docker-compose.service
 
 # Start the service
-sudo systemctl start my-docker-service.service
+sudo systemctl start docker-compose.service
 
 # Check the status to ensure the service is active and running
-sudo systemctl status my-docker-service.service
+sudo systemctl status docker-compose.service
 
 
 
-SMB Config
+#SMB Config
 append to end of /etc/samba/smb.conf
 
 sudo smbpasswd -a fof
 sudo systemctl restart smbd
 sudo systemctl enable smbd
+
+
+
+# Install NTP
+sudo
+sudo apt install ntp
+sudo systemctl stop ntp
+sudo systemctl disable ntp
+
+## to re-enable sudo systemctl enable ntp
