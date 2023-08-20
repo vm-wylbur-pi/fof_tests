@@ -56,8 +56,10 @@ class TabulatorTable {
         this.table = new Tabulator("#tabulator-table", {
             layout: "fitDataTable",
             columns: [
-                {title: "Status", field: "status", headerFilter:"input"},
-                {title: "Flower ID", field: "flower_id", headerFilter:"input"},
+                {title: "Status", field: "status", headerFilter:"input", visible: false},
+                {title: "Flower ID", field: "flower_id", headerFilter:"input", cellClick: function(e,cell){
+                        $('input[name="flower"]').val(cell.getData()['flower_id']);
+                    }},
                 {title: "Flower Num", field: "sequence_num", headerFilter:"input"},
                 {title: "Debug Messages", field: "debug_msg_show", headerFilter:"input"},
                 {title: "HB Age", field:"pretty_heartbeat_age", headerFilter:"input"},
@@ -73,7 +75,7 @@ class TabulatorTable {
                             return row.getData()['IP']
                         })
 
-                        var clipboardData = rips.join("\n");
+                        var clipboardData = rips.join(" ");
 
                         if(navigator.clipboard !== undefined) {
                             navigator.clipboard.writeText(clipboardData)
@@ -84,6 +86,7 @@ class TabulatorTable {
                                     console.error("Error copying data to clipboard: ", error);
                                 });
                         }else {
+                            clipboardData = 'Copy Paste Row ---> ' + clipboardData
                             $('#copypasterow').text(clipboardData)
                         }
                     }},
@@ -100,7 +103,7 @@ class TabulatorTable {
                 {title: "NTP Time", field: "ntp_time", headerFilter:"input"},
                 {title: "Ctrl Timer", field: "control_timer", headerFilter:"input"},
                 {title: "FL FPS", field: "FastLED_fps", headerFilter:"input"},
-                {title: "Status Infoz", field: "status_infoz", html: true, headerFilter:"input"}
+                {title: "Status Infoz", field: "status_infoz", html: true, headerFilter:"input", visible: false}
             ]
         })
     }
