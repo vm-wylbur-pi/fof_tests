@@ -13,6 +13,7 @@ class GameState:
         self.people: person.People = person.People()
         self.stateful_games = []
         self.control_timer_reference_time: int = None  # seconds since the epoch
+        self.mqttThrottler = None  # will be initializedy by MQTT setup
 
     # Returns the number of milliseconds that have passed since the 
     # globally shared event reference time.

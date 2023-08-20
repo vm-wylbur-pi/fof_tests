@@ -1,3 +1,6 @@
+from collections import deque
+from dataclasses import dataclass
+
 import paho.mqtt.client as paho_mqtt
 from geometry import Point, Vector
 
@@ -16,6 +19,40 @@ import gsa.games.wind as wind
 # Used during development.
 # TODO: Read this from config
 MQTT_BROKER_IP = "127.0.0.1"
+
+# A throttler to prevent sending too many MQTT messages to the flowers at once.
+# We've seen that sending more than about 40 at a time can cause wifi congestion
+class MQTTThrottler:
+    def __init__(self, mqtt_client, maxPerGSAFrame=20):
+        self.mqtt_clinet = mqtt_client
+        self.maxPerGSAFrame = maxPerGSAFrame
+        self.numThisFrame = 0
+        self.buffer = deque()
+
+    @dataclass
+    class Message:
+        topic: str
+        payload: str
+        retain: bool
+        qos: int
+
+    def sendMessage(self, topic: str, payload: str, retain: bool = False, qos: int=0):
+        if self.numThisFrame < self.maxPerGSAFrame:
+            self.mqtt_clinet.publish(topic=topic, payload=payload, retain=retain, qos=qos)
+            self.numThisFrame += 1
+        else:
+            self.buffer.append(MQTTThrottler.Message(topic, payload, retain, qos))
+
+    def resetMessageCount(self):
+        self.numThisFrame = 0
+        while self.buffer and self.numThisFrame < self.maxPerGSAFrame:
+            msg: MQTTThrottler.Message = self.buffer.popleft()
+            self.mqtt_clinet.publish(topic=msg.topic, payload=msg.payload,
+                                     retain=msg.retain, qos=msg.qos)
+            self.numThisFrame += 1
+        if self.buffer:
+            print(f"MQTT Throttler has {len(self.buffer)} messages unsent this frame.")
+
 
 def SetupMQTTClient(gameState):
     # Required by paho, but unused
@@ -52,8 +89,10 @@ def SetupMQTTClient(gameState):
 
     # Flowers get a reference to the client, because sending the mqtt commands needed
     # for running games is delegated to each of them.
+    flowerMessageThrottler = MQTTThrottler(client, maxPerGSAFrame=20)
     for flower in gameState.flowers:
-        flower.mqtt_client = client
+        flower.mqttThrottler = flowerMessageThrottler
+    gameState.mqttThrottler = flowerMessageThrottler
 
     # Caller is responsible for calling client.loop() to handle received messages
     return client
