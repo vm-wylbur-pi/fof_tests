@@ -74,13 +74,18 @@ class TabulatorTable {
                         })
 
                         var clipboardData = rips.join("\n");
-                        navigator.clipboard.writeText(clipboardData)
-                            .then(function() {
-                                console.log("Column data copied to clipboard");
-                            })
-                            .catch(function(error) {
-                                console.error("Error copying data to clipboard: ", error);
-                            });
+
+                        if(navigator.clipboard !== undefined) {
+                            navigator.clipboard.writeText(clipboardData)
+                                .then(function () {
+                                    console.log("Column data copied to clipboard");
+                                })
+                                .catch(function (error) {
+                                    console.error("Error copying data to clipboard: ", error);
+                                });
+                        }else {
+                            $('#copypasterow').text(clipboardData)
+                        }
                     }},
                 {title: "SSID", field: "SSID", headerFilter:"input"},
                 {title: "WiFi Strength", field: "wifi_signal", headerFilter:"input"},
