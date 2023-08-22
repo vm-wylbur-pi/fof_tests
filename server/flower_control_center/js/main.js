@@ -321,7 +321,8 @@ function handleGSAHeartbeatMessage(message) {
     try {
         const data = JSON.parse(message.payloadString);
         let gsaStatusMsg = `running at ${data['IP']}, `
-        gsaStatusMsg += `control_timer: ${data['control_timer']}<br/>`
+        gsaStatusMsg += `control_timer: ${data['control_timer']}, `
+        gsaStatusMsg += `people: ${data['num_people']}<br/>`
         gsaStatusMsg += `Active games: ${data['games'].join(', ')}`
         $("#gsaStatus").html(gsaStatusMsg);
     } catch(e) {

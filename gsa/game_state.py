@@ -65,7 +65,8 @@ class GameState:
         heartbeatData = {
             "games": [g.__class__.__name__ for g in self.stateful_games],
             "control_timer": self.controlTimer(),
-            'IP': util.getIPAddress()
+            'IP': util.getIPAddress(),
+            'num_people': len(self.people.people),
         }
         heartbeatJson = json.dumps(heartbeatData)
         self.mqttThrottler.sendMessage(topic=GameState.MQTT_TOPIC_FOR_HEARTBEATS,
