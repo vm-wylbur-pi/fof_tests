@@ -65,6 +65,8 @@ def SetupMQTTClient(gameState):
         # hashtag is the MQTT wildcard.
         print('Subscribing to game control messages')
         client.subscribe("game-control/#")
+        print('Subscribing to GSA-control messages')
+        client.subscribe("gsa-control/#")
         print('Subscribing to people location updates.')
         client.subscribe("people-locations/#")
         print('Subscribing to reference clock updates.')
@@ -101,6 +103,8 @@ def SetupMQTTClient(gameState):
 def HandleMQTTMessage(message, gameState):
     if message.topic.startswith("game-control"):
         HandleGameControlCommand(message, gameState)
+    elif message.topic.startswith("gsa-control"):
+        HandleGSAControlCommand(message, gameState)
     elif message.topic.startswith("people-locations"):
         gameState.people.updateFromMQTT(message)
     elif message.topic.startswith("flower-control/all/time/setEventReference"):
@@ -112,11 +116,26 @@ def HandleMQTTMessage(message, gameState):
         print(f"Unhandled MQTT message topic: {message.topic}")
 
 
+def HandleGSAControlCommand(message, gameState):
+    _, command = message.topic.split('/', maxsplit=1)
+    raw_param_string = message.payload.decode()
+    params = raw_param_string.split(',') if raw_param_string else []
+    print(f"Received GSA command: {command}({','.join(params)})")
+
+    if command.startswith("relayToAllFlowersWithThrottling"):
+        _, flower_command = command.split('/', maxsplit=1)
+        for flower in gameState.flowers:
+            flower.sendMQTTCommand(flower_command, raw_param_string)
+        return
+    
+    print(f"Unhandled gsa-control command: {command}({message.payload.decode()})")
+
+
 def HandleGameControlCommand(message, gameState):
     _, command = message.topic.split('/', maxsplit=1)
     raw_param_string = message.payload.decode()
     params = raw_param_string.split(',') if raw_param_string else []
-    print(f"Received command: {command}({','.join(params)})")
+    print(f"Received game command: {command}({','.join(params)})")
 
     if command == "sendHeartbeat":
         gameState.sendHeartbeat()
