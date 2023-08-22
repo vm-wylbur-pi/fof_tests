@@ -112,3 +112,7 @@ div.debugMessages pre {
 .tabulator-table .tabulator-row .tabulator-cell {
     font-size: 12px; /* Adjust the font size as needed */
 }
+
+div#gsaStatus {
+    display: inline;
+}
