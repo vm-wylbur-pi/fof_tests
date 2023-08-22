@@ -1,4 +1,5 @@
 from collections.abc import Sequence
+import socket
 
 # Needed for tracking recent person locations, which are used for motion detection.
 class RingBuffer(Sequence):
@@ -27,3 +28,17 @@ class RingBuffer(Sequence):
     def __len__(self):
         return len(self.items)
     
+
+# Copied from https://stackoverflow.com/questions/166506/finding-local-ip-addresses-using-pythons-stdlib
+def getIPAddress() -> str:
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.settimeout(0)
+    try:
+        # doesn't even have to be reachable
+        s.connect(('10.254.254.254', 1))
+        IP = s.getsockname()[0]
+    except Exception:
+        IP = '127.0.0.1'
+    finally:
+        s.close()
+    return IP
