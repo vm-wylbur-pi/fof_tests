@@ -313,7 +313,7 @@ function handleFlowerHeartbeatMessage(message) {
 var lastGSAHeartbeatTime = Date.now()
 
 function requestGSAHeartbeat() {
-    sendMQTTMessage('game-control/sendHeartbeat', payload='');
+    sendMQTTMessage('gsa-control/sendHeartbeat', payload='');
 }
 
 function handleGSAHeartbeatMessage(message) {

@@ -128,6 +128,10 @@ def HandleGSAControlCommand(message, gameState):
             flower.sendMQTTCommand(flower_command, raw_param_string)
         return
     
+    if command == "sendHeartbeat":
+        gameState.sendHeartbeat()
+        return
+    
     print(f"Unhandled gsa-control command: {command}({message.payload.decode()})")
 
 
@@ -136,10 +140,6 @@ def HandleGameControlCommand(message, gameState):
     raw_param_string = message.payload.decode()
     params = raw_param_string.split(',') if raw_param_string else []
     print(f"Received game command: {command}({','.join(params)})")
-
-    if command == "sendHeartbeat":
-        gameState.sendHeartbeat()
-        return
 
     if command == "clearGames":
         gameState.clearStatefulGames()
