@@ -34,6 +34,7 @@ while True:
     gameState.updateStatefulGames()
     gameState.people.removePeopleNotSeenForAWhile()
     gameState.mqttThrottler.resetMessageCount()
+    gameState.sendHeartbeatIfItsTime()
 
     # Stall the loop.
     time.sleep(1/60)  # seconds
