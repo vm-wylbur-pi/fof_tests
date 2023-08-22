@@ -38,6 +38,9 @@ function connectToMQTT() {
                 .addClass("btn-success");
             subscribeToFlowerMessages();
             subscribeToGSAMessages();
+            // So we don't have to wait five seconds for the first natural
+            // heartbeat when the FCC is first loaded.
+            requestGSAHeartbeat();
         },
         onFailure: function(context) {
             mqttIsConnected = false;
@@ -309,6 +312,10 @@ function handleFlowerHeartbeatMessage(message) {
 
 var lastGSAHeartbeatTime = Date.now()
 
+function requestGSAHeartbeat() {
+    sendMQTTMessage('game-control/sendHeartbeat', payload='');
+}
+
 function handleGSAHeartbeatMessage(message) {
     lastGSAHeartbeatTime = Date.now();
     try {
@@ -328,7 +335,7 @@ const GSA_SILENCE_TO_WORRY_ABOUT = 10000  // milliseconds
 function checkGSAHeartbeatAge() {
     let millisSinceLastHeartbeat = Date.now() - lastGSAHeartbeatTime;
     if (millisSinceLastHeartbeat > GSA_SILENCE_TO_WORRY_ABOUT) {
-        let secsSinceLastHeartbeat = Math.round(millisSinceLastHeartbeat * 1000)
+        let secsSinceLastHeartbeat = Math.round(millisSinceLastHeartbeat / 1000)
         $("#gsaStatus").text(`No GSA heatbeat received for ${secsSinceLastHeartbeat} seconds.`)
     }
 }

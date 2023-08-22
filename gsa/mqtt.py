@@ -118,6 +118,10 @@ def HandleGameControlCommand(message, gameState):
     params = raw_param_string.split(',') if raw_param_string else []
     print(f"Received command: {command}({','.join(params)})")
 
+    if command == "sendHeartbeat":
+        gameState.sendHeartbeat()
+        return
+
     if command == "clearGames":
         gameState.clearStatefulGames()
         return
