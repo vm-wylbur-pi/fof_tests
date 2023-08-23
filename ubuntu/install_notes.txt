@@ -31,9 +31,16 @@ sudo systemctl enable smbd
 
 
 # Install NTP
-sudo
 sudo apt install ntp
 sudo systemctl stop ntp
 sudo systemctl disable ntp
-
 ## to re-enable sudo systemctl enable ntp
+
+
+# Install Mosquitto
+sudo apt install mosquitto
+sudo systemctl stop mosquitto
+sudo systemctl disable mosquitto
+
+# Paho client for gsa
+sudo apt install python3-paho-mqtt

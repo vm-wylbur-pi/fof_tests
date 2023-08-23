@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DoJ</title>
+
+    <script src="../lib/paho-mqtt.js"></script>
+
+    <link rel="icon" href="../img/daisy.ico" type="image/x-icon">
+
+    <script src="../lib/jquery-3.6.4.js"></script>
+    <script src="../lib/jquery.color-2.1.2.js"></script>
+
+    <script src="../lib/bootstrap-5.3.0.min.js"></script>
+    <script src="../lib/tabulator.min.js"></script>
+    <link rel="stylesheet" href="../css/bootstrap-5.3.0.min.css">
+    <link rel="stylesheet" href="../css/tabulator_bootstrap5.min.css">
+    <link rel="stylesheet" href="../css/fcc.css">
+
+</head>
+<body>
+<div class="container-flex">
+    <div class="row">
+        <div id="navigation" class="col d-flex justify-content-center"></div>
+    </div>
+    <div class="row" id="mqttROW">
+        <div class="col d-flex justify-content-center">
+            <p id="mqtt-status"></p>
+        </div>
+    </div>
+    <div class="row" id="mqttReconnectRow">
+        <div class="col d-flex justify-content-center">
+            MQTT Broker IP:
+            <input type="text" id="mqtt-ip" value="192.168.1.72" />
+            <button id="mqtt-reconnect">Reconnect</button>
+        </div>
+    </div>
+    <div class="row" id="ButtonRow1">
+        <div class="col d-flex">
+            <div id="bdiv-1" class="d-grid gap-2 col-10 mx-auto">
+
+            </div>
+        </div>
+        <div class="col d-flex">
+            <div id="bdiv-2" class="d-grid gap-2 col-10 mx-auto">
+                <button class="btn btn-primary" type="button">Button</button>
+                <button class="btn btn-primary" type="button">Button</button>
+                <button class="btn btn-primary" type="button">Button</button>
+                <button class="btn btn-primary" type="button">Button</button>
+                <button class="btn btn-primary" type="button">Button</button>
+                <button class="btn btn-primary" type="button">Button</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script src="/js/doj.js"></script>
+<script>
+    $(document).ready(function() {
+        // Load and inject header HTML
+        $('#navigation').load('/pages/nav.html');
+    });
+</script>
+</body>
+</html>
