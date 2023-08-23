@@ -6,22 +6,30 @@ import wave
 
 
 AUDIO_INFO_FILE = 'audio/wav_meta.json'
-WAV_FILE_DIR = 'audio_files'
+WAV_FILE_DIR = '/Users/jeff/fof/audio_files/prepped_for_flowers'
 NAME_KEY = "name"
 DURATION_KEY = "duration_seconds"
 
 
 def generate_wav_meta() -> List[Dict[str, Union[str, float]]]:
     wav_meta = []
-    for wav_name in os.listdir(WAV_FILE_DIR):
-        with wave.open(f"{WAV_FILE_DIR}/{wav_name}") as audio:
-            duration_secs = audio.getnframes() / audio.getframerate()
-            wav_meta.append(
-                {
-                    NAME_KEY: wav_name,
-                    DURATION_KEY: duration_secs,
-                }
-            )
+    for root, _, files in os.walk(WAV_FILE_DIR):
+        for filename in files:
+            if filename.lower().endswith("wav"):
+                path = os.path.join(root, filename)
+                relative_path = path[len(WAV_FILE_DIR)+1:]
+                print(f"Reading metadata for {relative_path}...")
+                with wave.open(path) as audio:
+                    duration_secs = audio.getnframes() / audio.getframerate()
+                    params = audio.getparams()
+
+                    wav_meta.append(
+                        {
+                            NAME_KEY: relative_path,
+                            DURATION_KEY: duration_secs,
+                            **dict(params._asdict()),
+                        }
+                    )
     return wav_meta
 
 

@@ -37,6 +37,10 @@ function connectToMQTT() {
                 // Add the new class 'btn-danger'
                 .addClass("btn-success");
             subscribeToFlowerMessages();
+            subscribeToGSAMessages();
+            // So we don't have to wait five seconds for the first natural
+            // heartbeat when the FCC is first loaded.
+            requestGSAHeartbeat();
         },
         onFailure: function(context) {
             mqttIsConnected = false;
@@ -56,8 +60,10 @@ class TabulatorTable {
         this.table = new Tabulator("#tabulator-table", {
             layout: "fitDataTable",
             columns: [
-                {title: "Status", field: "status", headerFilter:"input"},
-                {title: "Flower ID", field: "flower_id", headerFilter:"input"},
+                {title: "Status", field: "status", headerFilter:"input", visible: false},
+                {title: "Flower ID", field: "flower_id", headerFilter:"input", cellClick: function(e,cell){
+                        $('input[name="flower"]').val(cell.getData()['flower_id']);
+                    }},
                 {title: "Flower Num", field: "sequence_num", headerFilter:"input"},
                 {title: "Debug Messages", field: "debug_msg_show", headerFilter:"input"},
                 {title: "HB Age", field:"pretty_heartbeat_age", headerFilter:"input"},
@@ -73,14 +79,20 @@ class TabulatorTable {
                             return row.getData()['IP']
                         })
 
-                        var clipboardData = rips.join("\n");
-                        navigator.clipboard.writeText(clipboardData)
-                            .then(function() {
-                                console.log("Column data copied to clipboard");
-                            })
-                            .catch(function(error) {
-                                console.error("Error copying data to clipboard: ", error);
-                            });
+                        var clipboardData = rips.join(" ");
+
+                        if(navigator.clipboard !== undefined) {
+                            navigator.clipboard.writeText(clipboardData)
+                                .then(function () {
+                                    console.log("Column data copied to clipboard");
+                                })
+                                .catch(function (error) {
+                                    console.error("Error copying data to clipboard: ", error);
+                                });
+                        }else {
+                            clipboardData = 'Copy Paste Row ---> ' + clipboardData
+                            $('#copypasterow').text(clipboardData)
+                        }
                     }},
                 {title: "SSID", field: "SSID", headerFilter:"input"},
                 {title: "WiFi Strength", field: "wifi_signal", headerFilter:"input"},
@@ -95,7 +107,7 @@ class TabulatorTable {
                 {title: "NTP Time", field: "ntp_time", headerFilter:"input"},
                 {title: "Ctrl Timer", field: "control_timer", headerFilter:"input"},
                 {title: "FL FPS", field: "FastLED_fps", headerFilter:"input"},
-                {title: "Status Infoz", field: "status_infoz", html: true, headerFilter:"input"}
+                {title: "Status Infoz", field: "status_infoz", html: true, headerFilter:"input", visible: false}
             ]
         })
     }
@@ -219,25 +231,34 @@ class Heartbeat {
     }
 };
 
-function subscribeToFlowerMessages() {
-    const topics = ["flower-heartbeats/#", "flower-debug/#"];
-    topics.forEach(function(topic) {
-        mqtt.subscribe(topic, {
-            onSuccess: function() {
-                $( "#mqtt-status" ).append(`Subscribed to ${topic}<br/>`)
-            },
-            onFailure: function(response) {
-                $( "#mqtt-status" ).append(response.errorMessage);
-            }
-        });
-    });
+function subscribeToGSAMessages() {
+    subscribeToTopic("gsa-heartbeats");
 }
+
+function subscribeToFlowerMessages() {
+    subscribeToTopic("flower-heartbeats/#");
+    subscribeToTopic("flower-debug/#");
+}
+
+function subscribeToTopic(topic) {
+    mqtt.subscribe(topic, {
+        onSuccess: function() {
+            $( "#mqtt-status" ).append(`Subscribed to ${topic}<br/>`)
+        },
+        onFailure: function(response) {
+            $( "#mqtt-status" ).append(response.errorMessage);
+        }
+    }); 
+}
+
 
 function handleMQTTMessage(message) {
     if (message.destinationName.startsWith("flower-debug/")) {
         handleFlowerDebugMessage(message);
     } else if (message.destinationName.startsWith("flower-heartbeats/")) {
-        handleHeartbeatMessage(message);
+        handleFlowerHeartbeatMessage(message);
+    } else if (message.destinationName == "gsa-heartbeats") {
+        handleGSAHeartbeatMessage(message);
     } else {
         $( "#mqtt-status" ).append(`Received an unexpected non-heartbeat message to ${message.destinationName}<br/>`)
     }
@@ -276,7 +297,7 @@ function findOrCreateDebugDiv(flower_id) {
     return $debugDiv;
 }
 
-function handleHeartbeatMessage(message) {
+function handleFlowerHeartbeatMessage(message) {
     try {
         let heartbeat = new Heartbeat(message.payloadString);
         insertOrUpdateFlowerRow(heartbeat);
@@ -285,6 +306,38 @@ function handleHeartbeatMessage(message) {
         console.log(`Error handling heartbeat message from ${message.destinationName}`);
         console.log(e);
         console.log(message.payloadString);
+    }
+}
+
+
+var lastGSAHeartbeatTime = Date.now()
+
+function requestGSAHeartbeat() {
+    sendMQTTMessage('gsa-control/sendHeartbeat', payload='');
+}
+
+function handleGSAHeartbeatMessage(message) {
+    lastGSAHeartbeatTime = Date.now();
+    try {
+        const data = JSON.parse(message.payloadString);
+        let gsaStatusMsg = `running at ${data['IP']}, `
+        gsaStatusMsg += `control_timer: ${data['control_timer']}, `
+        gsaStatusMsg += `people: ${data['num_people']}<br/>`
+        gsaStatusMsg += `Active games: ${data['games'].join(', ')}`
+        $("#gsaStatus").html(gsaStatusMsg);
+    } catch(e) {
+        console.log(`Error handling heartbeat message from the GSA`);
+        console.log(e);
+        console.log(message.payloadString);
+    }  
+}
+
+const GSA_SILENCE_TO_WORRY_ABOUT = 10000  // milliseconds
+function checkGSAHeartbeatAge() {
+    let millisSinceLastHeartbeat = Date.now() - lastGSAHeartbeatTime;
+    if (millisSinceLastHeartbeat > GSA_SILENCE_TO_WORRY_ABOUT) {
+        let secsSinceLastHeartbeat = Math.round(millisSinceLastHeartbeat / 1000)
+        $("#gsaStatus").text(`No GSA heatbeat received for ${secsSinceLastHeartbeat} seconds.`)
     }
 }
 
@@ -382,5 +435,6 @@ $( document ).ready(function() {
     //$('#flower-table').hide();
 
     setInterval(updateFreshnessColumn, HEARTBEAT_FRESHNESS_UPDATE_PERIOD);
+    setInterval(checkGSAHeartbeatAge, HEARTBEAT_FRESHNESS_UPDATE_PERIOD)
     setInterval(mqttConnectionMaintenance, 1000);  // milliseconds
 });

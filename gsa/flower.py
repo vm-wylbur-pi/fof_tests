@@ -11,11 +11,11 @@ import color
 #   - How to send commands to this flower over MQTT
 class Flower:
     def __init__(self, id: str, num: int,
-                 location: geometry.Point, mqtt_client: paho_mqtt.Client):
+                 location: geometry.Point, mqttThrottler):
         self.id: str = id
         self.num: int = num
         self.location: geometry.Point = location
-        self.mqtt_client: paho_mqtt.Client = mqtt_client
+        self.mqttThrottler = mqttThrottler
 
         # State used to buffer mqtt commands
         self.currentBlossomColor: color.HSVAColor = None
@@ -24,7 +24,7 @@ class Flower:
 
     def sendMQTTCommand(self, command: str, params: str, retained: bool = False):
         topic = f"flower-control/{self.id}/{command}"
-        self.mqtt_client.publish(topic, payload=params, retain=retained, qos=0)
+        self.mqttThrottler.sendMessage(topic, payload=params, retain=retained, qos=0)
 
     # Setting n = 1 returns the closest flower to self.
     def findNClosestFlowers(self, flowers, n: int):
@@ -84,6 +84,6 @@ def readFlowersFromDeploymentYAML(yaml_file_name):
         for flower_id, flower in config['flowers'].items():
             flowers.append(Flower(id=flower_id, num=int(flower['id']),
                                   location=geometry.Point(flower['x'], flower['y']),
-                                  mqtt_client=None))
+                                  mqttThrottler=None))
     print(f"Read {len(flowers)} flowers from {yaml_file_path}")
     return flowers

@@ -50,6 +50,12 @@
                 <div id="field"></div>
             </div>
         </div>
+        <div class="row" id="dclickRow">
+            <div class="col d-flex justify-content-center" >
+                <div id="clickfield"></div>
+            </div>
+        </div>
+
 
         <div class="row">
             <div class="col d-flex justify-content-center">
@@ -94,6 +100,10 @@
                         <tr>
                             <td id="field_command_param_explanation">.</td>
                         </tr>
+                        <tr>
+                            <td>GSA Status: <div id="gsaStatus">unknown</div>
+                            </td>
+                        </tr>
                     </table>
                 </div>
             </div>
@@ -126,6 +136,7 @@
                         </tr>
                     </table>
                     <button id="send-command">Send Command</button>
+                    <button id="send-command-with-throttling">Send to all via GSA throttling.</button>
                 </div>
 
 
@@ -152,6 +163,11 @@
                     </div>
             </div>
         </div-->
+        <div class="row" id="copypasterow">
+            <div class="col d-flex justify-content-center align-items-center">
+                <div id="copypaste" class="d-flex justify-content-center align-items-center"></div>
+            </div>
+        </div>
         <div class="row" id="tabulatorROW">
             <div class="col d-flex justify-content-center">
                 <div id="tabulator-table"></div>

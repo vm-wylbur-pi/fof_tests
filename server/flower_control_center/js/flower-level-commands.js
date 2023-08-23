@@ -84,4 +84,11 @@ $( document ).ready(function() {
         sendMQTTMessage(`flower-control/${targetFlower}/${command}`, payload)
     });
 
+    $( "#send-command-with-throttling" ).click(function( event ) {
+        let ignored_targetFlower = $('input[name="flower"]').val();
+        let flower_command = $('select[name="command"]').val();
+        let payload = $('input[name="parameters"]').val();
+        sendMQTTMessage(`gsa-control/relayToAllFlowersWithThrottling/${flower_command}`, payload)
+    });
+
 });

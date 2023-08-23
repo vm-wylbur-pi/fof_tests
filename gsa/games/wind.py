@@ -28,7 +28,7 @@ class Wind(game.StatefulGame):
                 speed=random.randint(350,500),
                 # Thes are the parameters that currently give a slight greying/diming
                 # TODO: change these once SatValPulse is debugged in the flower firmware
-                satChange=0.7,
+                satChange=0.5,
                 valChange=1.0
             )
             wave.run(gameState.flowers)

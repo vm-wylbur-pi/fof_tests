@@ -32,8 +32,9 @@ mqtt_client.loop_start()
 while True:
     # Update the current set of stateful games
     gameState.updateStatefulGames()
-
     gameState.people.removePeopleNotSeenForAWhile()
+    gameState.mqttThrottler.resetMessageCount()
+    gameState.sendHeartbeatIfItsTime()
 
     # Stall the loop.
     time.sleep(1/60)  # seconds

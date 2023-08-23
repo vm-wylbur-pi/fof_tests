@@ -51,21 +51,28 @@ class StraightPulseWave(PulseWave):
                                  velocity=waveVelocity,
                                  startTime=gameState.controlTimer())
 
+    def secsToReachFlower(self, flower:Flower) -> float:
+        perpVectorToFlower = self.line.perpendicularVectorTo(flower.location)
+        inFrontOfLine = not perpVectorToFlower.contraryTo(self.velocity)
+        #print(f"Vector to flower {flower.id} {flower.location}: {perpVectorToFlower} (inFrontOfLine={inFrontOfLine})")
+        if not inFrontOfLine:
+            return float("Inf")
+        else:
+            return perpVectorToFlower.magnitude() / self.speed
+
+
     def run(self, flowers: 'list[Flower]'):
         print(f"Running wave: {self}")
-        speed = self.velocity.magnitude()
-
+        self.speed = self.velocity.magnitude()
         # slope is perpendicular to propagation direction, so invert x vs y
         # Also, follow right-hand-rule (90 deg turn from dir of propagation to get dir of slope.)
         line_vec = geometry.Vector(self.velocity.dy, self.velocity.dx)
-        line = geometry.Line(self.start_loc, line_vec)
-        for flower in flowers:
-            perpVectorToFlower = line.perpendicularVectorTo(flower.location)
-            inFrontOfLine = not perpVectorToFlower.contraryTo(self.velocity)
-            #print(f"Vector to flower {flower.id} {flower.location}: {perpVectorToFlower} (inFrontOfLine={inFrontOfLine})")
-            if inFrontOfLine:
-                millisToReachFlower = int(
-                    round(1000 * perpVectorToFlower.magnitude() / speed))
+        self.line = geometry.Line(self.start_loc, line_vec)
+        arrivals = [(self.secsToReachFlower(f), f) for f in flowers]
+        arrivals.sort(key=lambda a: a[0])
+        for secsToReachFlower, flower in arrivals:
+            if secsToReachFlower != float("Inf"):
+                millisToReachFlower = int(round(1000 * secsToReachFlower))
                 controlTimerPulseTime = self.startTime + millisToReachFlower
                 self.callPulseOn(flower, controlTimerPulseTime +
                                  SOUND_TO_PULSE_OFFSET_MILLIS)
@@ -135,12 +142,17 @@ class CircularPulseWave(PulseWave):
         return CircularPulseWave(center=center, startRadius=startRadius,
                                  speed=speed, startTime=gameState.controlTimer())
 
+    def timeToReachFlower(self, flower: Flower) -> float:
+        distanceFromCenter = self.center.diff(flower.location).magnitude()
+        distanceFromStart = distanceFromCenter - self.startRadius
+        timeUntilArrival = distanceFromStart / self.speed
+        return timeUntilArrival
+
     def run(self, flowers: 'list[Flower]'):
         print(f"Running wave: {self}")
-        for flower in flowers:
-            distanceFromCenter = self.center.diff(flower.location).magnitude()
-            distanceFromStart = distanceFromCenter - self.startRadius
-            timeToReachFlower = distanceFromStart / self.speed
+        arrivals = [(self.timeToReachFlower(f), f) for f in flowers]
+        arrivals.sort(key=lambda a: a[0])
+        for timeToReachFlower, flower in arrivals:
             if timeToReachFlower >= 0:
                 millisToReachFlower = int(round(1000 * timeToReachFlower))
                 controlTimerPulseTime = self.startTime + millisToReachFlower

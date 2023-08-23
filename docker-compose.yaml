@@ -1,6 +1,7 @@
 version: '3'
 services:
   server:
+    container_name: fof
     privileged: true
     build:
       context: ./server
@@ -20,6 +21,7 @@ services:
         max-size: "10m"      # Maximum log file size
         max-file: "3"        # Maximum number of log files to retain
         compress: "true"     # Compress rotated log files
+        mode: "non-blocking"
     volumes:
       - ./server/code:/app/code
       - ./server/flower_control_center:/app/flower_control_center

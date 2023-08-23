@@ -7,19 +7,44 @@ system file to /etc/systemd/system/docker-compose.service
 sudo systemctl daemon-reload
 
 # Enable the service to start on boot
-sudo systemctl enable my-docker-service.service
+sudo systemctl enable docker-compose.service
 
 # Start the service
-sudo systemctl start my-docker-service.service
+sudo systemctl start docker-compose.service
 
 # Check the status to ensure the service is active and running
-sudo systemctl status my-docker-service.service
+sudo systemctl status docker-compose.service
+
+# NanoMQ
+sudo apt-get update && apt-get install -y curl
+sudo curl -s https://assets.emqx.com/scripts/install-nanomq-deb.sh | sudo bash
+sudo apt-get install nanomq
 
 
-
-SMB Config
+#SMB Config
 append to end of /etc/samba/smb.conf
 
 sudo smbpasswd -a fof
 sudo systemctl restart smbd
 sudo systemctl enable smbd
+
+
+
+# Install NTP
+sudo apt install ntp
+sudo systemctl stop ntp
+sudo systemctl disable ntp
+## to re-enable sudo systemctl enable ntp
+
+
+# Install Mosquitto
+sudo apt install mosquitto
+sudo systemctl stop mosquitto
+sudo systemctl disable mosquitto
+
+# Paho client for gsa
+sudo apt install python3-paho-mqtt
+
+# Mounting USB Drive - ubuntu
+lsblk to get drive
+mount -t vfat /dev/sda2 <mount point>

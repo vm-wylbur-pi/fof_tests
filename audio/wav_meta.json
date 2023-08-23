@@ -1,82 +1,2142 @@
 [
     {
-        "name": "FoF_Idle_Thunder1_loopable.medium.wav",
-        "duration_seconds": 81.92086167800454
+        "name": "bigben/preamble.wav",
+        "duration_seconds": 20.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 320000,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
-        "name": "FOF_Idle_BigBen_4dongs.wav",
-        "duration_seconds": 24.164625850340137
+        "name": "bigben/1dong.wav",
+        "duration_seconds": 10.399,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 166384,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
-        "name": "FoF_Idle_BirdsStream_loopable.LONG.wav",
-        "duration_seconds": 164.0
+        "name": "bigben/4dongs.wav",
+        "duration_seconds": 24.164625,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 386634,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
-        "name": "FOF_Idle_BigBen_halfhour.wav",
-        "duration_seconds": 16.0
+        "name": "bigben/halfhour.wav",
+        "duration_seconds": 16.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 256000,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
-        "name": "FOF_Idle_BigBen_preamble+12dongs.wav",
-        "duration_seconds": 80.89900226757369
+        "name": "bigben/preamble_and_12dongs.wav",
+        "duration_seconds": 80.899,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 1294384,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
-        "name": "FoF_Idle_Windgust3_loopable.SHORT.wav",
-        "duration_seconds": 9.5
+        "name": "bigben/7dongs.wav",
+        "duration_seconds": 37.68025,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 602884,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
-        "name": "FoF_Idle_Rain1_loopable.LONG.wav",
-        "duration_seconds": 180.0
+        "name": "bigben/threeqtr.wav",
+        "duration_seconds": 16.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 256000,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
-        "name": "FOF_Idle_BigBen_quarter.wav",
-        "duration_seconds": 8.0
+        "name": "bigben/quarter.wav",
+        "duration_seconds": 8.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 128000,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
-        "name": "FoF_Idle_Rain2_loopable.LONG.wav",
-        "duration_seconds": 76.56249433106576
+        "name": "wave2/ooo6.wav",
+        "duration_seconds": 3.8125,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 61000,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
-        "name": "FOF_Idle_BigBen_threeqtr.wav",
-        "duration_seconds": 16.0
+        "name": "wave2/woo6.wav",
+        "duration_seconds": 11.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 176000,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
-        "name": "FoF_Idle_Rain1_loopable.medium.wav",
-        "duration_seconds": 15.0
+        "name": "wave2/ooo5.wav",
+        "duration_seconds": 5.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 80000,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
-        "name": "FOF_Idle_BigBen_preamble.wav",
-        "duration_seconds": 20.0
+        "name": "wave2/woo4.wav",
+        "duration_seconds": 6.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 96000,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
-        "name": "FOF_Idle_BigBen_1dong.wav",
-        "duration_seconds": 10.399002267573696
+        "name": "wave2/woo5.wav",
+        "duration_seconds": 8.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 128000,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
-        "name": "FoF_Idle_Windgust5_special.wav",
-        "duration_seconds": 8.0
+        "name": "wave2/ooo4.wav",
+        "duration_seconds": 6.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 96000,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
-        "name": "FOF_Idle_BigBen_7dongs.wav",
-        "duration_seconds": 37.680249433106574
+        "name": "wave2/woo1.wav",
+        "duration_seconds": 9.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 144000,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
-        "name": "FoF_Idle_Windgust4_loopable.SHORT.wav",
-        "duration_seconds": 9.0
+        "name": "wave2/ooo1.wav",
+        "duration_seconds": 6.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 104000,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
-        "name": "FoF_Idle_Windgust2_loopable.SHORT.wav",
-        "duration_seconds": 9.0
+        "name": "wave2/ooo3.wav",
+        "duration_seconds": 5.875,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 94000,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
-        "name": "FoF_Idle_Rain2_loopable.short.wav",
-        "duration_seconds": 3.0624943310657597
+        "name": "wave2/woo2.wav",
+        "duration_seconds": 8.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 128000,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
-        "name": "FoF_Idle_Rain1_loopable.short.wav",
-        "duration_seconds": 15.0
+        "name": "wave2/woo3.wav",
+        "duration_seconds": 10.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 160000,
+        "comptype": "NONE",
+        "compname": "not compressed"
     },
     {
-        "name": "FoF_Idle_Windgust1_loopable.SHORT.wav",
-        "duration_seconds": 8.0
+        "name": "wave2/ooo2.wav",
+        "duration_seconds": 5.25,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 84000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave2/ooUP3.wav",
+        "duration_seconds": 9.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 144000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave2/aww4.wav",
+        "duration_seconds": 5.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 80000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave2/aww5.wav",
+        "duration_seconds": 5.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 80000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave2/ooUP2.wav",
+        "duration_seconds": 13.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 208000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave2/aww6.wav",
+        "duration_seconds": 8.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 128000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave2/ooUP1.wav",
+        "duration_seconds": 14.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 224000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave2/aww2.wav",
+        "duration_seconds": 6.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 96000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave2/ooUP5.wav",
+        "duration_seconds": 10.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 160000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave2/ooUP4.wav",
+        "duration_seconds": 5.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 80000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave2/aww3.wav",
+        "duration_seconds": 6.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 96000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave2/aww1.wav",
+        "duration_seconds": 3.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 48000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave2/ooUP6.wav",
+        "duration_seconds": 4.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 64000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave2/whoa1.wav",
+        "duration_seconds": 8.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 128000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave2/whoa2.wav",
+        "duration_seconds": 5.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 80000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave2/whoa3.wav",
+        "duration_seconds": 8.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 136000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave2/whoa6.wav",
+        "duration_seconds": 5.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 80000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave2/whoa4.wav",
+        "duration_seconds": 10.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 160000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave2/whoa5.wav",
+        "duration_seconds": 7.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 112000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave2/mmm1.wav",
+        "duration_seconds": 5.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 80000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave2/mmm3.wav",
+        "duration_seconds": 4.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 72000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave2/mmm2.wav",
+        "duration_seconds": 5.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 88000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave2/mmm6.wav",
+        "duration_seconds": 8.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 128000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave2/mmm5.wav",
+        "duration_seconds": 7.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 120000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave2/mmm4.wav",
+        "duration_seconds": 6.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 104000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "nature-long/crickets.wav",
+        "duration_seconds": 448.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 7168000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "nature-long/lightRain.wav",
+        "duration_seconds": 416.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 6656000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "nature-long/bees.wav",
+        "duration_seconds": 384.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 6144000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "nature-long/FrogSounds.wav",
+        "duration_seconds": 466.3125,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 7461000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "nature-long/birds.wav",
+        "duration_seconds": 1152.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 18432000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "blue/IvegotBlue5.wav",
+        "duration_seconds": 3.25,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 52000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "blue/IvegotBlue4.wav",
+        "duration_seconds": 1.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 24000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "blue/IvegotBlue1.wav",
+        "duration_seconds": 3.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 48000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "blue/IvegotBlue3.wav",
+        "duration_seconds": 1.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 24000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "blue/IvegotBlue2.wav",
+        "duration_seconds": 3.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 48000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "blue/INeedBlue1.wav",
+        "duration_seconds": 3.25,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 52000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "blue/INeedBlue2.wav",
+        "duration_seconds": 2.625,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 42000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "gossip/Gossip_D4_A_J_S.wav",
+        "duration_seconds": 35.25,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 564000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "gossip/Gossip_D5_A_J_S_N.wav",
+        "duration_seconds": 43.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 688000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "gossip/Gossip_D4_B_J_S.wav",
+        "duration_seconds": 35.25,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 564000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "gossip/Gossip_D7_garbled_A.wav",
+        "duration_seconds": 19.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 312000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "gossip/Gossip_D7_garbled_B.wav",
+        "duration_seconds": 19.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 312000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "gossip/Gossip_D6_french_B.wav",
+        "duration_seconds": 30.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 480000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "gossip/Gossip_D5_B_J_S_N.wav",
+        "duration_seconds": 43.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 688000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "gossip/Gossip_D6_french_A.wav",
+        "duration_seconds": 30.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 480000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "gossip/Gossip_D2_B_S_N.wav",
+        "duration_seconds": 35.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 568000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "gossip/Gossip_D1_B_J_S.wav",
+        "duration_seconds": 21.25,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 340000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "gossip/Gossip_D3_A_J_N.wav",
+        "duration_seconds": 34.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 544000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "gossip/Gossip_D5_C_J_S_N.wav",
+        "duration_seconds": 43.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 688000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "gossip/Gossip_D8_garbled_B.wav",
+        "duration_seconds": 26.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 416000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "gossip/Gossip_D8_garbled_A.wav",
+        "duration_seconds": 26.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 416000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "gossip/Gossip_D1_A_J_S.wav",
+        "duration_seconds": 21.25,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 340000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "gossip/Gossip_D2_A_S_N.wav",
+        "duration_seconds": 35.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 568000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "gossip/Gossip_D3_B_J_N.wav",
+        "duration_seconds": 34.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 544000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "pong/paddle.wav",
+        "duration_seconds": 0.3125,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 5000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "pong/score.wav",
+        "duration_seconds": 0.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 8000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "pong/wall.wav",
+        "duration_seconds": 0.25,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 4000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "natue/Rain2_20sec.wav",
+        "duration_seconds": 24.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 384000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "natue/Thunder1_8sec.wav",
+        "duration_seconds": 8.465375,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 135446,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "natue/Crickets_20sec.wav",
+        "duration_seconds": 26.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 416000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "natue/Bees_10sec.wav",
+        "duration_seconds": 16.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 256000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "natue/Birds2_10sec.wav",
+        "duration_seconds": 14.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 224000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "natue/Rain2_10sec.wav",
+        "duration_seconds": 14.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 224000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "natue/Crickets_10sec.wav",
+        "duration_seconds": 18.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 288000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "natue/Bees_20sec.wav",
+        "duration_seconds": 26.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 416000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "natue/Frogs_20sec.wav",
+        "duration_seconds": 24.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 384000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "natue/Thunder2_12sec.wav",
+        "duration_seconds": 16.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 256000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "natue/Thunder3_14sec.wav",
+        "duration_seconds": 16.545875,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 264734,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "natue/Rain1_10sec.wav",
+        "duration_seconds": 12.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 192000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "natue/Birds1_20sec.wav",
+        "duration_seconds": 24.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 384000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "natue/Rain1_20sec.wav",
+        "duration_seconds": 24.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 392000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "natue/Frogs_10sec.wav",
+        "duration_seconds": 14.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 224000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "mallets/Em_balafon_Enote.wav",
+        "duration_seconds": 5.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 80000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "mallets/Em_glock_Dnote.wav",
+        "duration_seconds": 5.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 80000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "mallets/Am_Marimba_Anote.wav",
+        "duration_seconds": 6.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 96000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "mallets/Am_vibes_Cnote.wav",
+        "duration_seconds": 6.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 96000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "mallets/Em_marimba_Enote.wav",
+        "duration_seconds": 5.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 80000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "mallets/Am_Glock_Gnote.wav",
+        "duration_seconds": 6.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 96000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "mallets/G_marimba_Gnote.wav",
+        "duration_seconds": 5.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 88000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "mallets/G_balafon_Dnote.wav",
+        "duration_seconds": 5.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 88000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "mallets/G_glock_Enote.wav",
+        "duration_seconds": 5.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 88000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "mallets/Em_vibes_Dnote.wav",
+        "duration_seconds": 5.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 80000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "mallets/Am_Balafon_Enote.wav",
+        "duration_seconds": 6.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 96000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "mallets/G_bells_Cnote.wav",
+        "duration_seconds": 5.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 88000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "mallets/G_kalimba_Gnote.wav",
+        "duration_seconds": 5.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 88000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "mallets/Em_bells_Cnote.wav",
+        "duration_seconds": 5.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 80000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "mallets/G_vibes_Enote.wav",
+        "duration_seconds": 5.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 88000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "mallets/Am_Kalimba_hiAnote.wav",
+        "duration_seconds": 6.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 96000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "mallets/Em_kalimba_Gnote.wav",
+        "duration_seconds": 5.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 80000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "mallets/Am_Bells_Cnote.wav",
+        "duration_seconds": 6.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 96000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/AhYes_long_steve.wav",
+        "duration_seconds": 19.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 312000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/AaaMuchBetter2_jill.wav",
+        "duration_seconds": 2.875,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 46000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/AaaMuchBetter3_jill.wav",
+        "duration_seconds": 2.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 40000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/PunctuationUPDOWN.wav",
+        "duration_seconds": 3.75,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 60000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/AhYesPutYourProboscis_jill.wav",
+        "duration_seconds": 6.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 96000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/OKwereallhere_jill.wav",
+        "duration_seconds": 2.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 32000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/UhohSomethingswrongHelphelp2_Jill.wav",
+        "duration_seconds": 4.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 64000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/getsomesunshine_jill.wav",
+        "duration_seconds": 1.25,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 20000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/AaaYes_jill.wav",
+        "duration_seconds": 1.75,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 28000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/goodnight1_jill.wav",
+        "duration_seconds": 1.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 16000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/whereiseverybody_steve.wav",
+        "duration_seconds": 1.125,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 18000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/AaaMuchBetter_jill.wav",
+        "duration_seconds": 3.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 56000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/OhmanImGood_Jill.wav",
+        "duration_seconds": 3.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 48000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/awgoodnight_jill.wav",
+        "duration_seconds": 2.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 40000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/goodnight4_jill.wav",
+        "duration_seconds": 1.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 16000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/UhohSomethingswrongHelphelp_Jill.wav",
+        "duration_seconds": 5.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 80000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/greatparty_jill.wav",
+        "duration_seconds": 1.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 24000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/restwell_jill.wav",
+        "duration_seconds": 2.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 32000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/seeyoutomorrow_jill.wav",
+        "duration_seconds": 1.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 24000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/Aaa.wav",
+        "duration_seconds": 3.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 56000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/OKallset_jill.wav",
+        "duration_seconds": 3.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 48000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/PunctuationUP.wav",
+        "duration_seconds": 1.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 16000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/whereiseverybody_jill.wav",
+        "duration_seconds": 2.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 40000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/PunctuationFlutter.wav",
+        "duration_seconds": 1.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 24000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/OKwereallhere2_jill.wav",
+        "duration_seconds": 2.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 40000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/OhmanImGood2_Jill.wav",
+        "duration_seconds": 4.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 64000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/goodnight3_jill.wav",
+        "duration_seconds": 1.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 16000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/goodnight2_jill.wav",
+        "duration_seconds": 1.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 24000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/PutYourProboscis_jill.wav",
+        "duration_seconds": 2.25,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 36000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/PunctuationDOWN.wav",
+        "duration_seconds": 1.125,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 18000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "punctuation/awdudereadytorock_jill.wav",
+        "duration_seconds": 3.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 48000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "fairy/TaliaGiggle4.wav",
+        "duration_seconds": 6.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 104000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "fairy/MikaylaThisWay_DOUBLE.wav",
+        "duration_seconds": 1.7500625,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 28001,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "fairy/MikaylaCantCatch.wav",
+        "duration_seconds": 1.3750625,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 22001,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "fairy/TaliaGiggle2.wav",
+        "duration_seconds": 5.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 80000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "fairy/TaliaGiggle3.wav",
+        "duration_seconds": 3.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 56000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "fairy/TaliaGiggle1.wav",
+        "duration_seconds": 2.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 32000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "fairy/TaliaOverHere.wav",
+        "duration_seconds": 1.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 24000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "fairy/MikaylaOverHere_DOUBLE.wav",
+        "duration_seconds": 1.7500625,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 28001,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "fairy/MikaylaOverHere1.wav",
+        "duration_seconds": 1.1250625,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 18001,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "fairy/TaliaCantCatch1.wav",
+        "duration_seconds": 1.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 24000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "fairy/MikaylaOverHere2.wav",
+        "duration_seconds": 1.3750625,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 22001,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "fairy/TaliaCmonThisWay.wav",
+        "duration_seconds": 1.0625625,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 17001,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "fairy/MikaylaGiggle7.wav",
+        "duration_seconds": 2.8750625,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 46001,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "fairy/MikaylaGiggle6.wav",
+        "duration_seconds": 2.7500625,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 44001,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "fairy/MikaylaGiggle4.wav",
+        "duration_seconds": 1.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 16000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "fairy/MikaylaThisWay1.wav",
+        "duration_seconds": 1.3125625,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 21001,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "fairy/MikaylaGiggle5.wav",
+        "duration_seconds": 1.3750625,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 22001,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "fairy/MikaylaGiggle1.wav",
+        "duration_seconds": 1.1250625,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 18001,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "fairy/MikaylaGiggle2.wav",
+        "duration_seconds": 1.1250625,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 18001,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "fairy/MikaylaGiggle3.wav",
+        "duration_seconds": 1.2500625,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 20001,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "fairy/TaliaOverHere2.wav",
+        "duration_seconds": 2.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 40000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/mm1.wav",
+        "duration_seconds": 0.875,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 14000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/oa1.wav",
+        "duration_seconds": 1.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 16000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/oa3.wav",
+        "duration_seconds": 1.25,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 20000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/mm2.wav",
+        "duration_seconds": 1.15625,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 18500,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/mm3.wav",
+        "duration_seconds": 1.3125,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 21000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/oa2.wav",
+        "duration_seconds": 1.375,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 22000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/oa6.wav",
+        "duration_seconds": 1.625,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 26000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/mm6.wav",
+        "duration_seconds": 1.8125,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 29000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/oa5.wav",
+        "duration_seconds": 1.25,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 20000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/mm4.wav",
+        "duration_seconds": 1.375,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 22000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/mm5.wav",
+        "duration_seconds": 1.25,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 20000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/oa4.wav",
+        "duration_seconds": 1.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 24000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/ha5.wav",
+        "duration_seconds": 0.84375,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 13500,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/oo-oo4.wav",
+        "duration_seconds": 2.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 32000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/oo-oo5.wav",
+        "duration_seconds": 2.25,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 36000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/ha4.wav",
+        "duration_seconds": 0.90625,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 14500,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/ha6.wav",
+        "duration_seconds": 0.8125,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 13000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/oo-oo6.wav",
+        "duration_seconds": 2.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 32000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/oo-oo2.wav",
+        "duration_seconds": 2.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 40000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/ha3.wav",
+        "duration_seconds": 0.75,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 12000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/ha2.wav",
+        "duration_seconds": 1.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 16000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/oo-oo3.wav",
+        "duration_seconds": 3.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 48000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/oo-oo1.wav",
+        "duration_seconds": 1.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 24000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/ha1.wav",
+        "duration_seconds": 1.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 16000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/yeahUP6.wav",
+        "duration_seconds": 1.875,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 30000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/yeahUP5.wav",
+        "duration_seconds": 1.40625,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 22500,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/yeahUP4.wav",
+        "duration_seconds": 1.9375,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 31000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/yeahUP1.wav",
+        "duration_seconds": 1.34375,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 21500,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/yeahUP3.wav",
+        "duration_seconds": 1.375,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 22000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/yeahUP2.wav",
+        "duration_seconds": 1.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 24000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/OO2.wav",
+        "duration_seconds": 2.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 32000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/Hi4.wav",
+        "duration_seconds": 1.375,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 22000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/yeah1.wav",
+        "duration_seconds": 1.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 16000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/He6.wav",
+        "duration_seconds": 1.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 16000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/OO3.wav",
+        "duration_seconds": 2.25,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 36000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/Hi5.wav",
+        "duration_seconds": 1.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 24000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/OO1.wav",
+        "duration_seconds": 2.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 32000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/He4.wav",
+        "duration_seconds": 1.125,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 18000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/yeah2.wav",
+        "duration_seconds": 1.25,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 20000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/yeah3.wav",
+        "duration_seconds": 1.125,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 18000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/Hi6.wav",
+        "duration_seconds": 1.625,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 26000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/OO4.wav",
+        "duration_seconds": 2.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 32000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/Hi2.wav",
+        "duration_seconds": 1.75,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 28000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/He1.wav",
+        "duration_seconds": 1.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 16000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/yeah6.wav",
+        "duration_seconds": 1.5625,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 25000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/OO5.wav",
+        "duration_seconds": 2.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 32000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/Hi3.wav",
+        "duration_seconds": 1.625,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 26000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/Hi1.wav",
+        "duration_seconds": 1.25,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 20000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/He2.wav",
+        "duration_seconds": 1.125,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 18000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/yeah4.wav",
+        "duration_seconds": 2.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 32000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/yeah5.wav",
+        "duration_seconds": 1.625,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 26000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/He3.wav",
+        "duration_seconds": 1.25,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 20000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "wave/OO6.wav",
+        "duration_seconds": 2.25,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 36000,
+        "comptype": "NONE",
+        "compname": "not compressed"
     }
 ]

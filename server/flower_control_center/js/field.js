@@ -173,14 +173,16 @@ $(document).ready(function() {
                     d = evt.target.data()
                     d['px'] = evt.target.position('x')
                     d['py'] = evt.target.position('y')
-                    console.log(d)
                     $('input[name="flower"]').val(evt.target.data('id'));
+                    console.log(evt.target.data())
+                    let pos = evt.target.data('id') + ' x: ' + evt.target.data('x') + ' , y: ' + evt.target.data('y')
+                    $('#clickfield').html(pos)
                 })
             }
 
             cy.fit(padding = 30)
-            cy.minZoom(cy.zoom()-100)
-            cy.maxZoom(cy.zoom()+50)
+            cy.minZoom(0.2)
+            cy.maxZoom(5)
             return res
         })
 
