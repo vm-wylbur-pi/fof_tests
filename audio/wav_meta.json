@@ -560,6 +560,26 @@
         "compname": "not compressed"
     },
     {
+        "name": "long-songs/FieldofFlowersOverture.wav",
+        "duration_seconds": 437.28,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 6996480,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "long-songs/CulminatingFlowerParty_wavegame2.wav",
+        "duration_seconds": 236.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 3776000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
         "name": "gossip/Gossip_D4_A_J_S.wav",
         "duration_seconds": 35.25,
         "nchannels": 1,
@@ -730,6 +750,246 @@
         "compname": "not compressed"
     },
     {
+        "name": "nature/Rain2_20sec.wav",
+        "duration_seconds": 24.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 384000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "nature/Thunder1_8sec.wav",
+        "duration_seconds": 8.465375,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 135446,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "nature/Crickets_20sec.wav",
+        "duration_seconds": 26.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 416000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "nature/Bees_10sec.wav",
+        "duration_seconds": 16.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 256000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "nature/Birds2_10sec.wav",
+        "duration_seconds": 14.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 224000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "nature/Rain2_10sec.wav",
+        "duration_seconds": 14.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 224000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "nature/Crickets_10sec.wav",
+        "duration_seconds": 18.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 288000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "nature/Bees_20sec.wav",
+        "duration_seconds": 26.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 416000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "nature/Frogs_20sec.wav",
+        "duration_seconds": 24.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 384000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "nature/Thunder2_12sec.wav",
+        "duration_seconds": 16.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 256000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "nature/Thunder3_14sec.wav",
+        "duration_seconds": 16.545875,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 264734,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "nature/Rain1_10sec.wav",
+        "duration_seconds": 12.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 192000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "nature/Birds1_20sec.wav",
+        "duration_seconds": 24.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 384000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "nature/Rain1_20sec.wav",
+        "duration_seconds": 24.5,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 392000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "nature/Frogs_10sec.wav",
+        "duration_seconds": 14.0,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 224000,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "beats/Beats1_hihat.wav",
+        "duration_seconds": 5.76,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 92160,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "beats/Beats1_tambo.wav",
+        "duration_seconds": 1.8,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 28800,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "beats/Beats2_voice.wav",
+        "duration_seconds": 6.72,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 107520,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "beats/Beats3_bass.wav",
+        "duration_seconds": 3.36,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 53760,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "beats/Beats2_bass.wav",
+        "duration_seconds": 6.72,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 107520,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "beats/Beats3_hihat.wav",
+        "duration_seconds": 5.76,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 92160,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "beats/Beats3_synth.wav",
+        "duration_seconds": 5.76,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 92160,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "beats/Beats2_hihat.wav",
+        "duration_seconds": 6.72,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 107520,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
+        "name": "beats/Beats1_bass.wav",
+        "duration_seconds": 3.84,
+        "nchannels": 1,
+        "sampwidth": 2,
+        "framerate": 16000,
+        "nframes": 61440,
+        "comptype": "NONE",
+        "compname": "not compressed"
+    },
+    {
         "name": "pong/paddle.wav",
         "duration_seconds": 0.3125,
         "nchannels": 1,
@@ -756,156 +1016,6 @@
         "sampwidth": 2,
         "framerate": 16000,
         "nframes": 4000,
-        "comptype": "NONE",
-        "compname": "not compressed"
-    },
-    {
-        "name": "natue/Rain2_20sec.wav",
-        "duration_seconds": 24.0,
-        "nchannels": 1,
-        "sampwidth": 2,
-        "framerate": 16000,
-        "nframes": 384000,
-        "comptype": "NONE",
-        "compname": "not compressed"
-    },
-    {
-        "name": "natue/Thunder1_8sec.wav",
-        "duration_seconds": 8.465375,
-        "nchannels": 1,
-        "sampwidth": 2,
-        "framerate": 16000,
-        "nframes": 135446,
-        "comptype": "NONE",
-        "compname": "not compressed"
-    },
-    {
-        "name": "natue/Crickets_20sec.wav",
-        "duration_seconds": 26.0,
-        "nchannels": 1,
-        "sampwidth": 2,
-        "framerate": 16000,
-        "nframes": 416000,
-        "comptype": "NONE",
-        "compname": "not compressed"
-    },
-    {
-        "name": "natue/Bees_10sec.wav",
-        "duration_seconds": 16.0,
-        "nchannels": 1,
-        "sampwidth": 2,
-        "framerate": 16000,
-        "nframes": 256000,
-        "comptype": "NONE",
-        "compname": "not compressed"
-    },
-    {
-        "name": "natue/Birds2_10sec.wav",
-        "duration_seconds": 14.0,
-        "nchannels": 1,
-        "sampwidth": 2,
-        "framerate": 16000,
-        "nframes": 224000,
-        "comptype": "NONE",
-        "compname": "not compressed"
-    },
-    {
-        "name": "natue/Rain2_10sec.wav",
-        "duration_seconds": 14.0,
-        "nchannels": 1,
-        "sampwidth": 2,
-        "framerate": 16000,
-        "nframes": 224000,
-        "comptype": "NONE",
-        "compname": "not compressed"
-    },
-    {
-        "name": "natue/Crickets_10sec.wav",
-        "duration_seconds": 18.0,
-        "nchannels": 1,
-        "sampwidth": 2,
-        "framerate": 16000,
-        "nframes": 288000,
-        "comptype": "NONE",
-        "compname": "not compressed"
-    },
-    {
-        "name": "natue/Bees_20sec.wav",
-        "duration_seconds": 26.0,
-        "nchannels": 1,
-        "sampwidth": 2,
-        "framerate": 16000,
-        "nframes": 416000,
-        "comptype": "NONE",
-        "compname": "not compressed"
-    },
-    {
-        "name": "natue/Frogs_20sec.wav",
-        "duration_seconds": 24.0,
-        "nchannels": 1,
-        "sampwidth": 2,
-        "framerate": 16000,
-        "nframes": 384000,
-        "comptype": "NONE",
-        "compname": "not compressed"
-    },
-    {
-        "name": "natue/Thunder2_12sec.wav",
-        "duration_seconds": 16.0,
-        "nchannels": 1,
-        "sampwidth": 2,
-        "framerate": 16000,
-        "nframes": 256000,
-        "comptype": "NONE",
-        "compname": "not compressed"
-    },
-    {
-        "name": "natue/Thunder3_14sec.wav",
-        "duration_seconds": 16.545875,
-        "nchannels": 1,
-        "sampwidth": 2,
-        "framerate": 16000,
-        "nframes": 264734,
-        "comptype": "NONE",
-        "compname": "not compressed"
-    },
-    {
-        "name": "natue/Rain1_10sec.wav",
-        "duration_seconds": 12.0,
-        "nchannels": 1,
-        "sampwidth": 2,
-        "framerate": 16000,
-        "nframes": 192000,
-        "comptype": "NONE",
-        "compname": "not compressed"
-    },
-    {
-        "name": "natue/Birds1_20sec.wav",
-        "duration_seconds": 24.0,
-        "nchannels": 1,
-        "sampwidth": 2,
-        "framerate": 16000,
-        "nframes": 384000,
-        "comptype": "NONE",
-        "compname": "not compressed"
-    },
-    {
-        "name": "natue/Rain1_20sec.wav",
-        "duration_seconds": 24.5,
-        "nchannels": 1,
-        "sampwidth": 2,
-        "framerate": 16000,
-        "nframes": 392000,
-        "comptype": "NONE",
-        "compname": "not compressed"
-    },
-    {
-        "name": "natue/Frogs_10sec.wav",
-        "duration_seconds": 14.0,
-        "nchannels": 1,
-        "sampwidth": 2,
-        "framerate": 16000,
-        "nframes": 224000,
         "comptype": "NONE",
         "compname": "not compressed"
     },
