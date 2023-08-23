@@ -1,5 +1,30 @@
-const MQTT_BROKER_PORT = 9001;
+const bArray = [
+    {
+        'name': '1',
+        'color': 'orange',
+        'column': 1,
+        'commands': [
+            '1 cmd 1',
+            'wait 15',
+            '1 cmd 3',
+            'wait 5',
+            '1 cmd 4'
+        ]
+    },
+    {
+        'name': '2',
+        'column': 2,
+        'commands': [
+            '2 cmd 1',
+            '2 cmd 2',
+            '2 cmd 3',
+            'wait 15',
+            '2 cmd 4'
+        ]
+    }
+]
 
+const MQTT_BROKER_PORT = 9001;
 const HEARTBEAT_FRESHNESS_UPDATE_PERIOD = 1000; // milliseconds
 
 // The singleton Pah.MQTT.Client object.
@@ -69,34 +94,12 @@ function mqttConnectionMaintenance() {
 }
 
 
-var bArray = [
-    {
-        'name': '1',
-        'color': 'red',
-        'commands': [
-            '1 cmd 1',
-            'wait 5',
-            '1 cmd 3',
-            'wait 5',
-            '1 cmd 4'
-        ]
-    },
-    {
-        'name': '2',
-        'color': 'green',
-        'commands': [
-            '2 cmd 1',
-            '2 cmd 2',
-            '2 cmd 3',
-            '2 cmd 4'
-        ]
-    },
-]
-
 async function runButton(event){
     let clickedButton = event.target; // Get the clicked button element
     let buttonId = clickedButton.id; // Get the id of the clicked button
+    let nowCCOM = CCOM
 
+    $('#' + buttonId).prop('disabled',true)
     let bObj = bArray.find(function(obj) {
         return obj.name === buttonId;
     });
@@ -106,9 +109,15 @@ async function runButton(event){
             let interval = parseInt(cmd.split(' ')[1])*1000
             await wait(interval)
         }else{
+            if(nowCCOM != CCOM){
+                console.log('breaking out because CCOM changed')
+                break
+            }
             console.log('running:  ', cmd)
         }
     }
+    $('#' + buttonId).prop('disabled',false)
+
 }
 
 function wait(duration) {
@@ -120,14 +129,17 @@ function wait(duration) {
 function buildButtons(){
     bArray.forEach(button => {
         // Create a Bootstrap button element
-        var b = document.createElement("button");
+        let b = document.createElement("button");
         b.textContent = button['name'];
         b.className = "btn btn-primary";
         b.id = button['name']
         b.addEventListener('click', runButton)
+        if (button['color']){
+            b.style.backgroundColor = button['color']
+        }
 
         // Get the target div by its ID
-        var targetDiv = document.getElementById("bdiv-1");
+        let targetDiv = document.getElementById("bdiv-" + button['column']);
 
         // Append the button to the target div
         targetDiv.appendChild(b);
@@ -136,6 +148,7 @@ function buildButtons(){
 
 
 var DEBUG=true
+var CCOM = Math.random()
 $( document ).ready(function() {
 
     var currentUrl = window.location.href;
@@ -152,6 +165,17 @@ $( document ).ready(function() {
     $( "#mqtt-reconnect" ).click(function( event ) {
         connectToMQTT();  // Uses the current value of the IP address form field.
     });
+
+    $("#ClearButtons").click(event => {
+        CCOM = Math.random()
+        var allButtons = $("button");
+
+        // Loop through each button and enable it
+        allButtons.each(function() {
+            $(this).prop("disabled", false);
+        });
+    })
+
 
     buildButtons()
 });
