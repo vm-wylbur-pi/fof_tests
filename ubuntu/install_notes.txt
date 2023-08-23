@@ -44,3 +44,7 @@ sudo systemctl disable mosquitto
 
 # Paho client for gsa
 sudo apt install python3-paho-mqtt
+
+# Mounting USB Drive - ubuntu
+lsblk to get drive
+mount -t vfat /dev/sda2 <mount point>
