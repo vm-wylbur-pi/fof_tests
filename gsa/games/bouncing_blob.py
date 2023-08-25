@@ -52,7 +52,7 @@ class BouncingBlob(game.StatefulGame):
         if hitLeft or hitRight or hitTop or hitBottom:
             self.flowersPulsedSinceBounce.clear()
             flower = gameState.closestFlowerTo(self.location)
-            flower.PlaySoundFile("pong/wall.wav")  # TODO: add delay matching the delay used for hue pulse
+            flower.PlaySoundFile("mallets/Am_Balafon_Enote.wav")  # TODO: add delay matching the delay used for hue pulse
             print(f"Blob bounced at {self.location}, playing bounce sound on flower {flower.num}")
             print(f"New Velocity: {self.velocity}")
 
