@@ -8,6 +8,7 @@ from ..field import Field
 from ..flower import Flower
 from ..game_state import GameState
 from .. import geometry
+from ..color import HSVAColor
 
 # If you tell a flower to light up and to play audio at the exact
 # same time, latency in the audio system means the sound comes
@@ -183,6 +184,23 @@ class CircularColorWave(CircularPulseWave):
                         rampDuration=self.pulseRampDuration,
                         peakDuration=self.pulsePeakDuration,
                         brightness=self.brightness)
+
+@dataclass
+class CircularStickyColorWave(CircularColorWave):
+
+    @classmethod
+    def randomInstance(cls, gameState: GameState):
+        base = CircularColorWave.randomInstance(gameState)
+        return CircularStickyColorWave(hue=random.randint(0, 255),
+                                 center=base.center,
+                                 startRadius=base.startRadius,
+                                 speed=base.speed,
+                                 startTime=base.startTime)
+
+    def callPulseOn(self, flower: Flower, controlTime: int):
+        CircularColorWave.callPulseOn(self, flower, controlTime)
+        flower.SetBlossomColor(HSVAColor(self.hue, 255,self.brightness, 255),
+                               controlTime+self.pulseRampDuration)
         
 
 @dataclass

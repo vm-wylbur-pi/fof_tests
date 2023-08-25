@@ -196,6 +196,21 @@ def HandleGameControlCommand(message, gameState):
         gameState.runStatelessGame(wave)
         return
 
+    if command == "runGame/CircularStickyColorWave":
+        wave = color_waves.CircularStickyColorWave.randomInstance(gameState)
+        if len(params) >= 1:
+            wave.hue = int(params[0])
+        if len(params) >= 3:
+            wave.center = Point(int(params[1]), int(params[2]))
+        if len(params) >= 4:
+            wave.startRadius = int(params[3])
+        if len(params) >= 5:
+            wave.speed = int(params[4])
+        if len(params) >= 6:
+            wave.startTime = gameState.parseStartTime(params[5])
+        gameState.runStatelessGame(wave)
+        return
+
     if command == "runGame/CircularSatValWave":
         wave = color_waves.CircularSatValWave.randomInstance(gameState)
         if len(params) >= 1:
