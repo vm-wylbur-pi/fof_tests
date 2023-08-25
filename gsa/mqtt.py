@@ -145,6 +145,14 @@ def HandleGameControlCommand(message, gameState):
         gameState.clearStatefulGames()
         return
 
+    if command == "resetField":
+        gameState.clearStatefulGames()
+        for flower in gameState.flowers:
+            flower.sendMQTTCommand("leds/clearPatterns", params="")
+            flower.sendMQTTCommand("leds/addPattern/IndependentIdle", params="")
+            flower.sendMQTTCommand("leds/addPattern/Raindrops", params="5,3")
+        return
+
     if command == "runGame/StraightColorWave":
         wave = color_waves.StraightColorWave.randomInstance(gameState)
         if len(params) >= 1:

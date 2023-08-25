@@ -13,7 +13,12 @@ $( document ).ready(function() {
     $( "button#clearEffects" ).click(function (event) {
         $('input[name="field_command"]').val("clearGames");
         $('input[name="field_params"]').val("");
-        $('#field_command_param_explanation').text("Removes all stateful field-level effects (Fairies and RandomIdle)");
+        $('#field_command_param_explanation').text("Removes all stateful field-level effects");
+    });
+    $( "button#resetField" ).click(function (event) {
+        $('input[name="field_command"]').val("resetField");
+        $('input[name="field_params"]').val("");
+        $('#field_command_param_explanation').text("Removes all stateful field-level effects, and reset each flower to IndependentIdle + Raindrops");
     });
     $( "button#randomIdle" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/RandomIdle");
