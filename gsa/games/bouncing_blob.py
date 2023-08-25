@@ -16,8 +16,6 @@ class BouncingBlob(game.StatefulGame):
         # Behavior variables.  Constant for any game instance.
         self.speed: int = speed    # inches per second
         self.radius: int = radius  # inches
-        # Area outside blob to shade in at half-alpha for smoother motion.
-        self.outerRadius: int = int(round(radius * 1.3))
         # State variables
         hue = random.randint(0, 255)
         self.color: HSVAColor = HSVAColor(hue, 255, 250, 255)
@@ -54,7 +52,7 @@ class BouncingBlob(game.StatefulGame):
             self.velocity.dy *= -1
         if hitLeft or hitRight or hitTop or hitBottom:
             flower = gameState.closestFlowerTo(self.location)
-            flower.PlaySoundFile("pong/wall.wav")
+            flower.PlaySoundFile("pong/wall.wav")  # TODO: add delay matching the delay used for hue pulse
             print(f"Blob bounced at {self.location}, playing bounce sound on flower {flower.num}")
             print(f"New Velocity: {self.velocity}")
 
@@ -64,8 +62,6 @@ class BouncingBlob(game.StatefulGame):
             distToBlobCenter = flower.location.distanceTo(self.location)
             if distToBlobCenter < self.radius:
                 flower.SetBlossomColor(self.color)
-            elif distToBlobCenter < self.outerRadius:
-                flower.SetBlossomColor(self.outerColor)
             else:
                 flower.SetBlossomColor(transparent)
 
