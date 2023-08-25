@@ -44,7 +44,7 @@ class Flower:
         params = f"{filename},{startTime}"
         self.sendMQTTCommand(command="audio/playSoundFile", params=params)
 
-    def HuePulse(self, hue, startTime, rampDuration, peakDuration, brightness):
+    def HuePulse(self, hue, startTime="+0", rampDuration=300, peakDuration=200, brightness=250):
         params = f"{hue},{startTime},{rampDuration},{peakDuration},{brightness}"
         self.sendMQTTCommand(command="leds/addPattern/HuePulse", params=params)
 
