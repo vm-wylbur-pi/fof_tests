@@ -170,10 +170,23 @@ class FlowerPattern:
 
 class BlossomColor(FlowerPattern):
     def __init__(self, control_time, str_params):
-        h, s, v, a, startTime = map(int, str_params.split(','))
+        # defaults
+        h, s, v, a = 100, 255, 200, 255
+        startTime = parseStartTime(control_time, "+0")
+        params = str_params.split(',')
+        if len(params) >= 1:
+            h = int(params[0])
+        if len(params) >= 2:
+            s = int(params[1])
+        if len(params) >= 3:
+            v = int(params[2])
+        if len(params) >= 4:
+            a = int(params[3])
+        if len(params) >= 5:
+            startTime = parseStartTime(control_time, params[4])
         self.color = HSVAColor(h, s, v, a)  # Just used for alpha during rendering
         self.pycolor = hsv255ToPyGameColor(self.color.hue, self.color.sat, self.color.val)  # used for other components
-        self.startTime = parseStartTime(control_time, startTime)
+        self.startTime = startTime
 
     def isDone(self, time: int):
         return False
