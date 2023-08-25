@@ -15,7 +15,7 @@
 
 void Heartbeat::BeatIfItsTime() {
     uint32_t currentMillis = millis();
-    if (currentMillis - _last_heartbeat_millis > HEARTBEAT_PERIOD_MILLIS) {
+    if (currentMillis - _last_heartbeat_millis > (HEARTBEAT_PERIOD_MILLIS + _next_heartbeat_jitter)) {
         Beat();
         _last_heartbeat_millis = currentMillis;
     }
@@ -25,6 +25,7 @@ void Heartbeat::Beat() {
     Serial.println("sending heartbeat");
     String topic = "flower-heartbeats/" + flower_info::flowerID();
     networking::publishMQTTMessage(topic, _makeHeartbeatMessage());
+    _next_heartbeat_jitter = random16(10000);  // beats are randomized between 5 and 15 seconds apart.
 }
 
 String Heartbeat::_makeHeartbeatMessage() {

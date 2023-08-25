@@ -23,6 +23,7 @@ class Heartbeat {
   private:
     String _makeHeartbeatMessage();
     uint32_t _last_heartbeat_millis = 0;
+    uint32_t _next_heartbeat_jitter = 0;
     Uptime _uptime;
 };
 
