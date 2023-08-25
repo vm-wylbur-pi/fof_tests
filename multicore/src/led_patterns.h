@@ -183,14 +183,15 @@ class SatValPulse : public Pulse {
 // Sets the blossom to a specified HSVA Color.
 class BlossomColor : public Pattern {
   public:
-    BlossomColor(CHSV color, uint8_t alpha)
-      : _color(color), _alpha(alpha) {};
+    BlossomColor(CHSV color, uint8_t alpha, uint32_t startTime)
+      : _color(color), _alpha(alpha), _startTime(startTime) {};
     void run(uint32_t time, CRGB leds[NUM_LEDS]) override;
     String name() {return "BlossomColor";};
     String descrip() override;
   private:
     CHSV _color;
     uint8_t _alpha;
+    uint32_t _startTime;
 };
 
 class FairyVisit : public Pattern {

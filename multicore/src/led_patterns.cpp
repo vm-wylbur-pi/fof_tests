@@ -207,18 +207,20 @@ void SatValPulse::run(uint32_t time, CRGB leds[NUM_LEDS]) {
 }
 
 void BlossomColor::run(uint32_t time, CRGB leds[NUM_LEDS]) {
-    // Alpha blend against the blossom only.
-    for (int i=BLOSSOM_START; i<BLOSSOM_END; i++) {
-        CRGB target = _color;
-        leds[i].r = lerp8by8(leds[i].r, target.r, _alpha);
-        leds[i].g = lerp8by8(leds[i].g, target.g, _alpha);
-        leds[i].b = lerp8by8(leds[i].b, target.b, _alpha);
+    if (time > _startTime) {
+        // Alpha blend against the blossom only.
+        for (int i=BLOSSOM_START; i<BLOSSOM_END; i++) {
+            CRGB target = _color;
+            leds[i].r = lerp8by8(leds[i].r, target.r, _alpha);
+            leds[i].g = lerp8by8(leds[i].g, target.g, _alpha);
+            leds[i].b = lerp8by8(leds[i].b, target.b, _alpha);
+        }
     }
 }
 
 String BlossomColor::descrip() {
     return "BlossomColor( hsva=" + String(_color.hue) + ", " + String(_color.sat) +
-      ", " + String(_color.val) + ", " + String(_alpha) + ")";
+      ", " + String(_color.val) + ", " + String(_alpha) + ", " + String(_startTime) + ")";
 }
 
 String FairyVisit::descrip() {
@@ -435,11 +437,13 @@ std::unique_ptr<Pattern> makePattern(const String& patternName, const String& pa
         uint8_t sat = 255;
         uint8_t val = 255;
         uint8_t alpha = 255;
+        uint32_t startTime = util::parseStartTime("+0");
         if (params.size() >= 1) { hue = params[0].toInt(); }
         if (params.size() >= 2) { sat = params[1].toInt(); }
         if (params.size() >= 3) { val = params[2].toInt(); }
         if (params.size() >= 4) { alpha = params[3].toInt(); }
-        return std::unique_ptr<Pattern>(new BlossomColor(CHSV(hue, sat, val), alpha));
+        if (params.size() >= 5) { startTime = util::parseStartTime(params[4]); }
+        return std::unique_ptr<Pattern>(new BlossomColor(CHSV(hue, sat, val), alpha, startTime));
     }
     
     // Parameters

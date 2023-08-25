@@ -31,6 +31,8 @@ function populateCommandChoices() {
         "Random spots of light appear then fade away. Two parameters: dropsPerSecond, dropFadeTime(ms)"],
         ["leds/addPattern/SolidHue",
         "Make the whole flower (leaves+blossom) one color.  Two params: hue (0-255), startTime ('+0' for right now)"],
+        ["leds/addPattern/BlossomColor",
+        "Set the blossom to specified HSVA color. Params: hue, saturation, value, alpha (0-255), startTime"],
         ["leds/addPattern/MaxBrightnessWhite",
         "Full white (255,255,255) with no temporal dithering. leds/setBrightness has no effect when this pattern is active."],
         ["leds/addPattern/RunningDot",
@@ -40,7 +42,7 @@ function populateCommandChoices() {
         ["leds/updatePattern/Raindrops",
         "Random spots of light appear then fade away. Two parameters: dropsPerSecond, dropFadeTime(ms)"],
         ["leds/updatePattern/BlossomColor",
-        "Set the blossom to specified HSVA color. Params all (0-255): hue, saturation, value, alpha (for mixing with earlier patterns)"],
+        "Set the blossom to specified HSVA color. Params: hue, saturation, value, alpha (0-255), startTime"],
         ["audio/setVolume",
         "One float parameter between 0.0 (mute) and 11.0 (ours go to 11)"],
         ["audio/playSoundFile",
@@ -85,7 +87,6 @@ $( document ).ready(function() {
     });
 
     $( "#send-command-with-throttling" ).click(function( event ) {
-        let ignored_targetFlower = $('input[name="flower"]').val();
         let flower_command = $('select[name="command"]').val();
         let payload = $('input[name="parameters"]').val();
         sendMQTTMessage(`gsa-control/relayToAllFlowersWithThrottling/${flower_command}`, payload)

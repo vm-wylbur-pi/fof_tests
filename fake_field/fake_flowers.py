@@ -99,7 +99,7 @@ class FakeFlower:
             print(f"Flower {self.id} added FairyVisit({str_params})")
             return FairyVisit(self.controlMillis(), str_params)
         if pattern_name == "BlossomColor":
-            return BlossomColor(str_params)
+            return BlossomColor(control_time=self.controlMillis(), str_params=str_params)
         print(f"ERROR: LED Pattern {pattern_name} is not supported by the fake field.")
 
 
@@ -169,20 +169,24 @@ class FlowerPattern:
    pass
 
 class BlossomColor(FlowerPattern):
-    def __init__(self, str_params):
-        h, s, v, a = map(int, str_params.split(','))
+    def __init__(self, control_time, str_params):
+        h, s, v, a, startTime = map(int, str_params.split(','))
         self.color = HSVAColor(h, s, v, a)  # Just used for alpha during rendering
         self.pycolor = hsv255ToPyGameColor(self.color.hue, self.color.sat, self.color.val)  # used for other components
+        self.startTime = parseStartTime(control_time, startTime)
 
     def isDone(self, time: int):
         return False
     
     def modifyLEDState(self, time: int, prevState: LEDState) -> LEDState:
-        alpha = self.color.alpha/255
-        return LEDState(
-            blossom_color=prevState.blossom_color.lerp(self.pycolor, alpha),
-            leaf_color=prevState.leaf_color,
-        )
+        if time > self.startTime:
+            alpha = self.color.alpha/255
+            return LEDState(
+                blossom_color=prevState.blossom_color.lerp(self.pycolor, alpha),
+                leaf_color=prevState.leaf_color,
+            )
+        else:
+            return prevState
 
 
 class HuePulse(FlowerPattern):
