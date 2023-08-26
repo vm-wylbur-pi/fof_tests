@@ -1,25 +1,12 @@
 const bArray = [
     {
-        'name': '1',
-        'color': 'orange',
-        'column': 1,
-        'commands': [
-            '1 cmd 1',
-            'wait 15',
-            '1 cmd 3',
-            'wait 5',
-            '1 cmd 4'
-        ]
+        'name': 'Clear Games', 'color': 'orange', 'column': 1,
+        'commands': [ ['game-control/clearGames', ''] ]
     },
     {
-        'name': '2',
-        'column': 2,
-        'commands': [
-            '2 cmd 1',
-            '2 cmd 2',
-            '2 cmd 3',
-            'wait 15',
-            '2 cmd 4'
+        'name': 'Raindrops only (sparkly)', 'column': 2, 'commands': [
+            ['flower-control/all/clearPatterns', ''],
+            ['flower-control/all/addPattern/Raindrops', '4,3'],
         ]
     }
 ]
@@ -61,7 +48,9 @@ function connectToMQTT() {
                 .removeClass("btn-danger")
                 // Add the new class 'btn-danger'
                 .addClass("btn-success");
-            //subscribeToFlowerMessages();
+            mqtt.subscribe("gsa-heartbeats");
+            // request heartbeat on page load, so we get instant status in the nav bar.
+            sendMQTTMessage('gsa-control/sendHeartbeat', payload='');
         },
         onFailure: function(context) {
             mqttIsConnected = false;
@@ -76,11 +65,16 @@ function connectToMQTT() {
     mqtt.connect(connect_options);
 }
 
+function sendMQTTMessage(topic, payload) {
+    message = new Paho.MQTT.Message(payload);
+    message.destinationName = topic;
+    console.log(`Sending command: ${message.destinationName}: ${message.payloadString}`);
+    mqtt.publish(message);
+}
+
 function handleMQTTMessage(message) {
-    if (message.destinationName.startsWith("flower-debug/")) {
-        handleFlowerDebugMessage(message);
-    } else if (message.destinationName.startsWith("flower-heartbeats/")) {
-        handleHeartbeatMessage(message);
+    if (message.destinationName.startsWith("gsa-heartbeat")) {
+        timeOfLastGSAHeartbeat = Date.now();
     } else {
         $( "#mqtt-status" ).append(`Received an unexpected non-heartbeat message to ${message.destinationName}<br/>`)
     }
@@ -114,6 +108,7 @@ async function runButton(event){
                 break
             }
             console.log('running:  ', cmd)
+            // This is where we actually run something
         }
     }
     $('#' + buttonId).prop('disabled',false)
@@ -146,6 +141,17 @@ function buildButtons(){
     })
 }
 
+const GSA_HEARTBEAT_CHECK_PERIOD = 1000; // milliseconds
+const GSA_SILENCE_TO_WORRY_ABOUT = 10000;  // milliseconds
+var timeOfLastGSAHeartbeat = 0;
+function checkGSAHeartbeatAge() {
+    let millisSinceLastHeartbeat = Date.now() - timeOfLastGSAHeartbeat;
+    if (millisSinceLastHeartbeat > GSA_SILENCE_TO_WORRY_ABOUT) {
+        $( "#gsa-button-nav").removeClass("btn-success").addClass("btn-danger");
+    } else {
+        $( "#gsa-button-nav").removeClass("btn-danger").addClass("btn-success");
+    }
+}
 
 var DEBUG=true
 var CCOM = Math.random()
@@ -176,6 +182,7 @@ $( document ).ready(function() {
         });
     })
 
+    setInterval(checkGSAHeartbeatAge, GSA_HEARTBEAT_CHECK_PERIOD);
 
     buildButtons()
 });
