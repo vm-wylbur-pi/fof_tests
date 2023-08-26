@@ -1,12 +1,23 @@
 const bArray = [
     {
         'name': 'Clear Games', 'color': 'orange', 'column': 1,
+        'resets_buttons': true,
         'commands': [ ['game-control/clearGames', ''] ]
     },
     {
-        'name': 'Raindrops only (sparkly)', 'column': 2, 'commands': [
+        'name': 'Raindrops only (sparkly)', 'column': 2, 
+        'resets_buttons': true,
+        'commands': [
             ['flower-control/all/clearPatterns', ''],
             ['flower-control/all/addPattern/Raindrops', '4,3'],
+        ]
+    },
+    {
+        'name': 'two waves with a pause', 'column': 2,
+        'commands': [
+            ['game-control/runGame/CircularColorWave', ''],
+            ['wait', 1000],
+            ['game-control/runGame/CircularColorWave', ''],
         ]
     }
 ]
@@ -99,6 +110,9 @@ async function runButton(event){
     });
 
     for (const cmd of bObj['commands']) {
+        if (bOjb['ressets_buttons']) {
+            resetButtons();  // resets CCOM, ending all waits.
+        }
         if(cmd.startsWith('wait')){
             let interval = parseInt(cmd.split(' ')[1])*1000
             await wait(interval)
@@ -153,6 +167,16 @@ function checkGSAHeartbeatAge() {
     }
 }
 
+function resetButtons() {
+    CCOM = Math.random();  // causes all waits to be abandoned
+    var allButtons = $("button");
+
+    // Loop through each button and enable it
+    allButtons.each(function() {
+        $(this).prop("disabled", false);
+    });
+}
+
 var DEBUG=true
 var CCOM = Math.random()
 $( document ).ready(function() {
@@ -172,14 +196,8 @@ $( document ).ready(function() {
         connectToMQTT();  // Uses the current value of the IP address form field.
     });
 
-    $("#ClearButtons").click(event => {
-        CCOM = Math.random()
-        var allButtons = $("button");
-
-        // Loop through each button and enable it
-        allButtons.each(function() {
-            $(this).prop("disabled", false);
-        });
+    $("#ResetButtons").click(event => {
+        resetButtons();
     })
 
     setInterval(checkGSAHeartbeatAge, GSA_HEARTBEAT_CHECK_PERIOD);
