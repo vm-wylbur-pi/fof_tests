@@ -85,6 +85,7 @@ class FakeFlower:
         for idx, pattern in enumerate(self.patterns):
             if pattern.__class__.__name__ == pattern_name:
                 idx_of_existing_pattern = idx
+                break
         if idx_of_existing_pattern:
             self.patterns[idx_of_existing_pattern] = newInstance
         else:
