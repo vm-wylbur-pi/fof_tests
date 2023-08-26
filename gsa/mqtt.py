@@ -129,6 +129,16 @@ def HandleGSAControlCommand(message, gameState):
         for flower in gameState.flowers:
             flower.sendMQTTCommand(flower_command, raw_param_string)
         return
+
+    if command == "playSoundNearPoint":
+        if len(params) < 3:
+            print("Not enough parameters to playSoundNearPoint")
+            return
+        sound, x, y = params[0], int(params[1]), int(params[2])
+        closestFlower = gameState.closestFlowerTo(Point(x,y))
+        print(f"Playing {sound} near {x},{y} (chose flower {closestFlower.num})")
+        closestFlower.PlaySoundFile(sound)
+        return
     
     if command == "sendHeartbeat":
         gameState.sendHeartbeat()
