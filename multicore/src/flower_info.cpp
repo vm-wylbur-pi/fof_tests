@@ -202,7 +202,7 @@ namespace flower_info {
         // Extra newlines at the start to push the text low enough to be readable
         // without bending down too low.
         String descrip = "\n\n";
-        descrip += "I'm # " + String(info.sequenceNum) + "\n" + info.id + "\n";
+        descrip += "I'm # " + String(info.sequenceNum) + "\n" + flowerID() + "\n";
         descrip += String(speciesNames[info.species]) + "\n\n";
 
         descrip += version::Name + "\n";
