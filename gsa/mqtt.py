@@ -299,8 +299,8 @@ def HandleGameControlCommand(message, gameState):
         gameState.runStatefulGame(roll_call.RollCall(gapBetweenCallsMillis))
         return
 
-    if command == "runGame/RandomIdle":
-        gameState.runStatefulGame(color_waves.RandomIdle())
+    if command == "runGame/RandomWaves":
+        gameState.runStatefulGame(color_waves.RandomWaves())
         return
 
     if command == "runGame/FunScreenText":

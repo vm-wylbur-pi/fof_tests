@@ -41,7 +41,7 @@ const bArray = [
     },
     {
         'name': 'Random Waves, indefinitely', 'color': 'navy', 'column': 1,
-        'commands': [ ['game-control/runGame/RandomIdle', '20,500,500,550,-600,+500'] ]
+        'commands': [ ['game-control/runGame/RandomWaves', '20,500,500,550,-600,+500'] ]
     },
 
     {

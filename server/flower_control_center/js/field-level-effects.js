@@ -20,8 +20,8 @@ $( document ).ready(function() {
         $('input[name="field_params"]').val("");
         $('#field_command_param_explanation').text("Removes all stateful field-level effects, and reset each flower to IndependentIdle + Raindrops");
     });
-    $( "button#randomIdle" ).click(function (event) {
-        $('input[name="field_command"]').val("runGame/RandomIdle");
+    $( "button#randomWaves" ).click(function (event) {
+        $('input[name="field_command"]').val("runGame/RandomWaves");
         $('input[name="field_params"]').val("");
         $('#field_command_param_explanation').text("Randomized color waves at randomized intervals, indefinitely.");
     });

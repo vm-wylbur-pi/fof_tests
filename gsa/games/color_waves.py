@@ -228,7 +228,7 @@ class CircularSatValWave(CircularPulseWave):
 
 # Showcase wave effects by running through them with randomized parameters.
 @dataclass
-class RandomIdle(game.StatefulGame):
+class RandomWaves(game.StatefulGame):
     # The set of field-level effects available for use
     field_effects_menu = (
         StraightColorWave,
@@ -246,7 +246,7 @@ class RandomIdle(game.StatefulGame):
     def runLoop(self, gameState: GameState):
         now = time.time()
         if now > self.next_effect_time:
-            effect = random.choice(RandomIdle.field_effects_menu).randomInstance(gameState)
+            effect = random.choice(RandomWaves.field_effects_menu).randomInstance(gameState)
             # Start in the future, to give time for communication to full field.
             # This only works for StraightColorWave and CircularColorWave right now.
             effect.startTime = gameState.controlTimer() + 5000
