@@ -25,6 +25,11 @@ $( document ).ready(function() {
         $('input[name="field_params"]').val("");
         $('#field_command_param_explanation').text("Randomized color waves at randomized intervals, indefinitely.");
     });
+    $( "button#mold" ).click(function (event) {
+        $('input[name="field_command"]').val("runGame/Mold");
+        $('input[name="field_params"]').val("");
+        $('#field_command_param_explanation').text("Randomized color waves slowly change the color of the field.");
+    });
     $( "button#addFairy" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/Fairy");
         $('input[name="field_params"]').val("");

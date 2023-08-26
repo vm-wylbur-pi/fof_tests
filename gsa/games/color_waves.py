@@ -254,3 +254,27 @@ class RandomIdle(game.StatefulGame):
             delay = random.normalvariate(self.effectGapSecsMean, self.effectGapSecsStDev)
             delay = max(delay, self.effectGapSecsMinimum)
             self.next_effect_time = now + delay
+
+
+# Slowly expanding circles of mold change the color of the field
+class Mold(game.StatefulGame):
+    SCHEDULING_DELAY = 2000
+
+    def __init__(self, wavePeriod: int = 15, waveSpeed=100):
+        # Behavior variables.  Constant for any game instance.
+        self.wavePeriod: int = wavePeriod  # Seconds
+        self.nextWaveTime: float = 0  # seconds since epoch, as returned by time.time()
+        self.waveSpeed = waveSpeed
+
+    def runLoop(self, gameState: GameState):
+        now = time.time()
+        if now > self.nextWaveTime:
+            mold_wave = CircularStickyColorWave(
+                hue=random.randint(0, 255),
+                center=gameState.field.randomPoint(),
+                startRadius=0,
+                speed=self.waveSpeed,
+                startTime=gameState.controlTimer() + Mold.SCHEDULING_DELAY,
+            )
+            mold_wave.run(gameState.flowers)
+            self.nextWaveTime = now + self.wavePeriod
