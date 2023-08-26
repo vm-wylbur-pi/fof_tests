@@ -10,6 +10,12 @@ const bArray = [
         'commands': [ ['game-control/resetField', ''] ]
     },
     {
+        'name': 'All LEDs off with power-down sound', 'color': 'darkorange', 'column': 1,
+        'resets_buttons': true,
+        'commands': [ ['flower-control/all/leds/clearPatterns', ''],
+                      ['flower-control/all/audio/playSoundFile', 'punctuation/PunctuationDOWN.wav'] ]
+    },
+    {
         'name': '→ Straight Wave, left-to-right', 'color': 'teal', 'column': 1,
         'commands': [ ['game-control/runGame/StraightColorWave', '160,0,450,550,0,+500'] ]
     },
@@ -70,6 +76,10 @@ const bArray = [
             ['wait', 15000],
             ['flower-control/all/audio/playSoundFile', 'bigben/4dongs.wav'],
         ]
+    },
+    {
+        'name': 'All flowers dong once', 'color': 'darkmagenta', 'column': 2,
+        'commands': [ ['flower-control/all/audio/playSoundFile', '1dong.wav'] ]
     },
     {
         'name': 'Chorus Circle', 'color': 'darkmagenta', 'column': 2,
