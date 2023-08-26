@@ -52,7 +52,7 @@ $( document ).ready(function() {
     });
     $( "button#chorusCircle" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/ChorusCircle");
-        $('input[name="field_params"]').val("30, 5.0");
+        $('input[name="field_params"]').val("30,5.0");
         $('#field_command_param_explanation').text("Parameters are seconds between song starts and volume (0-11)");
     });
     $( "button#gossip" ).click(function (event) {
