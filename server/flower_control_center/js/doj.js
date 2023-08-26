@@ -168,10 +168,28 @@ function sendMQTTMessage(topic, payload) {
 
 function handleMQTTMessage(message) {
     if (message.destinationName.startsWith("gsa-heartbeat")) {
-        timeOfLastGSAHeartbeat = Date.now();
+        handleGSAHeartbeat(message);
     } else {
         $( "#mqtt-status" ).append(`Received an unexpected non-heartbeat message to ${message.destinationName}<br/>`)
     }
+}
+
+function handleGSAHeartbeat(message) {
+    timeOfLastGSAHeartbeat = Date.now();
+    try {
+        const data = JSON.parse(message.payloadString);
+        let gsaStatusMsg = `The camera sees ${data['num_people']} people. `
+        if (data['games'].length == 0) {
+            gsaStatusMsg += `Active games: none`
+        } else {
+            gsaStatusMsg += `Active games: ${data['games'].join(', ')}`
+        }
+        $("#gsaStatus").html(gsaStatusMsg);
+    } catch(e) {
+        console.log(`Error handling heartbeat message from the GSA`);
+        console.log(e);
+        console.log(message.payloadString);
+    }  
 }
 
 function mqttConnectionMaintenance() {
