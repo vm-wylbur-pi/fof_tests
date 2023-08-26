@@ -18,7 +18,7 @@ import gsa.games.wind as wind
 
 # Used during development.
 # TODO: Read this from config
-MQTT_BROKER_IP = "127.0.0.1"
+MQTT_BROKER_IP = "192.168.1.72"
 
 # A throttler to prevent sending too many MQTT messages to the flowers at once.
 # We've seen that sending more than about 40 at a time can cause wifi congestion
@@ -112,6 +112,7 @@ def HandleMQTTMessage(message, gameState):
         # It is seconds since the epoch.
         gameState.control_timer_reference_time = int(message.payload)
         print(f"Set event reference time to {gameState.control_timer_reference_time}")
+        print(f"Control timer is {gameState.controlTimer()}")
     else:
         print(f"Unhandled MQTT message topic: {message.topic}")
 
@@ -124,6 +125,7 @@ def HandleGSAControlCommand(message, gameState):
 
     if command.startswith("relayToAllFlowersWithThrottling"):
         _, flower_command = command.split('/', maxsplit=1)
+        print(f"Relaying command to all flowers: {flower_command}({raw_param_string})")
         for flower in gameState.flowers:
             flower.sendMQTTCommand(flower_command, raw_param_string)
         return
