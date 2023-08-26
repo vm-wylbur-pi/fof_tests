@@ -33,6 +33,10 @@ const bArray = [
         'name': '⊖ Contracting Circle to center', 'color': 'teal', 'column': 1,
         'commands': [ ['game-control/runGame/CircularColorWave', '20,500,500,550,-600,+500'] ]
     },
+    {
+        'name': 'Random Waves, indefinitely', 'color': 'navy', 'column': 1,
+        'commands': [ ['game-control/runGame/RandomIdle', '20,500,500,550,-600,+500'] ]
+    },
 
     {
         'name': 'Add Fairy', 'color': 'darkgoldenrod', 'column': 2,
@@ -47,10 +51,30 @@ const bArray = [
         'commands': [ ['game-control/runGame/Wave', ''] ]
     },
     {
+        'name': 'Bouncing Blob', 'color': 'darkgoldenrod', 'column': 2,
+        'commands': [ ['game-control/runGame/BouncingBlob', '400,150'] ]
+    },
+
+    {
         'name': 'Gossip (sound only)', 'color': 'darkmagenta', 'column': 2,
         'commands': [ ['game-control/runGame/Wave', ''] ]
     },
-
+    {
+        'name': 'Big Ben chimes 4 o-clock', 'color': 'darkmagenta', 'column': 2,
+        'commands': [
+            // Since we don't have a separate just-2nd-part sound file, play all at once
+            ['gsa-control/playSoundNearPoint', 'bigben/quarter.wav,500,0'],
+            ['gsa-control/playSoundNearPoint', 'bigben/halfhour.wav,950,50'],
+            ['gsa-control/playSoundNearPoint', 'bigben/threequarter.wav,500,900'],
+            ['gsa-control/playSoundNearPoint', 'bigben/preamble.wav,20,500'],
+            ['wait', 15000],
+            ['flower-control/all/audio/playSoundFile', 'bigben/4dongs.wav'],
+        ]
+    },
+    {
+        'name': 'Chorus Circle', 'color': 'darkmagenta', 'column': 2,
+        'commands': [ ['game-control/runGame/ChorusCircle', '30,5.0'] ]
+    },
 
 
     {
