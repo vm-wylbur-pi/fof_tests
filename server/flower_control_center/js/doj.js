@@ -1,9 +1,58 @@
 const bArray = [
     {
-        'name': 'Clear Games', 'color': 'orange', 'column': 1,
+        'name': 'Clear Games', 'color': 'darkorange', 'column': 1,
         'resets_buttons': true,
         'commands': [ ['game-control/clearGames', ''] ]
     },
+    {
+        'name': 'Clear Games & Reset Flowers', 'color': 'darkorange', 'column': 1,
+        'resets_buttons': true,
+        'commands': [ ['game-control/resetField', ''] ]
+    },
+    {
+        'name': '→ Straight Wave, left-to-right', 'color': 'teal', 'column': 1,
+        'commands': [ ['game-control/runGame/StraightColorWave', '160,0,450,550,0,+500'] ]
+    },
+    {
+        'name': '← Straight Wave, right-to-left', 'color': 'teal', 'column': 1,
+        'commands': [ ['game-control/runGame/StraightColorWave', '110,1000,450,-600,0,+500'] ]
+    },
+    {
+        'name': '↑ Straight Wave, bottom-to-top', 'color': 'teal', 'column': 1,
+        'commands': [ ['game-control/runGame/StraightColorWave', '200,550,1000,0,-600,+500'] ]
+    },
+    {
+        'name': '↓ Straight Wave, top-to-bottom', 'color': 'teal', 'column': 1,
+        'commands': [ ['game-control/runGame/StraightColorWave', '40,350,0,0,600,+500'] ]
+    },
+    {
+        'name': '⊕ Expanding Circle from center', 'color': 'teal', 'column': 1,
+        'commands': [ ['game-control/runGame/CircularColorWave', '180,500,500,0,600,+500'] ]
+    },
+    {
+        'name': '⊖ Contracting Circle to center', 'color': 'teal', 'column': 1,
+        'commands': [ ['game-control/runGame/CircularColorWave', '20,500,500,550,-600,+500'] ]
+    },
+
+    {
+        'name': 'Add Fairy', 'color': 'darkgoldenrod', 'column': 2,
+        'commands': [ ['game-control/runGame/Fairy', ''] ]
+    },
+    {
+        'name': 'Roll Call', 'color': 'darkgoldenrod', 'column': 2,
+        'commands': [ ['game-control/runGame/RollCall', '500'] ]
+    },
+    {
+        'name': 'Wave Game (expanding circles from people, with sound)', 'color': 'darkgoldenrod', 'column': 2,
+        'commands': [ ['game-control/runGame/Wave', ''] ]
+    },
+    {
+        'name': 'Gossip (sound only)', 'color': 'darkmagenta', 'column': 2,
+        'commands': [ ['game-control/runGame/Wave', ''] ]
+    },
+
+
+
     {
         'name': 'Raindrops only (sparkly)', 'column': 2, 
         'resets_buttons': true,
