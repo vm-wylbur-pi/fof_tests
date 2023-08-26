@@ -16,7 +16,7 @@ const bArray = [
         'name': 'two waves with a pause', 'column': 2,
         'commands': [
             ['game-control/runGame/CircularColorWave', ''],
-            ['wait', 1000],
+            ['wait', 3000],
             ['game-control/runGame/CircularColorWave', ''],
         ]
     }
@@ -104,17 +104,22 @@ async function runButton(event){
     let buttonId = clickedButton.id; // Get the id of the clicked button
     let nowCCOM = CCOM
 
+    console.log(`disabling button ${buttonId}`)
     $('#' + buttonId).prop('disabled',true)
     let bObj = bArray.find(function(obj) {
         return obj.name === buttonId;
     });
 
     for (const cmd of bObj['commands']) {
-        if (bOjb['ressets_buttons']) {
+        if (bObj['ressets_buttons']) {
             resetButtons();  // resets CCOM, ending all waits.
         }
-        if(cmd.startsWith('wait')){
-            let interval = parseInt(cmd.split(' ')[1])*1000
+        if (cmd.length != 2) {
+            console.log(`command array has ${cmd.length} elements instead of 2`);
+            return;
+        }
+        if(cmd[0] == 'wait') {
+            let interval = cmd[1]; // milliseconds
             await wait(interval)
         }else{
             if(nowCCOM != CCOM){
@@ -122,9 +127,12 @@ async function runButton(event){
                 break
             }
             console.log('running:  ', cmd)
-            // This is where we actually run something
+            let topic = cmd[0];
+            let payload = cmd[1];
+            sendMQTTMessage(topic, payload);
         }
     }
+    console.log(`enabling button ${buttonId}`)
     $('#' + buttonId).prop('disabled',false)
 
 }
@@ -168,6 +176,7 @@ function checkGSAHeartbeatAge() {
 }
 
 function resetButtons() {
+    console.log("running resetButtons")
     CCOM = Math.random();  // causes all waits to be abandoned
     var allButtons = $("button");
 
