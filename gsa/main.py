@@ -20,7 +20,7 @@ if __name__ == "__main__" and __package__ is None:
 import mqtt
 import game_state
 
-DEPLOYMENT_FILE = "../fake_field/dress_rehearsal_deployment.yaml"
+DEPLOYMENT_FILE = "../fake_field/playa_deployment.yaml"
 
 gameState = game_state.GameState(deployment_file=DEPLOYMENT_FILE)
 # The mqtt client gets a reference to the game state so that:
