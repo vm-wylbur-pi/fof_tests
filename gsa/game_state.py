@@ -39,10 +39,9 @@ class GameState:
         self.stateful_games.append(game)
         self.sendHeartbeat()
 
-    def clearStatefulGames(self):
-        for game in self.stateful_games:
-            game.stop(self)
-        self.stateful_games = []
+    def clearStatefulGames(self, excluded=None):
+        [g.stop(self) for g in self.stateful_games if g != excluded]
+        self.stateful_games = [excluded]
         self.sendHeartbeat()
 
     def updateStatefulGames(self):
