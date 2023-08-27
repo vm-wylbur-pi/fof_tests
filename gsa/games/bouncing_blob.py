@@ -16,15 +16,12 @@ class BouncingBlob(game.StatefulGame):
         # Behavior variables.  Constant for any game instance.
         self.speed: int = speed    # inches per second
         self.radius: int = radius  # inches
-        # Area outside blob to shade in at half-alpha for smoother motion.
-        self.outerRadius: int = int(round(radius * 1.3))
         # State variables
-        hue = random.randint(0, 255)
-        self.color: HSVAColor = HSVAColor(hue, 255, 250, 255)
-        self.outerColor: HSVAColor = HSVAColor(hue, 255, 250, 100) # Same but lower alpha
+        self.hue = random.randint(0, 255)
         self.location: Point = None
         self.velocity: Vector = None
         self.lastUpdateTime = None
+        self.flowersPulsedSinceBounce = set()
 
     def runLoop(self, gameState: GameState):
         now = time.time()
@@ -53,24 +50,22 @@ class BouncingBlob(game.StatefulGame):
         if hitTop or hitBottom:
             self.velocity.dy *= -1
         if hitLeft or hitRight or hitTop or hitBottom:
+            self.flowersPulsedSinceBounce.clear()
             flower = gameState.closestFlowerTo(self.location)
-            flower.PlaySoundFile("pong/wall.wav")
+            flower.PlaySoundFile("mallets/Am_Balafon_Enote.wav")  # TODO: add delay matching the delay used for hue pulse
             print(f"Blob bounced at {self.location}, playing bounce sound on flower {flower.num}")
             print(f"New Velocity: {self.velocity}")
 
     def renderBlob(self, flowers: List[Flower]):
-        transparent = HSVAColor(0, 0, 0, 0)  # only alpha=0 matters here
         for flower in flowers:
             distToBlobCenter = flower.location.distanceTo(self.location)
-            if distToBlobCenter < self.radius:
-                flower.SetBlossomColor(self.color)
-            elif distToBlobCenter < self.outerRadius:
-                flower.SetBlossomColor(self.outerColor)
-            else:
-                flower.SetBlossomColor(transparent)
-
-    def stop(self, gameState: GameState):
-        transparent = HSVAColor(0, 0, 0, 0)
-        for flower in gameState.flowers:
-            flower.SetBlossomColor(transparent)
-
+            if distToBlobCenter < self.radius and flower not in self.flowersPulsedSinceBounce:
+                # The leading edge of the blob just hit a new flower. We need to calculate
+                # how long it should light up, based on how far it is from the path of the
+                # blob's center.
+                vecToFlower = flower.location.diff(self.location)  # Should normalize to blob radius?
+                chordLengthInBlob = 2 * vecToFlower.dot(self.velocity) / self.velocity.magnitude()
+                timeInBlob = chordLengthInBlob / self.speed
+                timeInBlobMillis = int(round(1000 * timeInBlob))
+                flower.HuePulse(self.hue, startTime="+0", peakDuration=timeInBlobMillis)
+                self.flowersPulsedSinceBounce.add(flower)

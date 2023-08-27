@@ -27,7 +27,9 @@ namespace led_control
         void addPattern(const String& patternName, const String& parameters);
 
         // Modify a pattern in-place.  When we receive this command
-        //   - If we already have one in the stack, update it with the given parameters
+        //   - If we already have one in the stack, replace it with a new one with the
+        //     given parameters. If there is more than one, the lowest one in the stack
+        //     will be the replaced one.
         //   - Otherwise, instantiate a new one with the given parameters.
         void updatePattern(const String &patternName, const String &parameters);
 

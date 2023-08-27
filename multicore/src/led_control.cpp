@@ -96,6 +96,7 @@ namespace led_control {
                     alreadyHaveOne = true;
                     comms::sendDebugMessage("Updating LED pattern: " + newPattern->descrip());
                     pattern = std::move(newPattern);
+                    break;
                 }
             }
             if (!alreadyHaveOne) {

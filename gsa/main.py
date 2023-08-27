@@ -9,14 +9,18 @@ if __name__ == "__main__" and __package__ is None:
     from os.path import dirname
     path.append(dirname(path[0]))
 
-# import sys
-# sys.exit()
+# This causes the GSA to exit on startup. Jeff uncomments it
+# when running docker-compose up, so that the Docker-included instance
+# of the GSA doesn't run. That way, I can start/stop a separate GSA
+# quickly in a terminal as I test new GSA code.
+#import sys
+#sys.exit()
 
 
 import mqtt
 import game_state
 
-DEPLOYMENT_FILE = "../fake_field/dress_rehearsal_deployment.yaml"
+DEPLOYMENT_FILE = "../fake_field/playa_deployment.yaml"
 
 gameState = game_state.GameState(deployment_file=DEPLOYMENT_FILE)
 # The mqtt client gets a reference to the game state so that:

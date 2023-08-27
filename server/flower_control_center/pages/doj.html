@@ -28,13 +28,19 @@
             <p id="mqtt-status"></p>
         </div>
     </div>
+    <div class="row" id="activeGamesROW">
+        <div class="col d-flex justify-content-center">
+            <p id="gsaStatus"></p>
+        </div>
+    </div>
     <div class="row" id="mqttReconnectRow">
         <div class="col d-flex justify-content-center">
             MQTT Broker IP:
-            <input type="text" id="mqtt-ip" value="192.168.1.72" />
+            <input type="text" id="mqtt-ip" value="127.0.0.1" />
             <button id="mqtt-reconnect">Reconnect</button>
         </div>
     </div>
+    
     <div class="row" id="ButtonRow1">
         <div class="col d-flex">
             <div id="bdiv-1" class="d-grid gap-2 col-10 mx-auto">
@@ -43,13 +49,11 @@
         </div>
         <div class="col d-flex">
             <div id="bdiv-2" class="d-grid gap-2 col-10 mx-auto">
-                <button id="ClearButtons" class="btn btn-danger" type="button">Clear Patterns</button>
+                <button id="ResetButtons" class="btn btn-danger" type="button">Reset Buttons</button>
             </div>
         </div>
     </div>
 </div>
-
-
 
 
 <script src="/js/doj.js"></script>

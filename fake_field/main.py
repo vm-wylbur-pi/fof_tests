@@ -31,7 +31,7 @@ clock = pygame.time.Clock()
 running = True
 FPS = 60
 
-flowers = fake_flowers.makeFakeFieldFromDeploymentYAML("dress_rehearsal_deployment.yaml")
+flowers = fake_flowers.makeFakeFieldFromDeploymentYAML("playa_deployment.yaml")
 people = fake_people.FakePeople()
 
 # Pass a handle to the set of flowers and people to the MQTT-handling module, so that

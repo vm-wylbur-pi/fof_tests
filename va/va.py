@@ -43,7 +43,7 @@ CHANNEL = '../../../vids/dress/dress-1.mp4'
 #CHANNEL = 1    #0 for mac, 1 or more for windows?
 
 CALIBRATION = 'calibration_parameters.npz'
-DEPLOYMENT_FILE = '../fake_field/dress_rehearsal_deployment.yaml'
+DEPLOYMENT_FILE = '../fake_field/playa_deployment.yaml'
 MAX_FRAMES = -1
 #SKIP_FRAMES = -1  # used to test intermittent frames from a live camera
 

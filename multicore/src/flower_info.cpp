@@ -9,7 +9,7 @@
 #include "networking.h"
 #include "version.h"
 
-// This definition was gerated by tools/convert_flower_inventory_to_cpp.py
+// This definition was gerated by utils/convert_flower_inventory_to_cpp.py
 std::map<String, flower_info::FlowerInfo> FlowerInventory = {
   { "F0:6D:8C",  {1, "F0:6D:8C", poppy, -1}  },
   { "F0:70:1C",  {2, "F0:70:1C", aster, -1}  },
@@ -38,7 +38,7 @@ std::map<String, flower_info::FlowerInfo> FlowerInventory = {
   { "BA:6F:A0",  {25, "BA:6F:A0", poppy, 43}  },
   { "CC:FC:C0",  {26, "CC:FC:C0", aster, 43}  },
   { "F0:70:90",  {27, "F0:70:90", geranium, 46.5}  },
-  { "C0:F0:2C",  {28, "C0:F0:2C", aster, 42}  },
+  { "C0:20:FC",  {28, "C0:20:FC", aster, 42}  },
   { "C0:1E:78",  {29, "C0:1E:78", aster, 45}  },
   { "BA:79:EC",  {30, "BA:79:EC", aster, 39}  },
   { "C0:21:F0",  {31, "C0:21:F0", aster, 39}  },
@@ -82,7 +82,7 @@ std::map<String, flower_info::FlowerInfo> FlowerInventory = {
   { "C0:16:A8",  {69, "C0:16:A8", geranium, 46}  },
   { "CC:FE:7C",  {70, "CC:FE:7C", poppy, 46}  },
   { "CC:FE:CC",  {71, "CC:FE:CC", geranium, 40}  },
-  { "CC:33:A0",  {72, "CC:33:A0", geranium, 44.5}  },
+  { "C0:33:A0",  {72, "C0:33:A0", geranium, 44.5}  },
   { "D5:11:80",  {73, "D5:11:80", geranium, 39}  },
   { "C0:38:1C",  {74, "C0:38:1C", aster, 38}  },
   { "C0:1C:94",  {75, "C0:1C:94", geranium, 40}  },
@@ -171,6 +171,8 @@ std::map<String, flower_info::FlowerInfo> FlowerInventory = {
   { "F0:70:94",  {158, "F0:70:94", geranium, 42}  },
   { "C0:37:D0",  {159, "C0:37:D0", aster, 42.5}  },
   { "BA:82:88",  {160, "BA:82:88", aster, 39.5}  },
+  { "C0:28:D4",  {161, "C0:28:D4", aster, 10}  },
+  { "C0:1E:7C",  {162, "C0:1E:7C", aster, 10}  },
 };
 
 namespace flower_info {
@@ -202,7 +204,7 @@ namespace flower_info {
         // Extra newlines at the start to push the text low enough to be readable
         // without bending down too low.
         String descrip = "\n\n";
-        descrip += "I'm # " + String(info.sequenceNum) + "\n" + info.id + "\n";
+        descrip += "I'm # " + String(info.sequenceNum) + "\n" + flowerID() + "\n";
         descrip += String(speciesNames[info.species]) + "\n\n";
 
         descrip += version::Name + "\n";

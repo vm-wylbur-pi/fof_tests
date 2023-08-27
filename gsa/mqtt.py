@@ -10,6 +10,7 @@ import gsa.games.wave as wave_module
 import gsa.games.chorus_circle as chorus_circle
 import gsa.games.color_waves as color_waves
 import gsa.games.fairy as fairy
+import gsa.games.field_idle as field_idle
 import gsa.games.gossip as gossip
 import gsa.games.fun_screen_text as fun_screen_text
 import gsa.games.roll_call as roll_call
@@ -18,7 +19,7 @@ import gsa.games.wind as wind
 
 # Used during development.
 # TODO: Read this from config
-MQTT_BROKER_IP = "127.0.0.1"
+MQTT_BROKER_IP = "192.168.1.72"
 
 # A throttler to prevent sending too many MQTT messages to the flowers at once.
 # We've seen that sending more than about 40 at a time can cause wifi congestion
@@ -112,6 +113,7 @@ def HandleMQTTMessage(message, gameState):
         # It is seconds since the epoch.
         gameState.control_timer_reference_time = int(message.payload)
         print(f"Set event reference time to {gameState.control_timer_reference_time}")
+        print(f"Control timer is {gameState.controlTimer()}")
     else:
         print(f"Unhandled MQTT message topic: {message.topic}")
 
@@ -124,8 +126,19 @@ def HandleGSAControlCommand(message, gameState):
 
     if command.startswith("relayToAllFlowersWithThrottling"):
         _, flower_command = command.split('/', maxsplit=1)
+        print(f"Relaying command to all flowers: {flower_command}({raw_param_string})")
         for flower in gameState.flowers:
             flower.sendMQTTCommand(flower_command, raw_param_string)
+        return
+
+    if command == "playSoundNearPoint":
+        if len(params) < 3:
+            print("Not enough parameters to playSoundNearPoint")
+            return
+        sound, x, y = params[0], int(params[1]), int(params[2])
+        closestFlower = gameState.closestFlowerTo(Point(x,y))
+        print(f"Playing {sound} near {x},{y} (chose flower {closestFlower.num})")
+        closestFlower.PlaySoundFile(sound)
         return
     
     if command == "sendHeartbeat":
@@ -143,6 +156,14 @@ def HandleGameControlCommand(message, gameState):
 
     if command == "clearGames":
         gameState.clearStatefulGames()
+        return
+
+    if command == "resetField":
+        gameState.clearStatefulGames()
+        for flower in gameState.flowers:
+            flower.sendMQTTCommand("leds/clearPatterns", params="")
+            flower.sendMQTTCommand("leds/addPattern/IndependentIdle", params="")
+            flower.sendMQTTCommand("leds/addPattern/Raindrops", params="5,3")
         return
 
     if command == "runGame/StraightColorWave":
@@ -188,6 +209,21 @@ def HandleGameControlCommand(message, gameState):
         gameState.runStatelessGame(wave)
         return
 
+    if command == "runGame/CircularStickyColorWave":
+        wave = color_waves.CircularStickyColorWave.randomInstance(gameState)
+        if len(params) >= 1:
+            wave.hue = int(params[0])
+        if len(params) >= 3:
+            wave.center = Point(int(params[1]), int(params[2]))
+        if len(params) >= 4:
+            wave.startRadius = int(params[3])
+        if len(params) >= 5:
+            wave.speed = int(params[4])
+        if len(params) >= 6:
+            wave.startTime = gameState.parseStartTime(params[5])
+        gameState.runStatelessGame(wave)
+        return
+
     if command == "runGame/CircularSatValWave":
         wave = color_waves.CircularSatValWave.randomInstance(gameState)
         if len(params) >= 1:
@@ -207,6 +243,10 @@ def HandleGameControlCommand(message, gameState):
 
     if command == "runGame/Aura":
         gameState.runStatefulGame(aura.Aura())
+        return
+
+    if command == "runGame/Mold":
+        gameState.runStatefulGame(color_waves.Mold())
         return
 
     if command == "runGame/Wind":
@@ -260,8 +300,12 @@ def HandleGameControlCommand(message, gameState):
         gameState.runStatefulGame(roll_call.RollCall(gapBetweenCallsMillis))
         return
 
-    if command == "runGame/RandomIdle":
-        gameState.runStatefulGame(color_waves.RandomIdle())
+    if command == "runGame/RandomWaves":
+        gameState.runStatefulGame(color_waves.RandomWaves())
+        return
+
+    if command == "runGame/FieldIdle":
+        gameState.runStatefulGame(field_idle.FieldIdle())
         return
 
     if command == "runGame/FunScreenText":

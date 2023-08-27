@@ -13,12 +13,27 @@ $( document ).ready(function() {
     $( "button#clearEffects" ).click(function (event) {
         $('input[name="field_command"]').val("clearGames");
         $('input[name="field_params"]').val("");
-        $('#field_command_param_explanation').text("Removes all stateful field-level effects (Fairies and RandomIdle)");
+        $('#field_command_param_explanation').text("Removes all stateful field-level effects");
     });
-    $( "button#randomIdle" ).click(function (event) {
-        $('input[name="field_command"]').val("runGame/RandomIdle");
+    $( "button#resetField" ).click(function (event) {
+        $('input[name="field_command"]').val("resetField");
+        $('input[name="field_params"]').val("");
+        $('#field_command_param_explanation').text("Removes all stateful field-level effects, and reset each flower to IndependentIdle + Raindrops");
+    });
+    $( "button#fieldIdle" ).click(function (event) {
+        $('input[name="field_command"]').val("runGame/FieldIdle");
+        $('input[name="field_params"]').val("");
+        $('#field_command_param_explanation').text("Several games, each for a few minites, cycling forever.");
+    });
+    $( "button#randomWaves" ).click(function (event) {
+        $('input[name="field_command"]').val("runGame/RandomWaves");
         $('input[name="field_params"]').val("");
         $('#field_command_param_explanation').text("Randomized color waves at randomized intervals, indefinitely.");
+    });
+    $( "button#mold" ).click(function (event) {
+        $('input[name="field_command"]').val("runGame/Mold");
+        $('input[name="field_params"]').val("");
+        $('#field_command_param_explanation').text("Randomized color waves slowly change the color of the field.");
     });
     $( "button#addFairy" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/Fairy");
@@ -42,7 +57,7 @@ $( document ).ready(function() {
     });
     $( "button#chorusCircle" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/ChorusCircle");
-        $('input[name="field_params"]').val("30, 5.0");
+        $('input[name="field_params"]').val("30,5.0");
         $('#field_command_param_explanation').text("Parameters are seconds between song starts and volume (0-11)");
     });
     $( "button#gossip" ).click(function (event) {

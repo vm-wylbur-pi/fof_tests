@@ -44,7 +44,7 @@ class Flower:
         params = f"{filename},{startTime}"
         self.sendMQTTCommand(command="audio/playSoundFile", params=params)
 
-    def HuePulse(self, hue, startTime, rampDuration, peakDuration, brightness):
+    def HuePulse(self, hue, startTime="+0", rampDuration=300, peakDuration=200, brightness=250):
         params = f"{hue},{startTime},{rampDuration},{peakDuration},{brightness}"
         self.sendMQTTCommand(command="leds/addPattern/HuePulse", params=params)
 
@@ -52,14 +52,14 @@ class Flower:
         params = f"{satChange},{valChange},{startTime},{rampDuration},{peakDuration}"
         self.sendMQTTCommand(command="leds/addPattern/SatValPulse", params=params)
 
-    def SetBlossomColor(self, col: color.HSVAColor):
+    def SetBlossomColor(self, col: color.HSVAColor, startTime: str = "+0"):
         # To avoid sending a color to every flower on every frame, we only send an
         # update if the flower color changes.  TODO(..only if it changes by a lot. Some
         # changes will be small changes in alpha only.)
         # HSVA are all on the 0-255 scale.
         if self.currentBlossomColor != col:
             #print(f"Updating color for {self.id}, old={self.currentBlossomColor}, new={col}")
-            params = f"{col.hue},{col.sat},{col.val},{col.alpha}"
+            params = f"{col.hue},{col.sat},{col.val},{col.alpha},{startTime}"
             self.sendMQTTCommand(command="leds/updatePattern/BlossomColor", params=params)
             self.currentBlossomColor = col
 

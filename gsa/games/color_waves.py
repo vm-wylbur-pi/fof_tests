@@ -8,6 +8,7 @@ from ..field import Field
 from ..flower import Flower
 from ..game_state import GameState
 from .. import geometry
+from ..color import HSVAColor
 
 # If you tell a flower to light up and to play audio at the exact
 # same time, latency in the audio system means the sound comes
@@ -183,6 +184,23 @@ class CircularColorWave(CircularPulseWave):
                         rampDuration=self.pulseRampDuration,
                         peakDuration=self.pulsePeakDuration,
                         brightness=self.brightness)
+
+@dataclass
+class CircularStickyColorWave(CircularColorWave):
+
+    @classmethod
+    def randomInstance(cls, gameState: GameState):
+        base = CircularColorWave.randomInstance(gameState)
+        return CircularStickyColorWave(hue=random.randint(0, 255),
+                                 center=base.center,
+                                 startRadius=base.startRadius,
+                                 speed=base.speed,
+                                 startTime=base.startTime)
+
+    def callPulseOn(self, flower: Flower, controlTime: int):
+        CircularColorWave.callPulseOn(self, flower, controlTime)
+        flower.SetBlossomColor(HSVAColor(self.hue, 255,self.brightness, 255),
+                               controlTime+self.pulseRampDuration)
         
 
 @dataclass
@@ -210,7 +228,7 @@ class CircularSatValWave(CircularPulseWave):
 
 # Showcase wave effects by running through them with randomized parameters.
 @dataclass
-class RandomIdle(game.StatefulGame):
+class RandomWaves(game.StatefulGame):
     # The set of field-level effects available for use
     field_effects_menu = (
         StraightColorWave,
@@ -228,7 +246,7 @@ class RandomIdle(game.StatefulGame):
     def runLoop(self, gameState: GameState):
         now = time.time()
         if now > self.next_effect_time:
-            effect = random.choice(RandomIdle.field_effects_menu).randomInstance(gameState)
+            effect = random.choice(RandomWaves.field_effects_menu).randomInstance(gameState)
             # Start in the future, to give time for communication to full field.
             # This only works for StraightColorWave and CircularColorWave right now.
             effect.startTime = gameState.controlTimer() + 5000
@@ -236,3 +254,27 @@ class RandomIdle(game.StatefulGame):
             delay = random.normalvariate(self.effectGapSecsMean, self.effectGapSecsStDev)
             delay = max(delay, self.effectGapSecsMinimum)
             self.next_effect_time = now + delay
+
+
+# Slowly expanding circles of mold change the color of the field
+class Mold(game.StatefulGame):
+    SCHEDULING_DELAY = 2000
+
+    def __init__(self, wavePeriod: int = 15, waveSpeed=100):
+        # Behavior variables.  Constant for any game instance.
+        self.wavePeriod: int = wavePeriod  # Seconds
+        self.nextWaveTime: float = 0  # seconds since epoch, as returned by time.time()
+        self.waveSpeed = waveSpeed
+
+    def runLoop(self, gameState: GameState):
+        now = time.time()
+        if now > self.nextWaveTime:
+            mold_wave = CircularStickyColorWave(
+                hue=random.randint(0, 255),
+                center=gameState.field.randomPoint(),
+                startRadius=0,
+                speed=self.waveSpeed,
+                startTime=gameState.controlTimer() + Mold.SCHEDULING_DELAY,
+            )
+            mold_wave.run(gameState.flowers)
+            self.nextWaveTime = now + self.wavePeriod

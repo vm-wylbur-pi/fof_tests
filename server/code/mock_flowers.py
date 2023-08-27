@@ -9,7 +9,7 @@ import yaml
 broker_address = '127.0.0.1'
 broker_port = 1883
 topic = 'flower-heartbeats/'
-DEPLOYMENT_PATH = '../../fake_field/dress_rehearsal_deployment.yaml'
+DEPLOYMENT_PATH = '../../fake_field/playa_deployment.yaml'
 
 
 if len(sys.argv) > 1:

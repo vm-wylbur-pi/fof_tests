@@ -27,7 +27,8 @@ namespace version {
     //
     // Versions below (named for beaches) are versions meant for use on the playa.
     // "Venice": 2023-08-16. Add SatValPulse, leds/removePattern; remove MQTT recovery sound
-    const String Name = "Venice";
+    // "Muir": 2023-08-25. fix updatePattern crash bug, add startTime param to BlossomColor
+    const String Name = "Muir";
 }
 
 #endif // VERSION_H

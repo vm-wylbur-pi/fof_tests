@@ -26,7 +26,7 @@ sequence,mac,type,height
 25,BA:6F:A0,poppy,43
 26,CC:FC:C0,aster,43
 27,F0:70:90,geranium,46.5
-28,C0:F0:2C,aster,42
+28,C0:20:FC,aster,42
 29,C0:1E:78,aster,45
 30,BA:79:EC,aster,39
 31,C0:21:F0,aster,39
@@ -70,7 +70,7 @@ sequence,mac,type,height
 69,C0:16:A8,geranium,46
 70,CC:FE:7C,poppy,46
 71,CC:FE:CC,geranium,40
-72,CC:33:A0,geranium,44.5
+72,C0:33:A0,geranium,44.5
 73,D5:11:80,geranium,39
 74,C0:38:1C,aster,38
 75,C0:1C:94,geranium,40
@@ -159,5 +159,5 @@ sequence,mac,type,height
 158,F0:70:94,geranium,42
 159,C0:37:D0,aster,42.5
 160,BA:82:88,aster,39.5
-161,AA:AA:AA,aster,10
-162,BB:BB:BB,aster,10
+161,C0:28:D4,aster,10
+162,C0:1E:7C,aster,10
