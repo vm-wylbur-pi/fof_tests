@@ -90,6 +90,19 @@ const bArray = [
         'commands': [ ['flower-control/all/audio/playSoundFile', 'bigben/1dong.wav'] ]
     },
     {
+        'name': 'Play overture on 10 flowers', 'color': 'darkmagenta', 'column': 2,
+        'commands': [
+            ['flower-control/10/audio/playSoundFile', 'long-songs/FieldofFlowersOverture.wav'],
+            ['flower-control/30/audio/playSoundFile', 'long-songs/FieldofFlowersOverture.wav'],
+            ['flower-control/50/audio/playSoundFile', 'long-songs/FieldofFlowersOverture.wav'],
+            ['flower-control/70/audio/playSoundFile', 'long-songs/FieldofFlowersOverture.wav'],
+            ['flower-control/90/audio/playSoundFile', 'long-songs/FieldofFlowersOverture.wav'],
+            ['flower-control/110/audio/playSoundFile', 'long-songs/FieldofFlowersOverture.wav'],
+            ['flower-control/130/audio/playSoundFile', 'long-songs/FieldofFlowersOverture.wav'],
+            ['flower-control/150/audio/playSoundFile', 'long-songs/FieldofFlowersOverture.wav'],
+        ]
+    },
+    {
         'name': 'Chorus Circle', 'color': 'darkmagenta', 'column': 2,
         'commands': [ ['game-control/runGame/ChorusCircle', '30,5.0'] ]
     },
