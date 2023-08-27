@@ -68,22 +68,13 @@ Wave:
   # Nat specified that each of these works together as an alternating pair.
   # Each string here must appear as a key in the Syllables dict below
   SyllablePairs:
-    # - [Hi, yeahUP]
-    # - [OO, mm]
-    # - [Ha, oa]
-    # - [oo-oo, He]
-    # - [yeahUP, "yeah"]
-    # - [mm, Hi]
     - [Am, Am]
     - [Em, Em]
     - [G, G]
+
   Syllables:
-    # All files for the wave game are in a folder named "wave", which is in
-    # the root of the SD card filesystem.
-    #
-    # There's plenty of redundancy in the file naming here.  We decided this
-    # is preferable to computed filenames, since it leaves us more flexibility
-    # to make changes later.
+    # Am, Em, and Gm are the nice-sounding musical mallets.  We want to use
+    # These for most waves.
     Am:
       - mallets/Am_Balafon_Enote.wav
       - mallets/Am_Bells_Cnote.wav
@@ -98,7 +89,7 @@ Wave:
       - mallets/Em_kalimba_Gnote.wav
       - mallets/Em_marimba_Enote.wav
       - mallets/Em_vibes_Dnote.wav
-    Gm:
+    G:
       - mallets/G_balafon_Dnote.wav
       - mallets/G_bells_Cnote.wav
       - mallets/G_glock_Enote.wav
@@ -106,121 +97,14 @@ Wave:
       - mallets/G_marimba_Gnote.wav
       - mallets/G_vibes_Enote.wav
 
-    Am2:
-      - mallets/Am_Balafon_Enote.wav
-      - mallets/Am_Bells_Cnote.wav
-      - mallets/Am_Glock_Gnote.wav
-      - mallets/Am_Kalimba_hiAnote.wav
-      - mallets/Am_Marimba_Anote.wav
-      - mallets/Am_vibes_Cnote.wav
-    Em2:
-      - mallets/Em_balafon_Enote.wav
-      - mallets/Em_bells_Cnote.wav
-      - mallets/Em_glock_Dnote.wav
-      - mallets/Em_kalimba_Gnote.wav
-      - mallets/Em_marimba_Enote.wav
-      - mallets/Em_vibes_Dnote.wav
-    Gm2:
-      - mallets/G_balafon_Dnote.wav
-      - mallets/G_bells_Cnote.wav
-      - mallets/G_glock_Enote.wav
-      - mallets/G_kalimba_Gnote.wav
-      - mallets/G_marimba_Gnote.wav
-      - mallets/G_vibes_Enote.wav
-
-    Am3:
-      - mallets/Am_Balafon_Enote.wav
-      - mallets/Am_Bells_Cnote.wav
-      - mallets/Am_Glock_Gnote.wav
-      - mallets/Am_Kalimba_hiAnote.wav
-      - mallets/Am_Marimba_Anote.wav
-      - mallets/Am_vibes_Cnote.wav
-    Em3:
-      - mallets/Em_balafon_Enote.wav
-      - mallets/Em_bells_Cnote.wav
-      - mallets/Em_glock_Dnote.wav
-      - mallets/Em_kalimba_Gnote.wav
-      - mallets/Em_marimba_Enote.wav
-      - mallets/Em_vibes_Dnote.wav
-    Gm3:
-      - mallets/G_balafon_Dnote.wav
-      - mallets/G_bells_Cnote.wav
-      - mallets/G_glock_Enote.wav
-      - mallets/G_kalimba_Gnote.wav
-      - mallets/G_marimba_Gnote.wav
-      - mallets/G_vibes_Enote.wav
-
-    # aww: [wave2/aww1.wav, wave2/aww2.wav, wave2/aww3.wav, wave2/aww4.wav, wave2/aww5.wav, wave2/aww6.wav]
-    # mmm: [wave2/mmm1.wav, wave2/mmm2.wav, wave2/mmm3.wav, wave2/mmm4.wav, wave2/mmm5.wav, wave2/mmm6.wav]
-    # ooo: [wave2/ooo1.wav, wave2/ooo2.wav, wave2/ooo3.wav, wave2/ooo4.wav, wave2/ooo5.wav, wave2/ooo6.wav]
-    # woo: [wave2/woo1.wav, wave2/woo2.wav, wave2/woo3.wav, wave2/woo4.wav, wave2/woo5.wav, wave2/woo6.wav]
-    # ooUP: [wave2/ooUP1.wav, wave2/ooUP2.wav, wave2/ooUP3.wav, wave2/ooUP4.wav, wave2/ooUP5.wav, wave2/ooUP6.wav]
-    # whoa: [wave2/whoa1.wav, wave2/whoa2.wav, wave2/whoa3.wav, wave2/whoa4.wav, wave2/whoa5.wav, wave2/whoa6.wav]
-
-    # Hi:
-    #   - wave/Hi1.wav
-    #   - wave/Hi2.wav
-    #   - wave/Hi3.wav
-    #   - wave/Hi4.wav
-    #   - wave/Hi5.wav
-    #   - wave/Hi6.wav
-    # yeahUP:
-    #   - wave/yeahUP1.wav
-    #   - wave/yeahUP2.wav
-    #   - wave/yeahUP3.wav
-    #   - wave/yeahUP4.wav
-    #   - wave/yeahUP5.wav
-    #   - wave/yeahUP6.wav
-    # oa:
-    #   - wave/oa1.wav
-    #   - wave/oa2.wav
-    #   - wave/oa3.wav
-    #   - wave/oa4.wav
-    #   - wave/oa5.wav
-    #   - wave/oa6.wav
-    # # These are capital Os, not zeros
-    # OO:
-    #   - wave/OO1.wav
-    #   - wave/OO2.wav
-    #   - wave/OO3.wav
-    #   - wave/OO4.wav
-    #   - wave/OO5.wav
-    #   - wave/OO6.wav
-    # oo-oo:
-    #   - wave/oo-oo1.wav
-    #   - wave/oo-oo2.wav
-    #   - wave/oo-oo3.wav
-    #   - wave/oo-oo4.wav
-    #   - wave/oo-oo5.wav
-    #   - wave/oo-oo6.wav
-    # yeah:
-    #   - wave/yeah1.wav
-    #   - wave/yeah2.wav
-    #   - wave/yeah3.wav
-    #   - wave/yeah4.wav
-    #   - wave/yeah5.wav
-    #   - wave/yeah6.wav
-    # mm:
-    #   - wave/mm1.wav
-    #   - wave/mm2.wav
-    #   - wave/mm3.wav
-    #   - wave/mm4.wav
-    #   - wave/mm5.wav
-    #   - wave/mm6.wav
-    # ha:
-    #   - wave/ha1.wav
-    #   - wave/ha2.wav
-    #   - wave/ha3.wav
-    #   - wave/ha4.wav
-    #   - wave/ha5.wav
-    #   - wave/ha6.wav
-    # He:
-    #   - wave/He1.wav
-    #   - wave/He2.wav
-    #   - wave/He3.wav
-    #   - wave/He4.wav
-    #   # The He syllable directory had no He5.wav file.
-    #   - wave/He6.wav
+    # These are the vocal sounds.  Their file level is higher, they
+    # work at lower volumes.
+    aww: [wave2/aww1.wav, wave2/aww2.wav, wave2/aww3.wav, wave2/aww4.wav, wave2/aww5.wav, wave2/aww6.wav]
+    mmm: [wave2/mmm1.wav, wave2/mmm2.wav, wave2/mmm3.wav, wave2/mmm4.wav, wave2/mmm5.wav, wave2/mmm6.wav]
+    ooo: [wave2/ooo1.wav, wave2/ooo2.wav, wave2/ooo3.wav, wave2/ooo4.wav, wave2/ooo5.wav, wave2/ooo6.wav]
+    woo: [wave2/woo1.wav, wave2/woo2.wav, wave2/woo3.wav, wave2/woo4.wav, wave2/woo5.wav, wave2/woo6.wav]
+    ooUP: [wave2/ooUP1.wav, wave2/ooUP2.wav, wave2/ooUP3.wav, wave2/ooUP4.wav, wave2/ooUP5.wav, wave2/ooUP6.wav]
+    whoa: [wave2/whoa1.wav, wave2/whoa2.wav, wave2/whoa3.wav, wave2/whoa4.wav, wave2/whoa5.wav, wave2/whoa6.wav]
 
 # Every now and then, two adjacent flowers will be picked randomly, and one
 # of the following pairs of sound files will be picked randomly. Then each
