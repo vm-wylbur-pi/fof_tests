@@ -15,9 +15,9 @@ class FieldAction:
     duration: float     # How long to do it in minutes
 
 fieldActions = (
-    FieldAction(RandomWaves, 0.1),
-    FieldAction(Wave, 0.1),
-    FieldAction(ChorusCircle, 0.1),
+    FieldAction(RandomWaves, 1),
+    FieldAction(Wave, 1),
+    FieldAction(ChorusCircle, 2),
 )
 
 class FieldIdle(StatefulGame):
