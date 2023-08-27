@@ -324,11 +324,10 @@ function buildVolumeSliderRow() {
         b.textContent = `${volume}`
         b.className = "btn btn-primary";
         let volPercentage = volume / 11;
-        // Hue ramp from cyan->green->yellow->red
-        let hue = 180 - 180 * volPercentage;
-        b.style.backgroundColor = `hsl(${hue} 50% 70%)`;
+        let fontAdjust = 0.8 + volPercentage * 1.5
+        b.style.backgroundColor = "lightgrey"
         b.style.color = "black";
-        b.style.fontSize="x-large";
+        b.style.fontSize=`${fontAdjust}em`;
         b.addEventListener('click', function(event) {
             sendMQTTMessage(
                 topic='relayToAllFlowersWithThrottling/audio/setVolume',
