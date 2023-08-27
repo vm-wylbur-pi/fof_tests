@@ -7,7 +7,7 @@ from ..flower import Flower
 @dataclass
 class RelayCommandToAllFlowers(StatelessGame):
     command: str
-    rawParams: str
+    rawParams: str = ""
 
     def run(self, flowers: 'list[Flower]'):
         print(f"Relaying command to all flowers: {self.command}({self.rawParams})")
