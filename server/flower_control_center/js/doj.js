@@ -289,17 +289,17 @@ function buildButtons(){
 
     buildHueKeyedButtons(document.getElementById("bdiv-1-hue-pulse"),
                          headerText="Hue Pulse",
-                         topic="relayToAllFlowersWithThrottling/leds/addPattern/HuePulse",
+                         topic="gsa-control/relayToAllFlowersWithThrottling/leds/addPattern/HuePulse",
                          makePayload = function(hue) { return `${hue},+0` })
     
     buildHueKeyedButtons(document.getElementById("bdiv-1-whole-flower"),
                          headerText="Whole Flower",
-                         topic="relayToAllFlowersWithThrottling/leds/updatePattern/SolidHue",
+                         topic="gsa-control/relayToAllFlowersWithThrottling/leds/updatePattern/SolidHue",
                          makePayload = function(hue) { return `${hue},+0` })
 
     buildHueKeyedButtons(document.getElementById("bdiv-1-blossom-only"),
                          headerText="Blossom Only",
-                         topic="relayToAllFlowersWithThrottling/leds/updatePattern/BlossomColor",
+                         topic="gsa-control/relayToAllFlowersWithThrottling/leds/updatePattern/BlossomColor",
                          makePayload = function(hue) { return `${hue},250,200,255,+0` })
 }
 
@@ -322,7 +322,7 @@ function buildBrightnessSliderRow() {
             // Brightness on the flowers is a frac8 from 0-255
             let flowerBrightness = Math.round(255 * brightness/100);
             sendMQTTMessage(
-                topic='relayToAllFlowersWithThrottling/leds/setBrightness',
+                topic='gsa-control/relayToAllFlowersWithThrottling/leds/setBrightness',
                 payload=`${flowerBrightness}`);
         })
         rowDiv.appendChild(b);
@@ -345,7 +345,7 @@ function buildVolumeSliderRow() {
         b.style.fontSize=`${fontAdjust}em`;
         b.addEventListener('click', function(event) {
             sendMQTTMessage(
-                topic='relayToAllFlowersWithThrottling/audio/setVolume',
+                topic='gsa-control/relayToAllFlowersWithThrottling/audio/setVolume',
                 payload=`${volume}`);
         })
         rowDiv.appendChild(b);
