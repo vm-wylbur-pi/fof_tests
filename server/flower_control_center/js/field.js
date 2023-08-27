@@ -156,7 +156,7 @@ $(document).ready(function() {
                         x: parseInt(flower['x']),
                         y: parseInt(flower['y'])
                     },
-                    locked: false,
+                    locked: true,
                     group: 'nodes',
                     data: {
                         id: fid,
@@ -175,7 +175,7 @@ $(document).ready(function() {
                     d['py'] = evt.target.position('y')
                     $('input[name="flower"]').val(evt.target.data('id'));
                     console.log(evt.target.data())
-                    let pos = evt.target.data('id') + ' x: ' + evt.target.data('x') + ' , y: ' + evt.target.data('y')
+                    let pos = 'id: ' + evt.target.data('sid') + ' , ' + 'mac: ' + evt.target.data('id') + ' x: ' + evt.target.data('x') + ' , y: ' + evt.target.data('y')
                     $('#clickfield').html(pos)
                 })
             }

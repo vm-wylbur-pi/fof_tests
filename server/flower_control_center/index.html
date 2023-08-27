@@ -31,18 +31,13 @@
         <div class="row">
             <div id="navigation" class="col d-flex justify-content-center"></div>
         </div>
-
-        <div class="row" id="mqttROW">
-            <div class="col d-flex justify-content-center">
-                <p id="mqtt-status"></p>
-            </div>
-        </div>
-
-        <div class="row" id="reconnectROW">
-            <div class="col d-flex justify-content-center">
-                MQTT Broker IP:
-                <input type="text" id="mqtt-ip" value="192.168.1.72" />
-                <button id="mqtt-reconnect">Reconnect</button>
+        <div class="row" id="countRow">
+            <div class="col d-flex justify-content-center" >
+                <span style="color:green;padding-right:5px">Healthy:</span><span id="healthyCnt">???</span>&nbsp;&nbsp;&nbsp;
+                <span style="color:orange;padding-right:5px">Un-Healthy: </span><span id="unhealthyCnt">???</span>&nbsp;&nbsp;&nbsp;
+                <span id='absentTag' style="color: red;padding-right:5px">Absent: </span><span id="absentCnt">???</span>&nbsp;&nbsp;&nbsp;
+                <span id="rogueTag" style="padding-right:5px;">Rogue:</span><span id="rogueCnt" style="color:purple">???</span>&nbsp;&nbsp;&nbsp;
+                Deployment Total: <span id="totalCnt">???</span>
             </div>
         </div>
         <div class="row" id="fieldRow">
@@ -171,6 +166,19 @@
         <div class="row" id="tabulatorROW">
             <div class="col d-flex justify-content-center">
                 <div id="tabulator-table"></div>
+            </div>
+        </div>
+        <div class="row" id="mqttROW">
+            <div class="col d-flex justify-content-center">
+                <p id="mqtt-status"></p>
+            </div>
+        </div>
+
+        <div class="row" id="reconnectROW">
+            <div class="col d-flex justify-content-center">
+                MQTT Broker IP:
+                <input type="text" id="mqtt-ip" value="127.0.0.1" />
+                <button id="mqtt-reconnect">Reconnect</button>
             </div>
         </div>
     </div>

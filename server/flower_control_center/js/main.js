@@ -57,10 +57,11 @@ function connectToMQTT() {
 
 class TabulatorTable {
     constructor(){
+        this.status = ['Healthy','Broke']
         this.table = new Tabulator("#tabulator-table", {
             layout: "fitDataTable",
             columns: [
-                {title: "Status", field: "status", headerFilter:"input", visible: false},
+                {title: "Status", field: "status", headerFilter:"input", visible: true},
                 {title: "Flower ID", field: "flower_id", headerFilter:"input", cellClick: function(e,cell){
                         $('input[name="flower"]').val(cell.getData()['flower_id']);
                     }},
@@ -107,7 +108,7 @@ class TabulatorTable {
                 {title: "NTP Time", field: "ntp_time", headerFilter:"input"},
                 {title: "Ctrl Timer", field: "control_timer", headerFilter:"input"},
                 {title: "FL FPS", field: "FastLED_fps", headerFilter:"input"},
-                {title: "Status Infoz", field: "status_infoz", html: true, headerFilter:"input", visible: false}
+                {title: "Status Infoz", field: "status_infoz", html: true, headerFilter:"input", visible: true}
             ]
         })
     }
@@ -124,6 +125,51 @@ class TabulatorTable {
             let debugDiv = findOrCreateDebugDiv(heartbeat_json['id']);
             debugDiv.show();
         });
+        this.count()
+    }
+
+    count(){
+        let healthcnt = 0
+        let questioncnt = 0
+        let absent = 0
+        let seencnt = 0
+        let roguecnt = 0
+
+        this.table.getRows().forEach(row => {
+            let fid = row.getData()['flower_id']
+            let fele = cy.getElementById(fid)
+            fele.data('found','yes')
+
+            if (row.getData()['status'] == 'Healthy'){
+                healthcnt += 1
+                fele.data('healthy','yes')
+                fele.style('background-color','green')
+            }else if(row.getData()['status'].includes('Rogue')){
+                fele.data('rogue','yes')
+                fele.style('border-color','purple')
+                fele.style('border-width',5)
+                roguecnt += 1 
+            }else{
+                fele.data('healthy','no')
+                fele.style('background-color','orange')
+                questioncnt += 1
+            }
+            seencnt += 1
+        })
+
+        // highlight unfound flowers
+        let uf = cy.filter('node[found!="yes"]').filter('node[atype="flower"]').style('background-color','red')
+
+        $('#healthyCnt').text(healthcnt)
+        $('#unhealthyCnt').text(questioncnt)
+        $('#seenCnt').text(seencnt)
+        $('#rogueCnt').text(roguecnt)
+        if(fdeployment.flowers != undefined){
+            $('#totalCnt').text(fdeploymentcount)
+            $('#absentCnt').text(fdeploymentcount - seencnt)
+
+        }
+        //$('#flower-count').html(totalcnt + ' / ' + healthcnt + ' / ' + questioncnt)
     }
 
     fixup(heartbeat_payload){
@@ -170,18 +216,24 @@ function healthCheck(heartbeat_json){
 function healthCheckRow(heartbeat_json){
     heartbeat_json['status_infoz'] = ''
 
-    if (heartbeat_json['flower_id'][0] != 'B'){
+    // if no heartbeat in 20 seconds something is borked.
+    if (heartbeat_json['heartbeat_age'] <= 20){
         heartbeat_json['status'] = "Healthy"
+        heartbeat_json['status_infoz'] = ''
     }else{
         heartbeat_json['status'] = "Broke"
-        heartbeat_json['status_infoz'] = "Name starts with b which is sus"
+        heartbeat_json['status_infoz'] = "Heartbeat missed"
     }
 
-    if(heartbeat_json['ntp_time'] + 10000 > Date.now() ){
+    if(fdeployment.flowers != undefined && fdeployment.flowers[heartbeat_json.flower_id] == undefined){
+        heartbeat_json['status'] = heartbeat_json['status'] + ' Rogue'
+    }
+
+    /*if(heartbeat_json['ntp_time'] + 10000 > Date.now() ){
         heartbeat_json['status'] = "Broke"
         heartbeat_json['status_infoz'] += "<br> NTP time is old"
-    }
-    console.log('called for row ' + heartbeat_json['flower_id'])
+    }*/
+    //console.log('called for row ' + heartbeat_json['flower_id'])
 }
 
 class Heartbeat {
@@ -413,9 +465,18 @@ function mqttConnectionMaintenance() {
 }
 
 //# todo
-//v/ar ttable;
+//var ttable;
 
 $( document ).ready(function() {
+
+    // snag the flower deployment for stateful healthchecks
+    fdeployment = '';
+    fdeploymentcount = 0
+    $.ajax({url:'/api/config/deployment'})
+        .then(res => {
+            fdeployment = res
+            fdeploymentcount = Object.entries(res.flowers).length
+        })
 
     // defined on the global namespace.
     ttable = new TabulatorTable()
