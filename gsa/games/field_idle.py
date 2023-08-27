@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 import random
 import time
-from typing import List
+from typing import List, Tuple, Dict
 
 
-from .game import StatefulGame, StatelessGame
+from .game import Game, StatefulGame, StatelessGame
 from ..game_state import GameState
 from .color_waves import RandomWaves
 from .wave import Wave
@@ -13,20 +13,33 @@ from .chorus_circle import ChorusCircle
 # If true, all durations are cut by a factor of 50
 CYCLE_FAST_FOR_TESTING = True
 
+
+@dataclass
+class GameSpec:
+    gameClass: type         # class instead of instance to enable repeated instantiation
+    gameParams: Dict = None # Optional, games fall back to default params
+
 @dataclass
 class IdlePhase:
-    gameClasses: List[StatefulGame]  # What to do
-    duration: float     # How long to do it, in minutes
+    duration: float        # How long to do it, in minutes
+    games: List[GameSpec]  # What to do (game and parameters)
 
-idlePhases = (
-    IdlePhase(
-        [RandomWaves], 1
+idlePhases: Tuple[IdlePhase] = (
+    IdlePhase(duration=1,
+              games=[GameSpec(RandomWaves)]
     ),
-    IdlePhase(
-        [Wave], 1
+    IdlePhase(duration=1,
+              games=[GameSpec(Wave)]
     ),
-    IdlePhase(
-        [ChorusCircle], 2
+    IdlePhase(duration=2,
+              games=[GameSpec(ChorusCircle,
+                     {'gapBetweenSongs': 30, 'volume': 5.0}),
+        ]
+    ),
+    # Audio conclusion: Play the overture while running hue waves
+    # over a dark background.
+    IdlePhase(duration=2,
+              games=[GameSpec(ChorusCircle)]
     ),
 )
 
@@ -40,18 +53,26 @@ class FieldIdle(StatefulGame):
         if now > self.nextPhaseTime:
             gameState.clearStatefulGames(excluded=self)
             phase = idlePhases[self.nextPhaseIndex]
-            for gameClass in phase.gameClasses:
-                gameName = gameClass.__name__
-                if issubclass(gameClass, StatelessGame):
-                    gameState.runStatelessGame(gameClass())
-                elif issubclass(gameClass, StatefulGame):
-                    gameState.runStatefulGame(gameClass())
-                else:
-                    print(f"Unexpected class in idle phase: {gameName}")
-
             phaseDurationSecs = phase.duration * 60
             if CYCLE_FAST_FOR_TESTING:
                 phaseDurationSecs /= 50
+
+            print(f"Starting next idle phase, duration is {phaseDurationSecs} seconds.")
+
+            for spec in phase.games:
+                gameName = spec.gameClass.__name__
+                print(f"   {gameName}({spec.gameParams})")
+                if spec.gameParams is None:
+                    gameInstance = spec.gameClass()
+                else:
+                    gameInstance = spec.gameClass(**spec.gameParams)
+
+                if isinstance(gameInstance, StatelessGame):
+                    gameState.runStatelessGame(gameInstance)
+                elif isinstance(gameInstance, StatefulGame):
+                    gameState.runStatefulGame(gameInstance)
+                else:
+                    print(f"Unexpected class in idle phase: {gameName}")
             
             self.nextPhaseTime = now + (phaseDurationSecs)
             self.nextPhaseIndex = (self.nextPhaseIndex + 1) % len(idlePhases)
