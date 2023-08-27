@@ -10,6 +10,7 @@ import gsa.games.wave as wave_module
 import gsa.games.chorus_circle as chorus_circle
 import gsa.games.color_waves as color_waves
 import gsa.games.fairy as fairy
+import gsa.games.field_idle as field_idle
 import gsa.games.gossip as gossip
 import gsa.games.fun_screen_text as fun_screen_text
 import gsa.games.roll_call as roll_call
@@ -301,6 +302,10 @@ def HandleGameControlCommand(message, gameState):
 
     if command == "runGame/RandomWaves":
         gameState.runStatefulGame(color_waves.RandomWaves())
+        return
+
+    if command == "runGame/FieldIdle":
+        gameState.runStatefulGame(field_idle.FieldIdle())
         return
 
     if command == "runGame/FunScreenText":

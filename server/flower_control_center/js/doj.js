@@ -45,6 +45,10 @@ const bArray = [
     },
 
     {
+        'name': 'Field Idle - cycle through several games', 'color': 'grey', 'column': 2,
+        'commands': [ ['game-control/runGame/FieldIdle', ''] ]
+    },
+    {
         'name': 'Add Fairy', 'color': 'darkgoldenrod', 'column': 2,
         'commands': [ ['game-control/runGame/Fairy', ''] ]
     },
@@ -62,7 +66,7 @@ const bArray = [
     },
 
     {
-        'name': 'Gossip (sound only)', 'color': 'darkmagenta', 'column': 2,
+        'name': 'Gossip', 'color': 'darkmagenta', 'column': 2,
         'commands': [ ['game-control/runGame/Wave', ''] ]
     },
     {

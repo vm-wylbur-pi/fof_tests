@@ -20,6 +20,11 @@ $( document ).ready(function() {
         $('input[name="field_params"]').val("");
         $('#field_command_param_explanation').text("Removes all stateful field-level effects, and reset each flower to IndependentIdle + Raindrops");
     });
+    $( "button#fieldIdle" ).click(function (event) {
+        $('input[name="field_command"]').val("runGame/FieldIdle");
+        $('input[name="field_params"]').val("");
+        $('#field_command_param_explanation').text("Several games, each for a few minites, cycling forever.");
+    });
     $( "button#randomWaves" ).click(function (event) {
         $('input[name="field_command"]').val("runGame/RandomWaves");
         $('input[name="field_params"]').val("");
