@@ -8,13 +8,15 @@ from .game import Game, StatefulGame, StatelessGame
 from ..game_state import GameState
 
 from .audio import PlaySoundOnMultipleFlowers
+from .bouncing_blob import BouncingBlob
+from .fairy import FairyMob
 from .color_waves import RandomWaves
 from .wave import Wave
 from .chorus_circle import ChorusCircle
 from .relay import RelayCommandToAllFlowers
 
 # If true, all durations are cut by a factor of 50
-CYCLE_FAST_FOR_TESTING = True
+CYCLE_FAST_FOR_TESTING = False
 
 
 @dataclass
@@ -28,16 +30,57 @@ class IdlePhase:
     games: List[GameSpec]  # What to do (game and parameters)
 
 idlePhases: Tuple[IdlePhase] = (
-    IdlePhase(duration=1,
-              games=[GameSpec(RandomWaves)]
+    # Field default we know and love. Independent idle with rain, no sound.
+    IdlePhase(duration=0.2,
+              games=[GameSpec(RelayCommandToAllFlowers,
+                              {'command': 'leds/clearPatterns'}),
+                     GameSpec(RelayCommandToAllFlowers,
+                              {'command': 'leds/addPattern/IndependentIdle'}),
+                     GameSpec(RelayCommandToAllFlowers,
+                              {'command': 'leds/addPattern/Raindrops', 'rawParams': '6,3'}),
+                     ]
     ),
-    IdlePhase(duration=1,
+    # Darken the field w/power-down sound.  This is a brief phase.
+    IdlePhase(duration=0.1,
+              games=[GameSpec(RelayCommandToAllFlowers,
+                              {'command': 'leds/clearPatterns'}),
+                     GameSpec(PlaySoundOnMultipleFlowers,
+                              {'soundFile': 'punctuation/PunctuationDOWN.wav', 'numFlowers': 50}),
+                     ]
+    ),
+    # Start strong, with dark-field mallet-sound waves, for 3 minutes
+    IdlePhase(duration=3,
               games=[GameSpec(Wave)]
     ),
-    IdlePhase(duration=2,
-              games=[GameSpec(ChorusCircle,
-                     {'gapBetweenSongs': 30, 'volume': 5.0}),
-        ]
+    # Chorus circle over rain-only
+    IdlePhase(duration=3,
+              games=[GameSpec(RelayCommandToAllFlowers,
+                              {'command': 'leds/clearPatterns'}),
+                     GameSpec(RelayCommandToAllFlowers,
+                              {'command': 'leds/addPattern/Raindrops', 'rawParams': '2,3'}), 
+                     GameSpec(ChorusCircle),
+                    ]
+    ),
+    # Some bouncing blob, just for one minute
+    IdlePhase(duration=1,
+              games=[GameSpec(RelayCommandToAllFlowers,
+                              {'command': 'leds/clearPatterns'}),
+                     GameSpec(BouncingBlob),
+                    ]
+    ),
+    # A growing mob of fairies
+    IdlePhase(duration=1,
+              games=[GameSpec(RelayCommandToAllFlowers,
+                              {'command': 'leds/clearPatterns'}),
+                     GameSpec(FairyMob),
+                    ]
+    ),
+    # Dark-field mallet Waves again.  This is a good one
+    IdlePhase(duration=3,
+              games=[GameSpec(RelayCommandToAllFlowers,
+                              {'command': 'leds/clearPatterns'}),
+                     GameSpec(Wave),
+                    ]
     ),
     # Conclusion: Play the overture while running hue waves over a dark background.
     IdlePhase(duration=7.4,  # the overture is 7.3 minutes long
