@@ -47,6 +47,7 @@ class GameState:
     def updateStatefulGames(self):
         # Handle uloading of finished games
         if any(g.isDone() for g in self.stateful_games):
+            [g.stop(self) for g in self.stateful_games if g.isDone()]
             self.stateful_games = [g for g in self.stateful_games if not g.isDone()]
             self.sendHeartbeat()
 
