@@ -5,6 +5,7 @@ import random
 import paho.mqtt.client as paho_mqtt
 from geometry import Point, Vector
 
+import gsa.games.audio as audio
 import gsa.games.aura as aura
 import gsa.games.bouncing_blob as bouncing_blob
 import gsa.games.wave as wave_module
@@ -53,8 +54,8 @@ class MQTTThrottler:
             self.mqtt_clinet.publish(topic=msg.topic, payload=msg.payload,
                                      retain=msg.retain, qos=msg.qos)
             self.numThisFrame += 1
-        if self.buffer:
-            print(f"MQTT Throttler has {len(self.buffer)} messages unsent this frame.")
+        # if self.buffer:
+        #     print(f"MQTT Throttler has {len(self.buffer)} messages unsent this frame.")
 
 
 def SetupMQTTClient(gameState):
@@ -316,6 +317,16 @@ def HandleGameControlCommand(message, gameState):
         if len(params) >= 1:
             gapBetweenCallsMillis = int(params[0])
         gameState.runStatefulGame(roll_call.RollCall(gapBetweenCallsMillis))
+        return
+
+    if command == "runGame/PlaySoundOnMultipleFlowers":
+        soundFile = "unspecified"
+        numFlowers = None
+        if len(params) >= 1:
+            soundFile = params[0]
+        if len(params) >= 2:
+            numFlowers = int(params[1])
+        gameState.runStatelessGame(audio.PlaySoundOnMultipleFlowers(soundFile, numFlowers))
         return
 
     if command == "runGame/RandomWaves":
