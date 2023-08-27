@@ -1,5 +1,6 @@
 from collections import deque
 from dataclasses import dataclass
+import random
 
 import paho.mqtt.client as paho_mqtt
 from geometry import Point, Vector
@@ -14,6 +15,7 @@ import gsa.games.field_idle as field_idle
 import gsa.games.gossip as gossip
 import gsa.games.fun_screen_text as fun_screen_text
 import gsa.games.roll_call as roll_call
+import gsa.games.running_light as running_light
 import gsa.games.sleep_mode as sleep_mode
 import gsa.games.wind as wind
 
@@ -266,6 +268,22 @@ def HandleGameControlCommand(message, gameState):
         if len(params) >= 2:
             volume = float(params[1])
         gameState.runStatefulGame(chorus_circle.ChorusCircle(gapBetweenSongsSecs, volume))
+        return
+
+    if command == "runGame/RunningLight":
+        startTime = gameState.parseStartTime("+0")
+        flowersPerSec = 15
+        hue = random.randint(0,255)
+        sound = None
+        if len(params) >= 1:
+            startTime = gameState.parseStartTime(params[0])
+        if len(params) >= 2:
+            flowersPerSec = int(params[1])
+        if len(params) >= 3:
+            hue = int(params[2])
+        if len(params) >= 4:
+            sound = params[3]
+        gameState.runStatelessGame(running_light.RunningLight(startTime, flowersPerSec, hue, sound))
         return
 
     if command == "runGame/Gossip":

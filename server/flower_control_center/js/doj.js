@@ -43,6 +43,10 @@ const bArray = [
         'name': 'Random Waves, indefinitely', 'color': 'navy', 'column': 1,
         'commands': [ ['game-control/runGame/RandomWaves', '20,500,500,550,-600,+500'] ]
     },
+    {
+        'name': 'Running Light', 'color': 'darkgreen', 'column': 1,
+        'commands': [ ['game-control/runGame/RunningLight', '+0,15,100'] ]
+    },
 
     {
         'name': 'Field Idle - cycle through several games', 'color': 'grey', 'column': 2,
