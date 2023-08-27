@@ -15,6 +15,7 @@ import gsa.games.fairy as fairy
 import gsa.games.field_idle as field_idle
 import gsa.games.gossip as gossip
 import gsa.games.fun_screen_text as fun_screen_text
+import gsa.games.relay as relay
 import gsa.games.roll_call as roll_call
 import gsa.games.running_light as running_light
 import gsa.games.sleep_mode as sleep_mode
@@ -127,11 +128,16 @@ def HandleGSAControlCommand(message, gameState):
     params = raw_param_string.split(',') if raw_param_string else []
     print(f"Received GSA command: {command}({','.join(params)})")
 
+    # The topic is parsed in several steps:
+    #    raw_topic (message.topic): "gsa-control/relayToAllFlowersWithThrottling/SetBlossomColor"
+    #    command (parsed above): "relayToAllFlowersWithThrottling/SetBlossomColor"
+    #    flower_command (parsed below): "SetBlossomColor"
+    #  params: 32,+0
     if command.startswith("relayToAllFlowersWithThrottling"):
+        # Split off the flower command part
         _, flower_command = command.split('/', maxsplit=1)
-        print(f"Relaying command to all flowers: {flower_command}({raw_param_string})")
-        for flower in gameState.flowers:
-            flower.sendMQTTCommand(flower_command, raw_param_string)
+        gameState.runStatelessGame(
+            relay.RelayCommandToAllFlowers(flower_command, raw_param_string))
         return
 
     if command == "playSoundNearPoint":
