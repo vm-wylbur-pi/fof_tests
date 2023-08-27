@@ -6,9 +6,12 @@ from typing import List, Tuple, Dict
 
 from .game import Game, StatefulGame, StatelessGame
 from ..game_state import GameState
+
+from .audio import PlaySoundOnMultipleFlowers
 from .color_waves import RandomWaves
 from .wave import Wave
 from .chorus_circle import ChorusCircle
+from .relay import RelayCommandToAllFlowers
 
 # If true, all durations are cut by a factor of 50
 CYCLE_FAST_FOR_TESTING = True
@@ -17,7 +20,7 @@ CYCLE_FAST_FOR_TESTING = True
 @dataclass
 class GameSpec:
     gameClass: type         # class instead of instance to enable repeated instantiation
-    gameParams: Dict = None # Optional, games fall back to default params
+    gameParams: Dict = None # Optional, games fall back to the game's default params
 
 @dataclass
 class IdlePhase:
@@ -36,10 +39,18 @@ idlePhases: Tuple[IdlePhase] = (
                      {'gapBetweenSongs': 30, 'volume': 5.0}),
         ]
     ),
-    # Audio conclusion: Play the overture while running hue waves
-    # over a dark background.
-    IdlePhase(duration=2,
-              games=[GameSpec(ChorusCircle)]
+    # Conclusion: Play the overture while running hue waves over a dark background.
+    IdlePhase(duration=7.4,  # the overture is 7.3 minutes long
+              games=[GameSpec(RelayCommandToAllFlowers,
+                              {'command': 'leds/clearPatterns'}),
+                     GameSpec(RelayCommandToAllFlowers,
+                              {'command': 'leds/addPattern/Raindrops', 'rawParams': '2,3'}),
+                     GameSpec(RandomWaves),
+                     GameSpec(RelayCommandToAllFlowers,
+                              {'command': 'audio/setVolume', 'rawParams': '5.0'}),
+                     GameSpec(PlaySoundOnMultipleFlowers,
+                              {'soundFile': 'long-songs/FieldofFlowersOverture.wav', 'numFlowers': 10}),
+                    ]
     ),
 )
 
