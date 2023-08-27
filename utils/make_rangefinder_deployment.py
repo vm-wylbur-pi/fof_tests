@@ -200,6 +200,11 @@ print('description: "The real thing, made 2023-08-25"')
 print('field:')
 print('  x: 1150')
 print('  y: 1000')
+print('  corners:')
+print('    - [284, 568]')
+print('    - [326, 109]')
+print('    - [891, 98]')
+print('    - [1121, 550]')
 print('flowers:')
 
 for flower_num, point in flowers.items():

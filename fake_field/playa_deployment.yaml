@@ -3,6 +3,11 @@ description: "The real thing, made 2023-08-25"
 field:
   x: 1150
   y: 1000
+  corners:
+    - [284, 568]
+    - [326, 109]
+    - [891, 98]
+    - [1121, 550]
 flowers:
   "F0:6F:04": { id:    3,   x: 109,   y:  90 }
   "DA:E7:10": { id:    4,   x: 245,   y: 131 }
