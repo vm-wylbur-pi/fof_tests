@@ -286,6 +286,21 @@ function buildButtons(){
         // Append the button to the target div
         targetDiv.appendChild(b);
     })
+
+    buildHueKeyedButtons(document.getElementById("bdiv-1-hue-pulse"),
+                         headerText="Hue Pulse",
+                         topic="relayToAllFlowersWithThrottling/leds/addPattern/HuePulse",
+                         makePayload = function(hue) { return `${hue},+0` })
+    
+    buildHueKeyedButtons(document.getElementById("bdiv-1-whole-flower"),
+                         headerText="Whole Flower",
+                         topic="relayToAllFlowersWithThrottling/leds/updatePattern/SolidHue",
+                         makePayload = function(hue) { return `${hue},+0` })
+
+    buildHueKeyedButtons(document.getElementById("bdiv-1-blossom-only"),
+                         headerText="Blossom Only",
+                         topic="relayToAllFlowersWithThrottling/leds/updatePattern/BlossomColor",
+                         makePayload = function(hue) { return `${hue},250,200,255,+0` })
 }
 
 function buildBrightnessSliderRow() {
@@ -334,6 +349,22 @@ function buildVolumeSliderRow() {
                 payload=`${volume}`);
         })
         rowDiv.appendChild(b);
+    }
+}
+
+function buildHueKeyedButtons(container, headerText, topic, makePayload) {
+    let header = document.createElement("span");
+    header.textContent = headerText;
+    container.appendChild(header);
+    for (let hue=0; hue < 255; hue+=32) {
+        let b = document.createElement("button");
+        b.className = "btn btn-primary";
+        b.textContent = hue;
+        b.style.backgroundColor = `hsl(${hue} 80% 70%)`;
+        b.addEventListener('click', function(event) {
+            sendMQTTMessage(topic=topic, payload=makePayload(hue));
+        })
+        container.appendChild(b);
     }
 }
 
