@@ -308,6 +308,10 @@ def HandleGameControlCommand(message, gameState):
         gameState.runStatefulGame(fairy.Fairy())
         return
 
+    if command == "runGame/FairyMob":
+        gameState.runStatefulGame(fairy.FairyMob())
+        return
+
     if command == "runGame/BouncingBlob":
         blobSpeed = 200  # inches per second
         blobRadius = 150  # inches
