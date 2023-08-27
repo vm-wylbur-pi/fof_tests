@@ -266,6 +266,9 @@ function wait(duration) {
 }
 
 function buildButtons(){
+    buildBrightnessSliderRow();
+    buildVolumeSliderRow();
+
     bArray.forEach(button => {
         // Create a Bootstrap button element
         let b = document.createElement("button");
@@ -283,6 +286,56 @@ function buildButtons(){
         // Append the button to the target div
         targetDiv.appendChild(b);
     })
+}
+
+function buildBrightnessSliderRow() {
+    rowDiv = document.getElementById("BrightnessSlider");
+    let header = document.createElement("span");
+    header.textContent = "Field Brightness: "
+    rowDiv.appendChild(header);
+    for (let brightness = 0; brightness <= 100; brightness+=10) {
+        let b = document.createElement("button");
+        b.textContent = `${brightness}%`
+        b.className = "btn btn-primary";
+        b.style.backgroundColor = `hsl(0 0% ${brightness}%)`
+        if (brightness <= 60) {
+            b.style.color = "white";
+        } else {
+            b.style.color = "black";
+        }
+        b.addEventListener('click', function(event) {
+            // Brightness on the flowers is a frac8 from 0-255
+            let flowerBrightness = Math.round(255 * brightness/100);
+            sendMQTTMessage(
+                topic='relayToAllFlowersWithThrottling/leds/setBrightness',
+                payload=`${flowerBrightness}`);
+        })
+        rowDiv.appendChild(b);
+    }
+}
+
+function buildVolumeSliderRow() {
+    rowDiv = document.getElementById("VolumeSlider");
+    let header = document.createElement("span");
+    header.textContent = "Field Volume: "
+    rowDiv.appendChild(header);
+    for (let volume = 0; volume <= 11; volume+=1) {
+        let b = document.createElement("button");
+        b.textContent = `${volume}`
+        b.className = "btn btn-primary";
+        let volPercentage = volume / 11;
+        // Hue ramp from cyan->green->yellow->red
+        let hue = 180 - 180 * volPercentage;
+        b.style.backgroundColor = `hsl(${hue} 50% 70%)`;
+        b.style.color = "black";
+        b.style.fontSize="x-large";
+        b.addEventListener('click', function(event) {
+            sendMQTTMessage(
+                topic='relayToAllFlowersWithThrottling/audio/setVolume',
+                payload=`${volume}`);
+        })
+        rowDiv.appendChild(b);
+    }
 }
 
 const GSA_HEARTBEAT_CHECK_PERIOD = 1000; // milliseconds
