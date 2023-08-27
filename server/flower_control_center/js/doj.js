@@ -57,7 +57,7 @@ const bArray = [
         'commands': [ ['game-control/runGame/RollCall', '500'] ]
     },
     {
-        'name': 'Wave Game (expanding circles from people, with sound)', 'color': 'darkgoldenrod', 'column': 2,
+        'name': 'Sound Waves - targets people', 'color': 'darkgoldenrod', 'column': 2,
         'commands': [ ['game-control/runGame/Wave', ''] ]
     },
     {
@@ -92,7 +92,7 @@ const bArray = [
 
 
     {
-        'name': 'Raindrops only (sparkly)', 'column': 2, 
+        'name': 'Raindrops only', 'column': 2, 
         'resets_buttons': true,
         'commands': [
             ['flower-control/all/clearPatterns', ''],
