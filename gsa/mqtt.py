@@ -129,9 +129,9 @@ def HandleGSAControlCommand(message, gameState):
     print(f"Received GSA command: {command}({','.join(params)})")
 
     # The topic is parsed in several steps:
-    #    raw_topic (message.topic): "gsa-control/relayToAllFlowersWithThrottling/SetBlossomColor"
-    #    command (parsed above): "relayToAllFlowersWithThrottling/SetBlossomColor"
-    #    flower_command (parsed below): "SetBlossomColor"
+    #    raw_topic (message.topic): "gsa-control/relayToAllFlowersWithThrottling/leds/addPattern/SetBlossomColor"
+    #    command (parsed above): "relayToAllFlowersWithThrottling/leds/addPattern/SetBlossomColor"
+    #    flower_command (parsed below): "leds/addPattern/SetBlossomColor"
     #  params: 32,+0
     if command.startswith("relayToAllFlowersWithThrottling"):
         # Split off the flower command part
