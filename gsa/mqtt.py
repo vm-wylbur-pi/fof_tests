@@ -339,6 +339,14 @@ def HandleGameControlCommand(message, gameState):
         gameState.runStatelessGame(audio.PlaySoundOnMultipleFlowers(soundFile, numFlowers))
         return
 
+    if command == "runGame/PlaySoundSetAcrossField":
+        # Each param is a sound file name.
+        soundFiles = ["unspecified"]
+        if len(params) >= 1:
+            soundFiles = params
+        gameState.runStatelessGame(audio.PlaySoundSetAcrossField(soundFiles))
+        return
+
     if command == "runGame/RandomWaves":
         gameState.runStatefulGame(color_waves.RandomWaves())
         return
