@@ -71,7 +71,7 @@ const bArray = [
 
     {
         'name': 'Gossip', 'color': 'darkmagenta', 'column': 2,
-        'commands': [ ['game-control/runGame/Wave', ''] ]
+        'commands': [ ['game-control/runGame/Gossip', ''] ]
     },
     {
         'name': 'Big Ben chimes 4 o-clock', 'color': 'darkmagenta', 'column': 2,
@@ -87,7 +87,7 @@ const bArray = [
     },
     {
         'name': 'All flowers dong once', 'color': 'darkmagenta', 'column': 2,
-        'commands': [ ['flower-control/all/audio/playSoundFile', '1dong.wav'] ]
+        'commands': [ ['flower-control/all/audio/playSoundFile', 'bigben/1dong.wav'] ]
     },
     {
         'name': 'Chorus Circle', 'color': 'darkmagenta', 'column': 2,
