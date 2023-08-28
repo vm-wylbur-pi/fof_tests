@@ -92,14 +92,7 @@ const bArray = [
     {
         'name': 'Play overture on 10 flowers', 'color': 'darkmagenta', 'column': 2,
         'commands': [
-            ['flower-control/10/audio/playSoundFile', 'long-songs/FieldofFlowersOverture.wav'],
-            ['flower-control/30/audio/playSoundFile', 'long-songs/FieldofFlowersOverture.wav'],
-            ['flower-control/50/audio/playSoundFile', 'long-songs/FieldofFlowersOverture.wav'],
-            ['flower-control/70/audio/playSoundFile', 'long-songs/FieldofFlowersOverture.wav'],
-            ['flower-control/90/audio/playSoundFile', 'long-songs/FieldofFlowersOverture.wav'],
-            ['flower-control/110/audio/playSoundFile', 'long-songs/FieldofFlowersOverture.wav'],
-            ['flower-control/130/audio/playSoundFile', 'long-songs/FieldofFlowersOverture.wav'],
-            ['flower-control/150/audio/playSoundFile', 'long-songs/FieldofFlowersOverture.wav'],
+            ['game-control/runGame/PlaySoundOnMultipleFlowers', 'long-songs/FieldofFlowersOverture.wav,10'],
         ]
     },
     {
