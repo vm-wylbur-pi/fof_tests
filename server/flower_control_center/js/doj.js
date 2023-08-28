@@ -116,14 +116,6 @@ const bArray = [
             ['flower-control/all/addPattern/Raindrops', '4,3'],
         ]
     },
-    {
-        'name': 'two waves with a pause', 'column': 2,
-        'commands': [
-            ['game-control/runGame/CircularColorWave', ''],
-            ['wait', 3000],
-            ['game-control/runGame/CircularColorWave', ''],
-        ]
-    }
 ]
 
 const MQTT_BROKER_PORT = 9001;
