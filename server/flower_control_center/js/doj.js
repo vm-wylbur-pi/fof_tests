@@ -76,13 +76,12 @@ const bArray = [
     {
         'name': 'Big Ben chimes 4 o-clock', 'color': 'darkmagenta', 'column': 2,
         'commands': [
-            // Since we don't have a separate just-2nd-part sound file, play all at once
-            ['gsa-control/playSoundNearPoint', 'bigben/quarter.wav,500,0'],
-            ['gsa-control/playSoundNearPoint', 'bigben/halfhour.wav,950,50'],
-            ['gsa-control/playSoundNearPoint', 'bigben/threequarter.wav,500,900'],
-            ['gsa-control/playSoundNearPoint', 'bigben/preamble.wav,20,500'],
+            // Prelude chimes just on 8 flowers
+            ['game-control/runGame/PlaySoundOnMultipleFlowers', 'bigben/preamble.wav,8'],
+            // Time for the prelude to play
             ['wait', 15000],
-            ['flower-control/all/audio/playSoundFile', 'bigben/4dongs.wav'],
+            // Dongs on half of the flowers
+            ['game-control/runGame/PlaySoundOnMultipleFlowers', 'bigben/4dongs.wav,80'],
         ]
     },
     {
