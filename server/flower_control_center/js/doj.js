@@ -57,6 +57,14 @@ const bArray = [
         'commands': [ ['game-control/runGame/FieldIdle', ''] ]
     },
     {
+        'name': 'Rain storm - 2 minutes', 'color': 'darkgreen', 'column': 2,
+        'commands': rainstorm(lengthInMinutes=2.0)
+    },
+    {
+        'name': 'Rain storm - 5 minutes', 'color': 'darkgreen', 'column': 2,
+        'commands': rainstorm(lengthInMinutes=5.0)
+    },
+    {
         'name': 'Add Fairy', 'color': 'darkgoldenrod', 'column': 2,
         'commands': [ ['game-control/runGame/Fairy', ''] ]
     },
@@ -129,6 +137,79 @@ const bArray = [
         'commands': [ ['game-control/runGame/FunScreenText', ''] ]
     },
 ]
+
+function rainstorm(lengthInMinutes) {
+    // as written, this has 120 stretchable seconds, so it lasts 2 minutes if stretch=1.0
+    const stretch = lengthInMinutes / 2.0;
+    function stretchableSecs(nominal_secs) { return Math.round(1000 * nominal_secs * stretch);};
+    function secs(nominal_secs) { return Math.round(1000 * nominal_secs); };
+    return [
+        // Start state: reset the field to indepedent idle with raindrops
+        ['game-control/resetField', ''],
+        // Quiet opening: light rain. Start at different times on different flowers
+        ['gsa-control/relayToAllFlowersWithThrottling/audio/setVolume', '1'],
+        ['game-control/runGame/PlaySoundOnMultipleFlowers', 'nature-long/lightRain.wav,40'],
+        ['wait', secs(1) ], 
+        ['game-control/runGame/PlaySoundOnMultipleFlowers', 'nature-long/lightRain.wav,40'],
+        ['wait', secs(1) ], 
+        ['game-control/runGame/PlaySoundOnMultipleFlowers', 'nature-long/lightRain.wav,40'],
+        // Add some frogs on fewer flowers. They'll sing throughout.
+        ['game-control/runGame/PlaySoundOnMultipleFlowers', 'nature-long/FrogSounds.wav,10'],
+        
+        // Let it play a bit
+        ['wait', stretchableSecs(10) ], 
+        // Gradual ramp-up the rain
+        ['gsa-control/relayToAllFlowersWithThrottling/audio/setVolume', '2'],
+        ['wait', stretchableSecs(10) ], 
+        ['gsa-control/relayToAllFlowersWithThrottling/audio/setVolume', '2.5'],
+        ['wait', stretchableSecs(10) ], 
+        ['gsa-control/relayToAllFlowersWithThrottling/audio/setVolume', '3'],
+        ['wait', stretchableSecs(10) ], 
+        ['gsa-control/relayToAllFlowersWithThrottling/audio/setVolume', '3.5'],
+        ['wait', stretchableSecs(10) ], 
+        ['gsa-control/relayToAllFlowersWithThrottling/audio/setVolume', '4.0'],
+        ['wait', stretchableSecs(10) ], 
+        ['gsa-control/relayToAllFlowersWithThrottling/audio/setVolume', '4.5'],
+        ['wait', stretchableSecs(10) ], 
+        // Wind effect
+        ['game-control/runGame/Wind', ''],
+        // Lightning & Thunder
+        ['game-control/runGame/PlaySoundOnMultipleFlowers', 'nature/Thunder3_14sec.wav,10'],
+        ['wait', secs(1) ],  // Thunder hits a second after the start of the sound file
+        ['gsa-control/relayToAllFlowersWithThrottling/time/setBPM', '500'],
+        ['gsa-control/relayToAllFlowersWithThrottling/leds/addPattern/BeatFlash', ''],
+        ['wait', secs(0.1) ], 
+        ['gsa-control/relayToAllFlowersWithThrottling/leds/removePattern/BeatFlash', ''],
+        // Pause between thunders
+        ['wait', stretchableSecs(10) ], 
+        // 2nd thunder
+        ['game-control/runGame/PlaySoundOnMultipleFlowers', 'nature/Thunder3_14sec.wav,10'],
+        ['wait', secs(1) ],  // Thunder hits a second after the start of the sound file
+        ['gsa-control/relayToAllFlowersWithThrottling/time/setBPM', '500'],
+        ['gsa-control/relayToAllFlowersWithThrottling/leds/addPattern/BeatFlash', ''],
+        ['wait', secs(0.1) ], 
+        ['gsa-control/relayToAllFlowersWithThrottling/leds/removePattern/BeatFlash', ''],
+        // Gradual ramp-down the rain
+        ['gsa-control/relayToAllFlowersWithThrottling/audio/setVolume', '4.0'],
+        ['wait', stretchableSecs(10) ], 
+        ['gsa-control/relayToAllFlowersWithThrottling/audio/setVolume', '3.5'],
+        ['wait', stretchableSecs(10) ], 
+        // Stop the wind
+        ['game-control/clearGames', ''],
+        // Continue ramp-down
+        ['gsa-control/relayToAllFlowersWithThrottling/audio/setVolume', '3.0'],
+        ['wait', stretchableSecs(10) ], 
+        ['gsa-control/relayToAllFlowersWithThrottling/audio/setVolume', '2.5'],
+        ['wait', stretchableSecs(10) ], 
+        ['gsa-control/relayToAllFlowersWithThrottling/audio/setVolume', '2.5'],
+        ['wait', stretchableSecs(10) ], 
+        // Birds take over from rain & frogs by playing on almost all flowers
+        ['game-control/runGame/PlaySoundOnMultipleFlowers', 'nature-long/birds.wav,50'],
+        ['game-control/runGame/PlaySoundOnMultipleFlowers', 'nature-long/birds.wav,50'],
+        ['game-control/runGame/PlaySoundOnMultipleFlowers', 'nature-long/birds.wav,50'],
+    ]
+}
+
 
 const MQTT_BROKER_PORT = 9001;
 const HEARTBEAT_FRESHNESS_UPDATE_PERIOD = 1000; // milliseconds
