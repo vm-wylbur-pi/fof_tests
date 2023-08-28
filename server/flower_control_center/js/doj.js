@@ -428,6 +428,9 @@ function buildHueKeyedButtons(container, headerText, topic, makePayload) {
         b.className = "btn btn-primary";
         b.textContent = hue;
         let hue360 = Math.round(360 * hue/255);
+        if (hue == 64) {
+            hue360 = 64;  // Correct for FastLED "rainbow" space
+        }
         b.style.backgroundColor = `hsl(${hue360} 80% 70%)`;
         b.style.margin = "2px";
         b.addEventListener('click', function(event) {
