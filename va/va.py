@@ -34,17 +34,17 @@ pp = pprint.PrettyPrinter(indent=4)
 
 # TODO: Read this from config
 MQTT_ENABLED = True
-MQTT_BROKER_IP = "127.0.0.1"
+MQTT_BROKER_IP = "192.168.1.72"
 MQTT_PEOPLE_TOPIC = 'people-locations/'
 
 # open up the channel that we're reading from
 # CHANNEL = 'vids/lots-adults-four-lights.mp4'
-CHANNEL = '../../../vids/dress/dress-1.mp4'
-#CHANNEL = 1    #0 for mac, 1 or more for windows?
+# CHANNEL = '../../../vids/dress/dress-1.mp4'
+CHANNEL = 1    #0 for mac, 1 or more for windows?
 
 CALIBRATION = 'calibration_parameters.npz'
 DEPLOYMENT_FILE = '../fake_field/playa_deployment.yaml'
-MAX_FRAMES = -1
+MAX_FRAMES = 500
 #SKIP_FRAMES = -1  # used to test intermittent frames from a live camera
 
 # consume the first X of these and generate a median frame
@@ -88,12 +88,13 @@ bg_subtractor = cv2.createBackgroundSubtractorKNN(detectShadows=True, history=50
 
 detector = UltraDetector(bg_subtractor)
 
-# tracker = NorfairTracker()
+#tracker = NorfairTracker()
 tracker = SimpleTracker()
 #tracker = UltraTracker(bg_subtractor)
 
 #if WRITE_FILE:
-#    video_writer = cv2.VideoWriter(output_file, cv2.VideoWriter_fourcc(*'MJPG'), fps, (tracker.output_width, tracker.output_height))
+#    video_writer = cv2.VideoWriter(output_file, cv2.VideoWriter_fourcc(*'MJPG'), 30, (tracker.output_width, tracker.output_height))
+#    video_writer = cv2.VideoWriter(output_file, cv2.VideoWriter_fourcc(*'MJPG'), 30, (frame_width, frame_height))
 
 # object that contains all the peeps as PID: Person Object
 personTracker = {}
@@ -179,8 +180,8 @@ def draw_corners():
 
     return ref_points
 
-#print(draw_corners())
-#sys.exit()
+print(draw_corners())
+sys.exit()
 def detectCornerPoints(frame):
     grayFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -410,10 +411,11 @@ def viz_loop(fps=30.0):
             # Emit the encoded image to connected clients via the websocket
             socketio.emit('hud_update', hudframe_base64)
 
+    cap.release()
 
-    if WRITE_FILE:
+
+    if WRITE_FILE and video_writer != None:
         video_writer.release()
-        cap.release()
 
     if MQTT_ENABLED:
         mqtt_client.loop_stop()
