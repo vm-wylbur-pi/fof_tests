@@ -427,7 +427,8 @@ function buildHueKeyedButtons(container, headerText, topic, makePayload) {
         let b = document.createElement("button");
         b.className = "btn btn-primary";
         b.textContent = hue;
-        b.style.backgroundColor = `hsl(${hue} 80% 70%)`;
+        let hue360 = Math.round(360 * hue/255);
+        b.style.backgroundColor = `hsl(${hue360} 80% 70%)`;
         b.style.margin = "2px";
         b.addEventListener('click', function(event) {
             sendMQTTMessage(topic=topic, payload=makePayload(hue));
