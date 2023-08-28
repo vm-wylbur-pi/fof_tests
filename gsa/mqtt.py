@@ -1,9 +1,11 @@
 from collections import deque
 from dataclasses import dataclass
+import random
 
 import paho.mqtt.client as paho_mqtt
 from geometry import Point, Vector
 
+import gsa.games.audio as audio
 import gsa.games.aura as aura
 import gsa.games.bouncing_blob as bouncing_blob
 import gsa.games.wave as wave_module
@@ -13,7 +15,9 @@ import gsa.games.fairy as fairy
 import gsa.games.field_idle as field_idle
 import gsa.games.gossip as gossip
 import gsa.games.fun_screen_text as fun_screen_text
+import gsa.games.relay as relay
 import gsa.games.roll_call as roll_call
+import gsa.games.running_light as running_light
 import gsa.games.sleep_mode as sleep_mode
 import gsa.games.wind as wind
 
@@ -51,8 +55,8 @@ class MQTTThrottler:
             self.mqtt_clinet.publish(topic=msg.topic, payload=msg.payload,
                                      retain=msg.retain, qos=msg.qos)
             self.numThisFrame += 1
-        if self.buffer:
-            print(f"MQTT Throttler has {len(self.buffer)} messages unsent this frame.")
+        # if self.buffer:
+        #     print(f"MQTT Throttler has {len(self.buffer)} messages unsent this frame.")
 
 
 def SetupMQTTClient(gameState):
@@ -124,11 +128,16 @@ def HandleGSAControlCommand(message, gameState):
     params = raw_param_string.split(',') if raw_param_string else []
     print(f"Received GSA command: {command}({','.join(params)})")
 
+    # The topic is parsed in several steps:
+    #    raw_topic (message.topic): "gsa-control/relayToAllFlowersWithThrottling/leds/addPattern/SetBlossomColor"
+    #    command (parsed above): "relayToAllFlowersWithThrottling/leds/addPattern/SetBlossomColor"
+    #    flower_command (parsed below): "leds/addPattern/SetBlossomColor"
+    #  params: 32,+0
     if command.startswith("relayToAllFlowersWithThrottling"):
+        # Split off the flower command part
         _, flower_command = command.split('/', maxsplit=1)
-        print(f"Relaying command to all flowers: {flower_command}({raw_param_string})")
-        for flower in gameState.flowers:
-            flower.sendMQTTCommand(flower_command, raw_param_string)
+        gameState.runStatelessGame(
+            relay.RelayCommandToAllFlowers(flower_command, raw_param_string))
         return
 
     if command == "playSoundNearPoint":
@@ -268,6 +277,22 @@ def HandleGameControlCommand(message, gameState):
         gameState.runStatefulGame(chorus_circle.ChorusCircle(gapBetweenSongsSecs, volume))
         return
 
+    if command == "runGame/RunningLight":
+        startTime = gameState.parseStartTime("+0")
+        flowersPerSec = 15
+        hue = random.randint(0,255)
+        sound = None
+        if len(params) >= 1:
+            startTime = gameState.parseStartTime(params[0])
+        if len(params) >= 2:
+            flowersPerSec = int(params[1])
+        if len(params) >= 3:
+            hue = int(params[2])
+        if len(params) >= 4:
+            sound = params[3]
+        gameState.runStatelessGame(running_light.RunningLight(startTime, flowersPerSec, hue, sound))
+        return
+
     if command == "runGame/Gossip":
         gapBetweenGossipsSecs = 60
         volume = 3.0
@@ -281,6 +306,10 @@ def HandleGameControlCommand(message, gameState):
     if command == "runGame/Fairy":
         # No parameters (yet) for the fairy game.  It runs indefinitely.
         gameState.runStatefulGame(fairy.Fairy())
+        return
+
+    if command == "runGame/FairyMob":
+        gameState.runStatefulGame(fairy.FairyMob())
         return
 
     if command == "runGame/BouncingBlob":
@@ -298,6 +327,24 @@ def HandleGameControlCommand(message, gameState):
         if len(params) >= 1:
             gapBetweenCallsMillis = int(params[0])
         gameState.runStatefulGame(roll_call.RollCall(gapBetweenCallsMillis))
+        return
+
+    if command == "runGame/PlaySoundOnMultipleFlowers":
+        soundFile = "unspecified"
+        numFlowers = None
+        if len(params) >= 1:
+            soundFile = params[0]
+        if len(params) >= 2:
+            numFlowers = int(params[1])
+        gameState.runStatelessGame(audio.PlaySoundOnMultipleFlowers(soundFile, numFlowers))
+        return
+
+    if command == "runGame/PlaySoundSetAcrossField":
+        # Each param is a sound file name.
+        soundFiles = ["unspecified"]
+        if len(params) >= 1:
+            soundFiles = params
+        gameState.runStatelessGame(audio.PlaySoundSetAcrossField(soundFiles))
         return
 
     if command == "runGame/RandomWaves":

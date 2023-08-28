@@ -43,6 +43,14 @@ const bArray = [
         'name': 'Random Waves, indefinitely', 'color': 'navy', 'column': 1,
         'commands': [ ['game-control/runGame/RandomWaves', '20,500,500,550,-600,+500'] ]
     },
+    {
+        'name': 'Sound Waves - targets people', 'color': 'navy', 'column': 1,
+        'commands': [ ['game-control/runGame/Wave', ''] ]
+    },
+    {
+        'name': 'Running Light', 'color': 'darkgreen', 'column': 1,
+        'commands': [ ['game-control/runGame/RunningLight', '+0,15,100'] ]
+    },
 
     {
         'name': 'Field Idle - cycle through several games', 'color': 'grey', 'column': 2,
@@ -57,33 +65,42 @@ const bArray = [
         'commands': [ ['game-control/runGame/RollCall', '500'] ]
     },
     {
-        'name': 'Sound Waves - targets people', 'color': 'darkgoldenrod', 'column': 2,
-        'commands': [ ['game-control/runGame/Wave', ''] ]
-    },
-    {
         'name': 'Bouncing Blob', 'color': 'darkgoldenrod', 'column': 2,
         'commands': [ ['game-control/runGame/BouncingBlob', '400,150'] ]
     },
 
     {
         'name': 'Gossip', 'color': 'darkmagenta', 'column': 2,
-        'commands': [ ['game-control/runGame/Wave', ''] ]
+        'commands': [ ['game-control/runGame/Gossip', ''] ]
     },
     {
         'name': 'Big Ben chimes 4 o-clock', 'color': 'darkmagenta', 'column': 2,
         'commands': [
-            // Since we don't have a separate just-2nd-part sound file, play all at once
-            ['gsa-control/playSoundNearPoint', 'bigben/quarter.wav,500,0'],
-            ['gsa-control/playSoundNearPoint', 'bigben/halfhour.wav,950,50'],
-            ['gsa-control/playSoundNearPoint', 'bigben/threequarter.wav,500,900'],
-            ['gsa-control/playSoundNearPoint', 'bigben/preamble.wav,20,500'],
+            // Prelude chimes just on 8 flowers
+            ['game-control/runGame/PlaySoundOnMultipleFlowers', 'bigben/preamble.wav,8'],
+            // Time for the prelude to play
             ['wait', 15000],
-            ['flower-control/all/audio/playSoundFile', 'bigben/4dongs.wav'],
+            // Dongs on half of the flowers
+            ['game-control/runGame/PlaySoundOnMultipleFlowers', 'bigben/4dongs.wav,80'],
         ]
     },
     {
         'name': 'All flowers dong once', 'color': 'darkmagenta', 'column': 2,
-        'commands': [ ['flower-control/all/audio/playSoundFile', '1dong.wav'] ]
+        'commands': [ ['flower-control/all/audio/playSoundFile', 'bigben/1dong.wav'] ]
+    },
+    {
+        'name': 'Long track: Overture (7 min)', 'color': 'darkmagenta', 'column': 2,
+        'commands': [
+            ['game-control/runGame/PlaySoundOnMultipleFlowers',
+             'long-songs/FieldofFlowersOverture.wav,10'],
+        ]
+    },
+    {
+        'name': 'Long track: Flower Party (4 min)', 'color': 'darkmagenta', 'column': 2,
+        'commands': [
+            ['game-control/runGame/PlaySoundOnMultipleFlowers',
+             'long-songs/CulminatingFlowerParty_wavegame2.wav,10'],
+        ]
     },
     {
         'name': 'Chorus Circle', 'color': 'darkmagenta', 'column': 2,
@@ -99,14 +116,6 @@ const bArray = [
             ['flower-control/all/addPattern/Raindrops', '4,3'],
         ]
     },
-    {
-        'name': 'two waves with a pause', 'column': 2,
-        'commands': [
-            ['game-control/runGame/CircularColorWave', ''],
-            ['wait', 3000],
-            ['game-control/runGame/CircularColorWave', ''],
-        ]
-    }
 ]
 
 const MQTT_BROKER_PORT = 9001;
@@ -249,6 +258,9 @@ function wait(duration) {
 }
 
 function buildButtons(){
+    buildBrightnessSliderRow();
+    buildVolumeSliderRow();
+
     bArray.forEach(button => {
         // Create a Bootstrap button element
         let b = document.createElement("button");
@@ -266,6 +278,159 @@ function buildButtons(){
         // Append the button to the target div
         targetDiv.appendChild(b);
     })
+
+    buildHueKeyedButtons(document.getElementById("bdiv-1-hue-pulse"),
+                         headerText="Hue Pulse",
+                         topic="gsa-control/relayToAllFlowersWithThrottling/leds/addPattern/HuePulse",
+                         makePayload = function(hue) { return `${hue},+0` })
+    
+    buildHueKeyedButtons(document.getElementById("bdiv-1-whole-flower"),
+                         headerText="Whole Flower",
+                         topic="gsa-control/relayToAllFlowersWithThrottling/leds/updatePattern/SolidHue",
+                         makePayload = function(hue) { return `${hue},+0` })
+
+    buildHueKeyedButtons(document.getElementById("bdiv-1-blossom-only"),
+                         headerText="Blossom Only",
+                         topic="gsa-control/relayToAllFlowersWithThrottling/leds/updatePattern/BlossomColor",
+                         makePayload = function(hue) { return `${hue},250,200,255,+0` })
+
+    buildSoundButtons();
+}
+
+function buildSoundButtons() {
+    let sounds = [
+        ["dong", ["bigben/1dong.wav"]],
+        ["flutter", ["punctuation/PunctuationFlutter.wav"]],
+        ["zip-up", ["punctuation/PunctuationUP.wav"]],
+        ["zip-down", ["punctuation/PunctuationDOWN.wav"]],
+        ["zip-updown", ["punctuation/PunctuationUPDOWN.wav"]],
+        ["giggle", ["fairy/MikaylaGiggle2.wav",
+                    "fairy/MikaylaGiggle3.wav",
+                    "fairy/MikaylaGiggle5.wav",
+                    "fairy/MikaylaGiggle6.wav"]],
+        ["ha", ["wave/ha1.wav","wave/ha2.wav","wave/ha3.wav",
+                "wave/ha4.wav","wave/ha5.wav","wave/ha6.wav"]],
+        ["hi", ["wave/Hi1.wav","wave/Hi2.wav","wave/Hi3.wav",
+                "wave/Hi4.wav","wave/Hi5.wav","wave/Hi6.wav"]],
+        ["he", ["wave/He1.wav","wave/He2.wav","wave/He3.wav",
+                "wave/He4.wav",              ,"wave/He6.wav"]],
+        ["mm", ["wave/mm1.wav","wave/mm2.wav","wave/mm3.wav",
+                "wave/mm4.wav","wave/mm5.wav","wave/mm6.wav"]],
+        ["oa", ["wave/oa1.wav","wave/oa2.wav","wave/oa3.wav",
+                "wave/oa4.wav","wave/oa5.wav","wave/oa6.wav"]],
+        ["oh", ["wave/OO1.wav","wave/OO2.wav","wave/OO3.wav",
+                "wave/OO4.wav","wave/OO5.wav","wave/OO6.wav"]],
+        ["oo-oo", ["wave/oo-oo1.wav","wave/oo-oo2.wav","wave/oo-oo3.wav",
+                   "wave/oo-oo4.wav","wave/oo-oo5.wav","wave/oo-oo6.wav"]],
+        ["yeah", ["wave/yeah1.wav","wave/yeah2.wav","wave/yeah3.wav",
+                  "wave/yeah4.wav","wave/yeah5.wav","wave/yeah6.wav"]],
+        ["yeahUP", ["wave/yeahUP1.wav","wave/yeahUP2.wav","wave/yeahUP3.wav",
+                    "wave/yeahUP4.wav","wave/yeahUP5.wav","wave/yeahUP6.wav"]],
+        ["night", ["wave/goodnight1_jill.wav","wave/goodnight2_jill.wav",
+                    "wave/goodnight3jill.wav","wave/goodnight4_jill.wav"]],
+        ["Am mallets", ["mallets/Am_Balafon_Enote.wav",
+                        "mallets/Am_Bells_Cnote.wav",
+                        "mallets/Am_Glock_Gnote.wav",
+                        "mallets/Am_Kalimba_hiAnote.wav",
+                        "mallets/Am_Marimba_Anote.wav",
+                        "mallets/Am_vibes_Cnote.wav"]],
+        ["Em mallets", ["mallets/Em_balafon_Enote.wav",
+                        "mallets/Em_bells_Cnote.wav",
+                        "mallets/Em_glock_Dnote.wav",
+                        "mallets/Em_kalimba_Gnote.wav",
+                        "mallets/Em_marimba_Enote.wav",
+                        "mallets/Em_vibes_Dnote.wav"]],
+        ["G mallets", ["mallets/G_balafon_Dnote.wav",
+                       "mallets/G_bells_Cnote.wav",
+                       "mallets/G_glock_Enote.wav",
+                       "mallets/G_kalimba_Gnote.wav",
+                       "mallets/G_marimba_Gnote.wav",
+                       "mallets/G_vibes_Enote.wav"]],
+    ];
+
+    container = document.getElementById("bdiv-2-sound-buttons");
+    for(let i=0; i<sounds.length; i++) {
+        let b = document.createElement("button");
+        b.textContent = sounds[i][0];
+        b.className = "btn btn-primary";
+        b.style.backgroundColor = "teal"
+        b.style.color = "white";
+        b.style.margin = "2px";
+        b.addEventListener('click', function(event) {
+            sendMQTTMessage(
+                topic='game-control/runGame/PlaySoundSetAcrossField',
+                payload=sounds[i][1].join(',')
+            );
+        })
+        container.appendChild(b);
+    }
+}
+
+function buildBrightnessSliderRow() {
+    rowDiv = document.getElementById("BrightnessSlider");
+    let header = document.createElement("span");
+    header.textContent = "Field Brightness: "
+    rowDiv.appendChild(header);
+    for (let brightness = 0; brightness <= 100; brightness+=10) {
+        let b = document.createElement("button");
+        b.textContent = `${brightness}%`
+        b.className = "btn btn-primary";
+        b.style.backgroundColor = `hsl(0 0% ${brightness}%)`
+        if (brightness <= 60) {
+            b.style.color = "white";
+        } else {
+            b.style.color = "black";
+        }
+        b.addEventListener('click', function(event) {
+            // Brightness on the flowers is a frac8 from 0-255
+            let flowerBrightness = Math.round(255 * brightness/100);
+            sendMQTTMessage(
+                topic='gsa-control/relayToAllFlowersWithThrottling/leds/setBrightness',
+                payload=`${flowerBrightness}`);
+        })
+        rowDiv.appendChild(b);
+    }
+}
+
+function buildVolumeSliderRow() {
+    rowDiv = document.getElementById("VolumeSlider");
+    let header = document.createElement("span");
+    header.textContent = "Field Volume: "
+    rowDiv.appendChild(header);
+    for (let volume = 0; volume <= 11; volume+=1) {
+        let b = document.createElement("button");
+        b.textContent = `${volume}`
+        b.className = "btn btn-primary";
+        b.style.margin = "8px";
+        let volPercentage = volume / 11;
+        let fontAdjust = 0.8 + volPercentage * 1.5
+        b.style.backgroundColor = "lightgrey"
+        b.style.color = "black";
+        b.style.fontSize=`${fontAdjust}em`;
+        b.addEventListener('click', function(event) {
+            sendMQTTMessage(
+                topic='gsa-control/relayToAllFlowersWithThrottling/audio/setVolume',
+                payload=`${volume}`);
+        })
+        rowDiv.appendChild(b);
+    }
+}
+
+function buildHueKeyedButtons(container, headerText, topic, makePayload) {
+    let header = document.createElement("span");
+    header.textContent = headerText;
+    container.appendChild(header);
+    for (let hue=0; hue < 255; hue+=32) {
+        let b = document.createElement("button");
+        b.className = "btn btn-primary";
+        b.textContent = hue;
+        b.style.backgroundColor = `hsl(${hue} 80% 70%)`;
+        b.style.margin = "2px";
+        b.addEventListener('click', function(event) {
+            sendMQTTMessage(topic=topic, payload=makePayload(hue));
+        })
+        container.appendChild(b);
+    }
 }
 
 const GSA_HEARTBEAT_CHECK_PERIOD = 1000; // milliseconds

@@ -58,3 +58,28 @@ class Fairy(game.StatefulGame):
         # TODO: we could specify a duration. For now, the only way to end the game
         #       is to clear all games.
         return False
+
+# Add one fairy every few seconds, until there are 10, then stop.
+class FairyMob(game.StatefulGame):
+    def __init__(self):
+        self.startTime = time.time()
+        self.timeOfNextNewFairy = 0
+        self.secsBetweenNewFaries = 5
+        self.numFairies = 0
+        self.maxFairies = 10
+
+    def runLoop(self, gameState: GameState):
+        now = time.time()
+        if now > self.timeOfNextNewFairy:
+            self.numFairies += 1
+            self.timeOfNextNewFairy = now + self.secsBetweenNewFaries
+            print(f"FairyMob adding fairy #{self.numFairies}")
+            gameState.runStatefulGame(Fairy())
+
+    def isDone(self):
+        return self.numFairies > self.maxFairies
+    
+    def stop(self, gameState: GameState):
+        print(f"FairyMob ending; clearing all fairies.")
+        gameState.stateful_games = [g for g in gameState.stateful_games
+                                    if g.__class__.__name__ != "Fairy"]

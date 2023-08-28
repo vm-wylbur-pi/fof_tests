@@ -93,6 +93,21 @@ flowers = {
     109: Point("D", 22.8, 18.6),
     110: Point("D", 28.7, 17.8),
     111: Point("D", 35.4, 19.6),
+    112: Point("D", 38.2, 19.2),
+    113: Point("D", 42.0, 18.6),
+    114: Point("D", 12.9, 25.1),
+    115: Point("D", 19.3, 23.9),
+    116: Point("D", 25.3, 23.7),
+    117: Point("D", 28.2, 23.8),
+    118: Point("D", 32.9, 24.0),
+    119: Point("D", 37.6, 24.6),
+    120: Point("D", 42.2, 25.6),
+    121: Point("D", 14.5, 29.6),
+    122: Point("D", 22.5, 30.8),
+    123: Point("D", 25.3, 25.9),
+    124: Point("D", 32.8, 30.5),
+    125: Point("D", 37.3, 28.9),
+    126: Point("D", 43.6, 31.3),
 
     133: Point("A", 62.2, 84.8),
     132: Point("A", 61, 79.1),
@@ -185,6 +200,11 @@ print('description: "The real thing, made 2023-08-25"')
 print('field:')
 print('  x: 1150')
 print('  y: 1000')
+print('  corners:')
+print('    - [284, 568]')
+print('    - [326, 109]')
+print('    - [891, 98]')
+print('    - [1121, 550]')
 print('flowers:')
 
 for flower_num, point in flowers.items():

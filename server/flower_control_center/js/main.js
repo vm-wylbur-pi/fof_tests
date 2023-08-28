@@ -390,6 +390,9 @@ function checkGSAHeartbeatAge() {
     if (millisSinceLastHeartbeat > GSA_SILENCE_TO_WORRY_ABOUT) {
         let secsSinceLastHeartbeat = Math.round(millisSinceLastHeartbeat / 1000)
         $("#gsaStatus").text(`No GSA heatbeat received for ${secsSinceLastHeartbeat} seconds.`)
+        $( "#gsa-button-nav").removeClass("btn-success").addClass("btn-danger");
+    } else {
+        $( "#gsa-button-nav").removeClass("btn-danger").addClass("btn-success");
     }
 }
 

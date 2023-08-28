@@ -36,20 +36,47 @@
     <div class="row" id="mqttReconnectRow">
         <div class="col d-flex justify-content-center">
             MQTT Broker IP:
-            <input type="text" id="mqtt-ip" value="127.0.0.1" />
+            <input type="text" id="mqtt-ip" value="192.168.1.72" />
             <button id="mqtt-reconnect">Reconnect</button>
         </div>
+    </div>    
+    <div class="row" >
+        <div class="col d-flex gap-2 justify-content-center" id="BrightnessSlider">
+
+        </div>
     </div>
-    
+    <div class="row" >
+        <div class="col d-flex gap-3 justify-content-center" id="VolumeSlider">
+
+        </div>
+    </div>
     <div class="row" id="ButtonRow1">
         <div class="col d-flex">
             <div id="bdiv-1" class="d-grid gap-2 col-10 mx-auto">
 
+                <div class="row">
+                    <div id="bdiv-1-hue-pulse" class="col d-flex gap-2 justify-content-center">
+                    
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="bdiv-1-whole-flower" class="col d-flex gap-2 justify-content-center">
+                    
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="bdiv-1-blossom-only" class="col d-flex gap-2 justify-content-center">
+                    
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col d-flex">
             <div id="bdiv-2" class="d-grid gap-2 col-10 mx-auto">
-                <button id="ResetButtons" class="btn btn-danger" type="button">Reset Buttons</button>
+                <!-- <button id="ResetButtons" class="btn btn-danger" type="button">Reset Buttons</button> -->
+                <div id="bdiv-2-sound-buttons" class="col">
+                    Sounds
+                </div>
             </div>
         </div>
     </div>

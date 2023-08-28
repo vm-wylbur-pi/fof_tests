@@ -44,32 +44,24 @@ class Wave(game.StatefulGame):
         224,  # pink
     )
 
-    def __init__(self):
+    def __init__(self, specSyllables=["Am","Em","G"]):
         # Read configuration file (audio_files.yaml) which specifies the names
         # of the audio files for each syllable and which pairs of them go together.
-        self.audioFiles = game.getAudioFiles()['Wave']
+        self.syllableAudioFiles = game.getAudioFiles()['Wave']['Syllables']
+        self.specSyllables = specSyllables
 
         # Which person has which color. Colors are 0-255 hues.
         self.hueAssignments = RandomizedAssignments(Wave.ASSIGNABLE_HUES)
-        # Which person has which pair of syllables. Each pair is a list of two strings.
-        self.soundAssignments = RandomizedAssignments(
-            self.audioFiles['SyllablePairs'])
-
-        # For each person, whether the next sound is the First of the
-        # two-syllable pair of sounds assigned to them. This is used
-        # to implement the first/second alternation for each person.
-        self.nextSyllableIsFirstOfPair = defaultdict(bool)
 
         # The time when the next set of waves will be initiated.
         self.nextWaveTime: float = 0
 
-    def chooseSoundFiles(self, name) -> 'list[str]':
-        syllables = self.soundAssignments.getAssignment(name)
-        syllable = syllables[0] if self.nextSyllableIsFirstOfPair[name] else syllables[1]
-        self.nextSyllableIsFirstOfPair[name] = not self.nextSyllableIsFirstOfPair
-        if syllable not in self.audioFiles['Syllables']:
-            print(f"ERROR: no sound files configured for syllable {syllable}")
-        return self.audioFiles['Syllables'].get(syllable, [])
+    def chooseSoundFiles(self) -> 'list[str]':
+        choices = list(self.syllableAudioFiles.keys())
+        if self.specSyllables is not None:
+            choices = self.specSyllables
+        syllable = random.choice(choices)
+        return self.syllableAudioFiles.get(syllable, [])
 
     def runLoop(self, gameState: GameState):
         now = time.time()
@@ -78,7 +70,6 @@ class Wave(game.StatefulGame):
             # They will get consistent colors. But this isn't needed for the experience.
             people = gameState.people.people
             self.hueAssignments.updateAssignments(people.keys())
-            self.soundAssignments.updateAssignments(people.keys())
 
             num_waves = 0
             for name, person in people.items():
@@ -92,7 +83,7 @@ class Wave(game.StatefulGame):
                     startRadius=0,
                     speed=Wave.WAVE_SPEED,
                     startTime=gameState.controlTimer() + Wave.SCHEDULING_DELAY,
-                    soundFiles=self.chooseSoundFiles(name))
+                    soundFiles=self.chooseSoundFiles())
                 wave.run(gameState.flowers)
 
             if not people:
@@ -102,8 +93,7 @@ class Wave(game.StatefulGame):
                     startRadius=0,
                     speed=Wave.WAVE_SPEED,
                     startTime=gameState.controlTimer() + Wave.SCHEDULING_DELAY,
-                    soundFiles=self.audioFiles['Syllables'][random.choice(
-                        list(self.audioFiles['Syllables'].keys()))]
+                    soundFiles=self.chooseSoundFiles()
                 )
                 single_wave.run(gameState.flowers)
 
