@@ -116,6 +116,10 @@ const bArray = [
             ['flower-control/all/leds/addPattern/Raindrops', '7,3'],
         ]
     },
+    {
+        'name': 'Fun Screen Text', 'color': 'olive', 'column': 2, 
+        'commands': [ ['game-control/runGame/FunScreenText', ''] ]
+    },
 ]
 
 const MQTT_BROKER_PORT = 9001;
