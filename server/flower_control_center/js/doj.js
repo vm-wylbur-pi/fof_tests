@@ -286,12 +286,12 @@ function buildButtons(){
     
     buildHueKeyedButtons(document.getElementById("bdiv-1-whole-flower"),
                          headerText="Whole Flower",
-                         topic="gsa-control/relayToAllFlowersWithThrottling/leds/updatePattern/SolidHue",
+                         topic="gsa-control/relayToAllFlowersWithThrottling/leds/addPattern/SolidHue",
                          makePayload = function(hue) { return `${hue},+0` })
 
     buildHueKeyedButtons(document.getElementById("bdiv-1-blossom-only"),
                          headerText="Blossom Only",
-                         topic="gsa-control/relayToAllFlowersWithThrottling/leds/updatePattern/BlossomColor",
+                         topic="gsa-control/relayToAllFlowersWithThrottling/leds/addPattern/BlossomColor",
                          makePayload = function(hue) { return `${hue},250,200,255,+0` })
 
     buildSoundButtons();
