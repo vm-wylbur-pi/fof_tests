@@ -19,6 +19,7 @@ if __name__ == "__main__" and __package__ is None:
 
 import mqtt
 import game_state
+import gsa.games.field_idle
 
 DEPLOYMENT_FILE = "../fake_field/playa_deployment.yaml"
 
@@ -31,6 +32,9 @@ gameState = game_state.GameState(deployment_file=DEPLOYMENT_FILE)
 mqtt_client = mqtt.SetupMQTTClient(gameState)
 # Starts the MQTT polling loop in a separate thread.
 mqtt_client.loop_start()
+
+# GSA start-up behaviors
+gameState.runStatefulGame(gsa.games.field_idle.FieldIdle())
 
 # Interaction/game loop
 while True:
