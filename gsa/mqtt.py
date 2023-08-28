@@ -72,8 +72,8 @@ def SetupMQTTClient(gameState):
         client.subscribe("game-control/#")
         print('Subscribing to GSA-control messages')
         client.subscribe("gsa-control/#")
-        print('Subscribing to people location updates.')
-        client.subscribe("people-locations/#")
+        print('Not subscribing to people location updates.')
+        #client.subscribe("people-locations/#")
         print('Subscribing to reference clock updates.')
         client.subscribe("flower-control/all/time/setEventReference")
 

@@ -78,7 +78,7 @@ class People():
         for name in list(self.people.keys()):
             time_since_last_seen = now - self.people[name].last_seen
             if time_since_last_seen > PERSON_TIMEOUT:
-                print(f"Forgetting about {name}, who hasn't been seen in a while.")
+                #print(f"Forgetting about {name}, who hasn't been seen in a while.")
                 del self.people[name]
 
     def pickOneAtRandom(self):
