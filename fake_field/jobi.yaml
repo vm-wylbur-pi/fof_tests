@@ -1,0 +1,10 @@
+name: "JOBI Camp"
+description: "40ft under the pergola"
+field:
+  x: 500
+  y: 100
+flowers:
+  "F0:6D:8C": {id: 1, x: 60, y: 50}
+  "F0:70:1C": {id: 2, x: 180, y: 50}
+  "F0:6F:00": {id: 9, x: 300, y: 50}
+  "C0:1E:34": {id: 66, x: 440, y: 50}
