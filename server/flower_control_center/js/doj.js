@@ -44,6 +44,10 @@ const bArray = [
         'commands': [ ['game-control/runGame/RandomWaves', '20,500,500,550,-600,+500'] ]
     },
     {
+        'name': 'Sound Waves - targets people', 'color': 'navy', 'column': 1,
+        'commands': [ ['game-control/runGame/Wave', ''] ]
+    },
+    {
         'name': 'Running Light', 'color': 'darkgreen', 'column': 1,
         'commands': [ ['game-control/runGame/RunningLight', '+0,15,100'] ]
     },
@@ -59,10 +63,6 @@ const bArray = [
     {
         'name': 'Roll Call', 'color': 'darkgoldenrod', 'column': 2,
         'commands': [ ['game-control/runGame/RollCall', '500'] ]
-    },
-    {
-        'name': 'Sound Waves - targets people', 'color': 'darkgoldenrod', 'column': 2,
-        'commands': [ ['game-control/runGame/Wave', ''] ]
     },
     {
         'name': 'Bouncing Blob', 'color': 'darkgoldenrod', 'column': 2,
