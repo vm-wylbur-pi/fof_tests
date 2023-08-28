@@ -301,6 +301,77 @@ function buildButtons(){
                          headerText="Blossom Only",
                          topic="gsa-control/relayToAllFlowersWithThrottling/leds/updatePattern/BlossomColor",
                          makePayload = function(hue) { return `${hue},250,200,255,+0` })
+
+    buildSoundButtons();
+}
+
+function buildSoundButtons() {
+    let sounds = [
+        ["bong", ["bigben/1dong.wav"]],
+        ["flutter", ["punctuation/PunctuationFlutter.wav"]],
+        ["zip-up", ["punctuation/PunctuationUP.wav"]],
+        ["zip-down", ["punctuation/PunctuationDOWN.wav"]],
+        ["zip-updown", ["punctuation/PunctuationUPDOWN.wav"]],
+        ["giggle", ["fairy/MikaylaGiggle2.wav",
+                    "fairy/MikaylaGiggle3.wav",
+                    "fairy/MikaylaGiggle5.wav",
+                    "fairy/MikaylaGiggle6.wav"]],
+        ["ha", ["wave/ha1.wav","wave/ha2.wav","wave/ha3.wav",
+                "wave/ha4.wav","wave/ha5.wav","wave/ha6.wav"]],
+        ["hi", ["wave/Hi1.wav","wave/Hi2.wav","wave/Hi3.wav",
+                "wave/Hi4.wav","wave/Hi5.wav","wave/Hi6.wav"]],
+        ["he", ["wave/He1.wav","wave/He2.wav","wave/He3.wav",
+                "wave/He4.wav",              ,"wave/He6.wav"]],
+        ["mm", ["wave/mm1.wav","wave/mm2.wav","wave/mm3.wav",
+                "wave/mm4.wav","wave/mm5.wav","wave/mm6.wav"]],
+        ["oa", ["wave/oa1.wav","wave/oa2.wav","wave/oa3.wav",
+                "wave/oa4.wav","wave/oa5.wav","wave/oa6.wav"]],
+        ["oh", ["wave/OO1.wav","wave/OO2.wav","wave/OO3.wav",
+                "wave/OO4.wav","wave/OO5.wav","wave/OO6.wav"]],
+        ["oo-oo", ["wave/oo-oo1.wav","wave/oo-oo2.wav","wave/oo-oo3.wav",
+                   "wave/oo-oo4.wav","wave/oo-oo5.wav","wave/oo-oo6.wav"]],
+        ["yeah", ["wave/yeah1.wav","wave/yeah2.wav","wave/yeah3.wav",
+                  "wave/yeah4.wav","wave/yeah5.wav","wave/yeah6.wav"]],
+        ["yeahUP", ["wave/yeahUP1.wav","wave/yeahUP2.wav","wave/yeahUP3.wav",
+                    "wave/yeahUP4.wav","wave/yeahUP5.wav","wave/yeahUP6.wav"]],
+        ["night", ["wave/goodnight1_jill.wav","wave/goodnight2_jill.wav",
+                    "wave/goodnight3jill.wav","wave/goodnight4_jill.wav"]],
+        ["Am mallets", ["Am_Balafon_Enote.wav",
+                        "Am_Bells_Cnote.wav",
+                        "Am_Glock_Gnote.wav",
+                        "Am_Kalimba_hiAnote.wav",
+                        "Am_Marimba_Anote.wav",
+                        "Am_vibes_Cnote.wav"]],
+        ["Em mallets", ["Em_balafon_Enote.wav",
+                        "Em_bells_Cnote.wav",
+                        "Em_glock_Dnote.wav",
+                        "Em_kalimba_Gnote.wav",
+                        "Em_marimba_Enote.wav",
+                        "Em_vibes_Dnote.wav"]],
+        ["G mallets", ["G_balafon_Dnote.wav",
+                       "G_bells_Cnote.wav",
+                       "G_glock_Enote.wav",
+                       "G_kalimba_Gnote.wav",
+                       "G_marimba_Gnote.wav",
+                       "G_vibes_Enote.wav"]],
+    ];
+
+    container = document.getElementById("bdiv-2-sound-buttons");
+    for(let i=0; i<sounds.length; i++) {
+        let b = document.createElement("button");
+        b.textContent = sounds[i][0];
+        b.className = "btn btn-primary";
+        b.style.backgroundColor = "teal"
+        b.style.color = "white";
+        b.style.margin = "2px";
+        b.addEventListener('click', function(event) {
+            sendMQTTMessage(
+                topic='game-control/runGame/PlaySoundSetAcrossField',
+                payload=sounds[i][1].join(',')
+            );
+        })
+        container.appendChild(b);
+    }
 }
 
 function buildBrightnessSliderRow() {
