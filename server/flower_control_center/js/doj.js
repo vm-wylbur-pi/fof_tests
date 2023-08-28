@@ -92,14 +92,22 @@ const bArray = [
         'name': 'Long track - Overture - 7 min', 'color': 'darkmagenta', 'column': 2,
         'commands': [
             ['game-control/runGame/PlaySoundOnMultipleFlowers',
-             'long-songs/FieldofFlowersOverture.wav,10'],
+             'long-songs/FieldofFlowersOverture.wav,20'],
         ]
     },
     {
         'name': 'Long track - Flower Party - 4 min', 'color': 'darkmagenta', 'column': 2,
         'commands': [
             ['game-control/runGame/PlaySoundOnMultipleFlowers',
-             'long-songs/CulminatingFlowerParty_wavegame2.wav,10'],
+             'long-songs/CulminatingFlowerParty_wavegame2.wav,20'],
+        ]
+    },
+    {
+        'name': 'Dong with Hue Pulse', 'color': 'darkmagenta', 'column': 2,
+        'commands': [
+            ['flower-control/all/leds/addPattern/HuePulse', '165'],
+            ['wait', 200],
+            ['flower-control/all/audio/playSoundFile', 'bigben/1dong.wav'],
         ]
     },
     {
