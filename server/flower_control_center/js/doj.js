@@ -61,6 +61,10 @@ const bArray = [
         'commands': [ ['game-control/runGame/Fairy', ''] ]
     },
     {
+        'name': 'Start a Fairy mob', 'color': 'darkgoldenrod', 'column': 2,
+        'commands': [ ['game-control/runGame/FairyMob', ''] ]
+    },
+    {
         'name': 'Roll Call', 'color': 'darkgoldenrod', 'column': 2,
         'commands': [ ['game-control/runGame/RollCall', '500'] ]
     },
