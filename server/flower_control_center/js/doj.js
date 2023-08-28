@@ -409,6 +409,7 @@ function buildVolumeSliderRow() {
         let b = document.createElement("button");
         b.textContent = `${volume}`
         b.className = "btn btn-primary";
+        b.style.margin = "8px";
         let volPercentage = volume / 11;
         let fontAdjust = 0.8 + volPercentage * 1.5
         b.style.backgroundColor = "lightgrey"
@@ -432,6 +433,7 @@ function buildHueKeyedButtons(container, headerText, topic, makePayload) {
         b.className = "btn btn-primary";
         b.textContent = hue;
         b.style.backgroundColor = `hsl(${hue} 80% 70%)`;
+        b.style.margin = "2px";
         b.addEventListener('click', function(event) {
             sendMQTTMessage(topic=topic, payload=makePayload(hue));
         })
