@@ -85,10 +85,6 @@ const bArray = [
         ]
     },
     {
-        'name': 'All flowers dong once', 'color': 'darkmagenta', 'column': 2,
-        'commands': [ ['flower-control/all/audio/playSoundFile', 'bigben/1dong.wav'] ]
-    },
-    {
         'name': 'Long track: Overture (7 min)', 'color': 'darkmagenta', 'column': 2,
         'commands': [
             ['game-control/runGame/PlaySoundOnMultipleFlowers',
