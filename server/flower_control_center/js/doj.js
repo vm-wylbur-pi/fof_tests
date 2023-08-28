@@ -89,14 +89,14 @@ const bArray = [
         ]
     },
     {
-        'name': 'Long track: Overture (7 min)', 'color': 'darkmagenta', 'column': 2,
+        'name': 'Long track - Overture - 7 min', 'color': 'darkmagenta', 'column': 2,
         'commands': [
             ['game-control/runGame/PlaySoundOnMultipleFlowers',
              'long-songs/FieldofFlowersOverture.wav,10'],
         ]
     },
     {
-        'name': 'Long track: Flower Party (4 min)', 'color': 'darkmagenta', 'column': 2,
+        'name': 'Long track - Flower Party - 4 min', 'color': 'darkmagenta', 'column': 2,
         'commands': [
             ['game-control/runGame/PlaySoundOnMultipleFlowers',
              'long-songs/CulminatingFlowerParty_wavegame2.wav,10'],
