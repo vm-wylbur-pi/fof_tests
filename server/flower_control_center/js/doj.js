@@ -307,7 +307,7 @@ function buildButtons(){
 
 function buildSoundButtons() {
     let sounds = [
-        ["bong", ["bigben/1dong.wav"]],
+        ["dong", ["bigben/1dong.wav"]],
         ["flutter", ["punctuation/PunctuationFlutter.wav"]],
         ["zip-up", ["punctuation/PunctuationUP.wav"]],
         ["zip-down", ["punctuation/PunctuationDOWN.wav"]],
