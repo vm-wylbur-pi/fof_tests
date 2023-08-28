@@ -171,6 +171,7 @@ def HandleGameControlCommand(message, gameState):
         gameState.clearStatefulGames()
         for flower in gameState.flowers:
             flower.sendMQTTCommand("leds/clearPatterns", params="")
+            flower.sendMQTTCommand("audio/stopSoundFile", params="")
             flower.sendMQTTCommand("leds/addPattern/IndependentIdle", params="")
             flower.sendMQTTCommand("leds/addPattern/Raindrops", params="5,3")
         return
