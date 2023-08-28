@@ -90,14 +90,14 @@ const bArray = [
         'commands': [ ['flower-control/all/audio/playSoundFile', 'bigben/1dong.wav'] ]
     },
     {
-        'name': 'Play overture on 10 flowers', 'color': 'darkmagenta', 'column': 2,
+        'name': 'Long track: Overture (7 min)', 'color': 'darkmagenta', 'column': 2,
         'commands': [
             ['game-control/runGame/PlaySoundOnMultipleFlowers',
              'long-songs/FieldofFlowersOverture.wav,10'],
         ]
     },
     {
-        'name': 'Play wave-2 culmination track on 10 flowers', 'color': 'darkmagenta', 'column': 2,
+        'name': 'Long track: Flower Party (4 min)', 'color': 'darkmagenta', 'column': 2,
         'commands': [
             ['game-control/runGame/PlaySoundOnMultipleFlowers',
              'long-songs/CulminatingFlowerParty_wavegame2.wav,10'],
