@@ -112,8 +112,8 @@ const bArray = [
         'name': 'Raindrops only', 'column': 2, 
         'resets_buttons': true,
         'commands': [
-            ['flower-control/all/clearPatterns', ''],
-            ['flower-control/all/addPattern/Raindrops', '4,3'],
+            ['flower-control/all/leds/clearPatterns', ''],
+            ['flower-control/all/leds/addPattern/Raindrops', '7,3'],
         ]
     },
 ]
