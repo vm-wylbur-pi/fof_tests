@@ -40,11 +40,11 @@ const bArray = [
         'commands': [ ['game-control/runGame/CircularColorWave', '20,500,500,550,-600,+500'] ]
     },
     {
-        'name': 'Random Waves, indefinitely', 'color': 'navy', 'column': 1,
+        'name': 'Color Waves silent', 'color': 'navy', 'column': 1,
         'commands': [ ['game-control/runGame/RandomWaves', '20,500,500,550,-600,+500'] ]
     },
     {
-        'name': 'Sound Waves - targets people', 'color': 'navy', 'column': 1,
+        'name': 'Color Waves with Mallet Chords', 'color': 'navy', 'column': 1,
         'commands': [ ['game-control/runGame/Wave', ''] ]
     },
     {
