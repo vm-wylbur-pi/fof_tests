@@ -22,7 +22,7 @@ class ChorusCircle(game.StatefulGame):
         self.gapBetweenSongs: float = gapBetweenSongs  # Seconds
         self.volume: float = volume
         self.audioFiles: Dict[str, List[str]] = game.getAudioFiles()['ChorusCircle']
-        self.backgroundColor = HSVAColor(0, 200, 200, 255)
+        self.backgroundColor = HSVAColor(0, 180, 200, 255)
         # State variables
         self.nextSongTime: float = 0  # seconds since epoch, as returned by time.time()
         self.lastSingers: List[Flower] = None
@@ -54,7 +54,8 @@ class ChorusCircle(game.StatefulGame):
             otherSingers = startingFlower.findNClosestFlowers(gameState.flowers, 5)
             singers = [startingFlower] + otherSingers
             parts = random.choice(list(self.audioFiles.values()))
-            chorusColor = HSVAColor(random.randint(0, 255), 255, 250, 255)
+            # Chorus hue must not be close to the red background (which is at 0 and 255)
+            chorusColor = HSVAColor(random.randint(32, 224), 255, 250, 255)
 
             print(f"Starting chorus on flowers {[f.num for f in singers]} singing {parts}")
             delay = 0
