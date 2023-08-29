@@ -10,7 +10,7 @@ class PlaySoundOnMultipleFlowers(StatelessGame):
     soundFile: str
     # Gain sync at the cost of latency. latency only matters for stuff
     # like interactive reactions or the DoJ interface.
-    syncToControlClock: bool = True
+    syncToControlClock: bool = False
     numFlowers: int = None  # How many flowers; if None, play on all flowers
 
     # More gives more time for all flowers to get the message (better sync),
