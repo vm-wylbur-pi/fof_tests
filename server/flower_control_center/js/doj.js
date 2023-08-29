@@ -101,8 +101,9 @@ const bArray = [
     {
         'name': 'Long track - Overture - 7 min', 'color': 'darkmagenta', 'column': 2,
         'commands': [
+            ['gsa-control/relayToAllFlowersWithThrottling/audio/setVolume', '5'],
             ['game-control/runGame/PlaySoundOnMultipleFlowers',
-             'long-songs/FieldofFlowersOverture.wav,20'],
+             'long-songs/FieldofFlowersOverture.wav,15'],
         ]
     },
     {
