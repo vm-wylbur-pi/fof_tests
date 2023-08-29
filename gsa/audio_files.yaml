@@ -76,27 +76,40 @@ Wave:
 
   Syllables:
     # Am, Em, and Gm are the nice-sounding musical mallets.  We want to use
-    # These for most waves.
+    # these for most waves.
+    #
+    # The important parts (the Glock, Marimba, and Vibes) each appear twice
+    # in each list, so they end up played on twice as many flowers, so that
+    # sound more prominent in the mix.
     Am:
       - mallets/Am_Balafon_Enote.wav
       - mallets/Am_Bells_Cnote.wav
-      - mallets/Am_Glock_Gnote.wav
       - mallets/Am_Kalimba_hiAnote.wav
+      - mallets/Am_Glock_Gnote.wav
+      - mallets/Am_Glock_Gnote.wav
       - mallets/Am_Marimba_Anote.wav
+      - mallets/Am_Marimba_Anote.wav
+      - mallets/Am_vibes_Cnote.wav
       - mallets/Am_vibes_Cnote.wav
     Em:
       - mallets/Em_balafon_Enote.wav
       - mallets/Em_bells_Cnote.wav
-      - mallets/Em_glock_Dnote.wav
       - mallets/Em_kalimba_Gnote.wav
+      - mallets/Em_glock_Dnote.wav
+      - mallets/Em_glock_Dnote.wav
       - mallets/Em_marimba_Enote.wav
+      - mallets/Em_marimba_Enote.wav
+      - mallets/Em_vibes_Dnote.wav
       - mallets/Em_vibes_Dnote.wav
     G:
       - mallets/G_balafon_Dnote.wav
       - mallets/G_bells_Cnote.wav
-      - mallets/G_glock_Enote.wav
       - mallets/G_kalimba_Gnote.wav
+      - mallets/G_glock_Enote.wav
+      - mallets/G_glock_Enote.wav
       - mallets/G_marimba_Gnote.wav
+      - mallets/G_marimba_Gnote.wav
+      - mallets/G_vibes_Enote.wav
       - mallets/G_vibes_Enote.wav
 
     # These are the vocal sounds.  Their file level is higher, they
