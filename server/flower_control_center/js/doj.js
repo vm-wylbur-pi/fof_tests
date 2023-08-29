@@ -204,9 +204,9 @@ function rainstorm(lengthInMinutes) {
         ['gsa-control/relayToAllFlowersWithThrottling/audio/setVolume', '2.5'],
         ['wait', stretchableSecs(10) ], 
         // Birds take over from rain & frogs by playing on almost all flowers
-        ['game-control/runGame/PlaySoundOnMultipleFlowers', 'nature-long/birds.wav,50'],
-        ['game-control/runGame/PlaySoundOnMultipleFlowers', 'nature-long/birds.wav,50'],
-        ['game-control/runGame/PlaySoundOnMultipleFlowers', 'nature-long/birds.wav,50'],
+        ['game-control/runGame/PlaySoundOnMultipleFlowers', 'nature-long/birds.wav,3'],
+        ['game-control/runGame/PlaySoundOnMultipleFlowers', 'nature-long/birds.wav,3'],
+        ['game-control/runGame/PlaySoundOnMultipleFlowers', 'nature-long/birds.wav,3'],
     ]
 }
 
