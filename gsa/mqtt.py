@@ -269,7 +269,7 @@ def HandleGameControlCommand(message, gameState):
         return
 
     if command == "runGame/ChorusCircle":
-        gapBetweenSongsSecs = 60
+        gapBetweenSongsSecs = 10
         volume = 5.0
         if len(params) >= 1:
             gapBetweenSongsSecs = int(params[0])
