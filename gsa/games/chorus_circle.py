@@ -22,6 +22,7 @@ class ChorusCircle(game.StatefulGame):
         self.gapBetweenSongs: float = gapBetweenSongs  # Seconds
         self.volume: float = volume
         self.audioFiles: Dict[str, List[str]] = game.getAudioFiles()['ChorusCircle']
+        self.backgroundColor = HSVAColor(0, 200, 200, 255)
         # State variables
         self.nextSongTime: float = 0  # seconds since epoch, as returned by time.time()
         self.lastSingers: List[Flower] = None
@@ -29,7 +30,10 @@ class ChorusCircle(game.StatefulGame):
 
     def runLoop(self, gameState: GameState):
         if self.firstRun:
-            self.setAllToTransparent(gameState.flowers)
+            # Create a new BlossomColor pattern instance at the top of the stack, which
+            # will be modified during songs.
+            for flower in gameState.flowers:
+                flower.SetBlossomColor(self.backgroundColor, newPattern=True)
             self.firstRun = False
 
         now = time.time()
@@ -37,7 +41,7 @@ class ChorusCircle(game.StatefulGame):
             
             if self.lastSingers is not None:
                 print(f"resetting last singers: {self.lastSingers}")
-                self.setAllToTransparent(self.lastSingers)
+                self.setAllToBackgroundColor(self.lastSingers)
 
             # Chose where to have the chorus:
             startingFlower = None
@@ -63,10 +67,9 @@ class ChorusCircle(game.StatefulGame):
             self.lastSingers = singers
             self.nextSongTime = now + self.gapBetweenSongs
 
-    def setAllToTransparent(self, flowers):            
-        transparent = HSVAColor(0, 0, 0, 0) # only alpha=0 matters here
+    def setAllToBackgroundColor(self, flowers):            
         for flower in flowers:
-            flower.SetBlossomColor(transparent)
+            flower.SetBlossomColor(self.backgroundColor)
 
     def stop(self, gameState: GameState):
-        self.setAllToTransparent(gameState.flowers)
+        self.setAllToBackgroundColor(gameState.flowers)

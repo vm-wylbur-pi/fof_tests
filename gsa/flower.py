@@ -52,15 +52,16 @@ class Flower:
         params = f"{satChange},{valChange},{startTime},{rampDuration},{peakDuration}"
         self.sendMQTTCommand(command="leds/addPattern/SatValPulse", params=params)
 
-    def SetBlossomColor(self, col: color.HSVAColor, startTime: str = "+0"):
+    def SetBlossomColor(self, col: color.HSVAColor, newPattern=False, startTime: str = "+0"):
         # To avoid sending a color to every flower on every frame, we only send an
         # update if the flower color changes.  TODO(..only if it changes by a lot. Some
         # changes will be small changes in alpha only.)
         # HSVA are all on the 0-255 scale.
-        if self.currentBlossomColor != col:
+        patternChange = "addPattern" if newPattern else "updatePattern"
+        if self.currentBlossomColor != col or newPattern:
             #print(f"Updating color for {self.id}, old={self.currentBlossomColor}, new={col}")
             params = f"{col.hue},{col.sat},{col.val},{col.alpha},{startTime}"
-            self.sendMQTTCommand(command="leds/updatePattern/BlossomColor", params=params)
+            self.sendMQTTCommand(command=f"leds/{patternChange}/BlossomColor", params=params)
             self.currentBlossomColor = col
 
     def SetRaindropFrequency(self, freq: int):
