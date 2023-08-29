@@ -31,7 +31,7 @@ class Wind(game.StatefulGame):
                 satChange=0.5,
                 valChange=1.0
             )
-            wave.run(gameState.flowers)
+            wave.run(gameState)
 
             delay = random.normalvariate(self.waveGapSecsMean, self.waveGapSecsStDev)
             delay = max(delay, self.waveGapSecsMinimum)
