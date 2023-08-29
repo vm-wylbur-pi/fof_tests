@@ -40,7 +40,7 @@ class ChorusCircle(game.StatefulGame):
         if now > self.nextSongTime:
             
             if self.lastSingers is not None:
-                print(f"resetting last singers: {self.lastSingers}")
+                print(f"resetting last singers: {[s.num for s in self.lastSingers]}")
                 self.setAllToBackgroundColor(self.lastSingers)
 
             # Chose where to have the chorus:
