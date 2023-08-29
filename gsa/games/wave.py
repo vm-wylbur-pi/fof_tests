@@ -11,7 +11,6 @@
 #
 # When two waves intersect, the colors mix in interesting ways.
 
-from collections import defaultdict
 import random
 import time
 
@@ -23,7 +22,7 @@ from ..person import RandomizedAssignments
 
 class Wave(game.StatefulGame):
 
-    WAVE_SPEED = 500
+    WAVE_SPEED = 500   # inches per second
     # How long to wait in between waves, in seconds
     INTERWAVE_DELAY = 7
     # Don't launch more waves than this, no matter how many people
@@ -44,11 +43,14 @@ class Wave(game.StatefulGame):
         224,  # pink
     )
 
-    def __init__(self, specSyllables=["Am","Em","G"]):
+    def __init__(self, specSyllables=["G","Am", "Em"]):
         # Read configuration file (audio_files.yaml) which specifies the names
         # of the audio files for each syllable and which pairs of them go together.
         self.syllableAudioFiles = game.getAudioFiles()['Wave']['Syllables']
         self.specSyllables = specSyllables
+        # The index of the next syllable (within self.specSyllables).
+        # Unused if specSyllables is None
+        self.nextSyllableIdx = 0
 
         # Which person has which color. Colors are 0-255 hues.
         self.hueAssignments = RandomizedAssignments(Wave.ASSIGNABLE_HUES)
@@ -57,10 +59,12 @@ class Wave(game.StatefulGame):
         self.nextWaveTime: float = 0
 
     def chooseSoundFiles(self) -> 'list[str]':
-        choices = list(self.syllableAudioFiles.keys())
-        if self.specSyllables is not None:
-            choices = self.specSyllables
-        syllable = random.choice(choices)
+        syllable = "unchosen"
+        if self.specSyllables:
+            syllable = self.specSyllables[self.nextSyllableIdx]
+            self.nextSyllableIdx = (self.nextSyllableIdx + 1) % len(self.specSyllables)
+        else:
+            syllable = random.choice(list(self.syllableAudioFiles.keys()))
         return self.syllableAudioFiles.get(syllable, [])
 
     def runLoop(self, gameState: GameState):
