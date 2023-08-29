@@ -77,7 +77,9 @@ class FakeFlower:
         return int(round(timeSinceReferenceMillis))
     
     def addPattern(self, pattern_name, str_params):
-        self.patterns.append(self.constructPattern(pattern_name, str_params))
+        pattern = self.constructPattern(pattern_name, str_params)
+        if pattern:
+            self.patterns.append(pattern)
 
     def updatePattern(self, pattern_name, str_params):
         newInstance = self.constructPattern(pattern_name, str_params)
