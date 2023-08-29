@@ -424,6 +424,12 @@ function buildSoundButtons() {
                     "wave/yeahUP4.wav","wave/yeahUP5.wav","wave/yeahUP6.wav"]],
         ["night", ["punctuation/goodnight1_jill.wav","punctuation/goodnight2_jill.wav",
                    "punctuation/goodnight3jill.wav","punctuation/goodnight4_jill.wav"]],
+        ["G mallets", ["mallets/G_balafon_Dnote.wav",
+                       "mallets/G_bells_Cnote.wav",
+                       "mallets/G_glock_Enote.wav",
+                       "mallets/G_kalimba_Gnote.wav",
+                       "mallets/G_marimba_Gnote.wav",
+                       "mallets/G_vibes_Enote.wav"]],
         ["Am mallets", ["mallets/Am_Balafon_Enote.wav",
                         "mallets/Am_Bells_Cnote.wav",
                         "mallets/Am_Glock_Gnote.wav",
@@ -436,12 +442,6 @@ function buildSoundButtons() {
                         "mallets/Em_kalimba_Gnote.wav",
                         "mallets/Em_marimba_Enote.wav",
                         "mallets/Em_vibes_Dnote.wav"]],
-        ["G mallets", ["mallets/G_balafon_Dnote.wav",
-                       "mallets/G_bells_Cnote.wav",
-                       "mallets/G_glock_Enote.wav",
-                       "mallets/G_kalimba_Gnote.wav",
-                       "mallets/G_marimba_Gnote.wav",
-                       "mallets/G_vibes_Enote.wav"]],
     ];
 
     container = document.getElementById("bdiv-2-sound-buttons");
