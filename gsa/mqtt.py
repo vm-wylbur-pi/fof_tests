@@ -337,8 +337,8 @@ def HandleGameControlCommand(message, gameState):
             soundFile = params[0]
         if len(params) >= 2:
             numFlowers = int(params[1])
-        gameState.runStatelessGame(audio.PlaySoundOnMultipleFlowers(soundFile=soundFile,
-                                                                    numFlowers=numFlowers))
+        gameState.runStatelessGame(
+            audio.PlaySoundOnMultipleFlowers(soundFile=soundFile, numFlowers=numFlowers))
         return
 
     if command == "runGame/PlaySoundSetAcrossField":
