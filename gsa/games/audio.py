@@ -2,20 +2,21 @@ from dataclasses import dataclass
 import random
 
 from .game import StatelessGame
-from ..flower import Flower
+from ..game_state import GameState
 from typing import List
 
 @dataclass
 class PlaySoundOnMultipleFlowers(StatelessGame):
     soundFile: str
+    syncToControlClock: bool
     numFlowers: int = None  # How many flowers; if None, play on all flowers
 
-    def run(self, flowers: 'list[Flower]'):
+    def run(self, gameState: GameState):
         if self.numFlowers is None:
-            selectedFlowers = flowers
+            selectedFlowers = gameState.flowers
         else:
-            numToSample = min(self.numFlowers, len(flowers))
-            flowersCopy = list(flowers)
+            numToSample = min(self.numFlowers, len(gameState.flowers))
+            flowersCopy = list(gameState.flowers)
             random.shuffle(flowersCopy)
             selectedFlowers = flowersCopy[:numToSample]
         flowerNums = [f.num for f in selectedFlowers]
@@ -29,8 +30,8 @@ class PlaySoundOnMultipleFlowers(StatelessGame):
 class PlaySoundSetAcrossField(StatelessGame):
     soundFiles: List[str]
 
-    def run(self, flowers: 'list[Flower]'):
-        for i, flower in enumerate(flowers):
+    def run(self, gameState: GameState):
+        for i, flower in enumerate(gameState.flowers):
             soundFile = self.soundFiles[i % len(self.soundFiles)]
             flower.PlaySoundFile(soundFile)
             #print(f"Playing {soundFile} on flower {flower.num}.")

@@ -11,8 +11,8 @@ class Game:
         raise NotImplementedError
 
 class StatelessGame(Game):
-    def run(self, flowers):
-        # Send commands to flowers in order to run this game/effect.
+    def run(self, gameState):
+        # Send commands to gameState.flowers in order to run this game/effect.
         # This method must not block nor take too long.
         raise NotImplementedError
 

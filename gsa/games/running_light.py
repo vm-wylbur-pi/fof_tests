@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from .game import StatelessGame
-from ..flower import Flower
+from ..game_state import GameState
 
 @dataclass
 class RunningLight(StatelessGame):
@@ -10,14 +10,14 @@ class RunningLight(StatelessGame):
     hue: int = 0
     sound: str = None
 
-    def sortFlowers(self, flowers: 'list[Flower]'):
+    def sortFlowers(self, gameState: GameState):
         # This part could be more interesting, if we sorted the flowers
         # in other ways.  (Maybe subclasses?)
-        flowers.sort(key=lambda f: (f.location.x, f.location.y))
+        gameState.flowers.sort(key=lambda f: (f.location.x, f.location.y))
 
-    def run(self, flowers: 'list[Flower]'):
-        self.sortFlowers(flowers)
-        for i, flower in enumerate(flowers):
+    def run(self, gameState: GameState):
+        self.sortFlowers(gameState.flowers)
+        for i, flower in enumerate(gameState.flowers):
             secsToFlower = i / self.flowersPerSec
             millisToFlower = int(round(secsToFlower * 1000))
             pulseTime = self.startTime + millisToFlower

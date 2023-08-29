@@ -87,5 +87,5 @@ class WaveInteractive(game.StatefulGame):
                                          speed=Wave.WAVE_SPEED,
                                          startTime=gameState.controlTimer(),
                                          soundFiles=self.chooseSoundFiles(name))
-                wave.run(gameState.flowers)
+                wave.run(gameState)
                 self.lastWaveTimes[name] = now

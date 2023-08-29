@@ -88,7 +88,7 @@ class Wave(game.StatefulGame):
                     speed=Wave.WAVE_SPEED,
                     startTime=gameState.controlTimer() + Wave.SCHEDULING_DELAY,
                     soundFiles=self.chooseSoundFiles())
-                wave.run(gameState.flowers)
+                wave.run(gameState)
 
             if not people:
                 single_wave = CircularColorWave(
@@ -99,6 +99,6 @@ class Wave(game.StatefulGame):
                     startTime=gameState.controlTimer() + Wave.SCHEDULING_DELAY,
                     soundFiles=self.chooseSoundFiles()
                 )
-                single_wave.run(gameState.flowers)
+                single_wave.run(gameState)
 
             self.nextWaveTime = now + Wave.INTERWAVE_DELAY

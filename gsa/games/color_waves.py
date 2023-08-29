@@ -4,7 +4,6 @@ import time
 from typing import Callable, Dict
  
 from . import game
-from ..field import Field
 from ..flower import Flower
 from ..game_state import GameState
 from .. import geometry
@@ -62,14 +61,14 @@ class StraightPulseWave(PulseWave):
             return perpVectorToFlower.magnitude() / self.speed
 
 
-    def run(self, flowers: 'list[Flower]'):
+    def run(self, gameState: GameState):
         print(f"Running wave: {self}")
         self.speed = self.velocity.magnitude()
         # slope is perpendicular to propagation direction, so invert x vs y
         # Also, follow right-hand-rule (90 deg turn from dir of propagation to get dir of slope.)
         line_vec = geometry.Vector(self.velocity.dy, self.velocity.dx)
         self.line = geometry.Line(self.start_loc, line_vec)
-        arrivals = [(self.secsToReachFlower(f), f) for f in flowers]
+        arrivals = [(self.secsToReachFlower(f), f) for f in gameState.flowers]
         arrivals.sort(key=lambda a: a[0])
         for secsToReachFlower, flower in arrivals:
             if secsToReachFlower != float("Inf"):
@@ -149,9 +148,9 @@ class CircularPulseWave(PulseWave):
         timeUntilArrival = distanceFromStart / self.speed
         return timeUntilArrival
 
-    def run(self, flowers: 'list[Flower]'):
+    def run(self, gameState: GameState):
         print(f"Running wave: {self}")
-        arrivals = [(self.timeToReachFlower(f), f) for f in flowers]
+        arrivals = [(self.timeToReachFlower(f), f) for f in gameState.flowers]
         arrivals.sort(key=lambda a: a[0])
         for timeToReachFlower, flower in arrivals:
             if timeToReachFlower >= 0:
@@ -250,7 +249,7 @@ class RandomWaves(game.StatefulGame):
             # Start in the future, to give time for communication to full field.
             # This only works for StraightColorWave and CircularColorWave right now.
             effect.startTime = gameState.controlTimer() + 5000
-            effect.run(gameState.flowers)
+            effect.run(gameState)
             delay = random.normalvariate(self.effectGapSecsMean, self.effectGapSecsStDev)
             delay = max(delay, self.effectGapSecsMinimum)
             self.next_effect_time = now + delay
@@ -276,5 +275,5 @@ class Mold(game.StatefulGame):
                 speed=self.waveSpeed,
                 startTime=gameState.controlTimer() + Mold.SCHEDULING_DELAY,
             )
-            mold_wave.run(gameState.flowers)
+            mold_wave.run(gameState)
             self.nextWaveTime = now + self.wavePeriod

@@ -33,7 +33,7 @@ class GameState:
         return int(round(timeSinceReferenceMillis))
 
     def runStatelessGame(self, game):
-        game.run(self.flowers)
+        game.run(self)
 
     def runStatefulGame(self, game):
         self.stateful_games.append(game)
