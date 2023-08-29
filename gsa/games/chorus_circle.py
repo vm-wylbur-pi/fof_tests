@@ -13,9 +13,9 @@ from ..color import HSVAColor
 class ChorusCircle(game.StatefulGame):
 
     # How long the first flower sings before the 2nd comes in.
-    FIRST_PART_DELAY = 3000
+    FIRST_PART_DELAY = 2000
     # How long each subsequent flower sings before the one after it starts.
-    REST_OF_PARTS_DELAY = 2000
+    REST_OF_PARTS_DELAY = 1000
 
     def __init__(self, gapBetweenSongs: int = 10, volume: float = 5.0):
         # Behavior variables.  Constant for any game instance.
