@@ -157,7 +157,7 @@ function rainstorm(lengthInMinutes) {
         ['wait', secs(1) ], 
         ['game-control/runGame/PlaySoundOnMultipleFlowers', 'nature-long/lightRain.wav,40'],
         // Add some frogs on fewer flowers. They'll sing throughout.
-        ['game-control/runGame/PlaySoundOnMultipleFlowers', 'nature-long/FrogSounds.wav,10'],
+        ['game-control/runGame/PlaySoundOnMultipleFlowers', 'nature-long/FrogSounds.wav,5'],
         
         // Let it play a bit
         ['wait', stretchableSecs(10) ], 
