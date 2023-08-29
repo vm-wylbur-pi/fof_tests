@@ -164,36 +164,40 @@ function rainstorm(lengthInMinutes) {
         ['gsa-control/relayToAllFlowersWithThrottling/audio/setVolume', '2'],
         ['wait', stretchableSecs(10) ], 
         ['gsa-control/relayToAllFlowersWithThrottling/audio/setVolume', '2.5'],
+        ['flower-control/all/leds/updatePattern/Raindrops', '10,3'],
         ['wait', stretchableSecs(10) ], 
         ['gsa-control/relayToAllFlowersWithThrottling/audio/setVolume', '3'],
         ['wait', stretchableSecs(10) ], 
         ['gsa-control/relayToAllFlowersWithThrottling/audio/setVolume', '3.5'],
+        ['flower-control/all/leds/updatePattern/Raindrops', '20,3'],
         ['wait', stretchableSecs(10) ], 
         ['gsa-control/relayToAllFlowersWithThrottling/audio/setVolume', '4.0'],
         ['wait', stretchableSecs(10) ], 
         ['gsa-control/relayToAllFlowersWithThrottling/audio/setVolume', '4.5'],
+        ['flower-control/all/leds/updatePattern/Raindrops', '30,3'],
         ['wait', stretchableSecs(10) ], 
         // Wind effect
         ['game-control/runGame/Wind', ''],
         // Lightning & Thunder
         ['game-control/runGame/PlaySoundOnMultipleFlowers', 'nature/Thunder3_14sec.wav,10'],
         ['wait', secs(1) ],  // Thunder hits a second after the start of the sound file
-        ['gsa-control/relayToAllFlowersWithThrottling/time/setBPM', '500'],
-        ['gsa-control/relayToAllFlowersWithThrottling/leds/addPattern/BeatFlash', ''],
-        ['wait', secs(0.1) ], 
-        ['gsa-control/relayToAllFlowersWithThrottling/leds/removePattern/BeatFlash', ''],
+        // ['gsa-control/relayToAllFlowersWithThrottling/time/setBPM', '500'],
+        // ['gsa-control/relayToAllFlowersWithThrottling/leds/addPattern/BeatFlash', ''],
+        // ['wait', secs(0.1) ], 
+        // ['gsa-control/relayToAllFlowersWithThrottling/leds/removePattern/BeatFlash', ''],
         // Pause between thunders
         ['wait', stretchableSecs(10) ], 
         // 2nd thunder
         ['game-control/runGame/PlaySoundOnMultipleFlowers', 'nature/Thunder3_14sec.wav,10'],
         ['wait', secs(1) ],  // Thunder hits a second after the start of the sound file
-        ['gsa-control/relayToAllFlowersWithThrottling/time/setBPM', '500'],
-        ['gsa-control/relayToAllFlowersWithThrottling/leds/addPattern/BeatFlash', ''],
-        ['wait', secs(0.1) ], 
-        ['gsa-control/relayToAllFlowersWithThrottling/leds/removePattern/BeatFlash', ''],
+        // ['gsa-control/relayToAllFlowersWithThrottling/time/setBPM', '500'],
+        // ['gsa-control/relayToAllFlowersWithThrottling/leds/addPattern/BeatFlash', ''],
+        // ['wait', secs(0.1) ], 
+        // ['gsa-control/relayToAllFlowersWithThrottling/leds/removePattern/BeatFlash', ''],
         // Gradual ramp-down the rain
         ['gsa-control/relayToAllFlowersWithThrottling/audio/setVolume', '4.0'],
         ['wait', stretchableSecs(10) ], 
+        ['flower-control/all/leds/updatePattern/Raindrops', '20,3'],
         ['gsa-control/relayToAllFlowersWithThrottling/audio/setVolume', '3.5'],
         ['wait', stretchableSecs(10) ], 
         // Stop the wind
@@ -203,7 +207,8 @@ function rainstorm(lengthInMinutes) {
         ['wait', stretchableSecs(10) ], 
         ['gsa-control/relayToAllFlowersWithThrottling/audio/setVolume', '2.5'],
         ['wait', stretchableSecs(10) ], 
-        ['gsa-control/relayToAllFlowersWithThrottling/audio/setVolume', '2.5'],
+        ['gsa-control/relayToAllFlowersWithThrottling/audio/setVolume', '2.0'],
+        ['flower-control/all/leds/updatePattern/Raindrops', '5,3'],
         ['wait', stretchableSecs(10) ], 
         // Birds take over from rain & frogs by playing on almost all flowers
         ['game-control/runGame/PlaySoundOnMultipleFlowers', 'nature-long/birds.wav,3'],
