@@ -89,11 +89,13 @@ const bArray = [
         'name': 'Big Ben chimes 4 o-clock', 'color': 'darkmagenta', 'column': 2,
         'commands': [
             // Prelude chimes just on 8 flowers
+            ['gsa-control/relayToAllFlowersWithThrottling/audio/setVolume', '5'],
             ['game-control/runGame/PlaySoundOnMultipleFlowers', 'bigben/preamble.wav,8'],
             // Time for the prelude to play
             ['wait', 15000],
-            // Dongs on half of the flowers
-            ['game-control/runGame/PlaySoundOnMultipleFlowers', 'bigben/4dongs.wav,80'],
+            // Dongs on 1/4 of the flowers, at moderate volume
+            ['gsa-control/relayToAllFlowersWithThrottling/audio/setVolume', '3'],
+            ['game-control/runGame/PlaySoundOnMultipleFlowers', 'bigben/4dongs.wav,40'],
         ]
     },
     {
