@@ -8,8 +8,14 @@ from typing import List
 @dataclass
 class PlaySoundOnMultipleFlowers(StatelessGame):
     soundFile: str
-    syncToControlClock: bool
+    # Gain sync at the cost of latency. latency only matters for stuff
+    # like interactive reactions or the DoJ interface.
+    syncToControlClock: bool = True
     numFlowers: int = None  # How many flowers; if None, play on all flowers
+
+    # More gives more time for all flowers to get the message (better sync),
+    # but adds overall latency to the effect. 
+    SYNC_LATENCY_MILLIS = 200
 
     def run(self, gameState: GameState):
         if self.numFlowers is None:
@@ -20,9 +26,13 @@ class PlaySoundOnMultipleFlowers(StatelessGame):
             random.shuffle(flowersCopy)
             selectedFlowers = flowersCopy[:numToSample]
         flowerNums = [f.num for f in selectedFlowers]
-        print(f"Playing {self.soundFile} on {numToSample} flowers: {flowerNums}")
+        print(f"Playing {self.soundFile} on {len(selectedFlowers)} flowers: {flowerNums}")
+        syncTime = gameState.controlTimer() + PlaySoundOnMultipleFlowers.SYNC_LATENCY_MILLIS
         for flower in selectedFlowers:
-            flower.PlaySoundFile(self.soundFile)
+            if self.syncToControlClock:
+                flower.PlaySoundFile(self.soundFile, startTime=syncTime)
+            else:
+                flower.PlaySoundFile(self.soundFile)
 
 
 # Distribute a set of sound files evenly across the field
