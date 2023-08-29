@@ -85,8 +85,8 @@ Wave:
       - mallets/Am_Balafon_Enote.wav
       - mallets/Am_Bells_Cnote.wav
       - mallets/Am_Kalimba_hiAnote.wav
-      - mallets/Am_Glock_Gnote.wav
-      - mallets/Am_Glock_Gnote.wav
+      # - mallets/Am_Glock_Gnote.wav
+      # - mallets/Am_Glock_Gnote.wav
       - mallets/Am_Marimba_Anote.wav
       - mallets/Am_Marimba_Anote.wav
       - mallets/Am_vibes_Cnote.wav
@@ -95,8 +95,8 @@ Wave:
       - mallets/Em_balafon_Enote.wav
       - mallets/Em_bells_Cnote.wav
       - mallets/Em_kalimba_Gnote.wav
-      - mallets/Em_glock_Dnote.wav
-      - mallets/Em_glock_Dnote.wav
+      # - mallets/Em_glock_Dnote.wav
+      # - mallets/Em_glock_Dnote.wav
       - mallets/Em_marimba_Enote.wav
       - mallets/Em_marimba_Enote.wav
       - mallets/Em_vibes_Dnote.wav
@@ -105,8 +105,8 @@ Wave:
       - mallets/G_balafon_Dnote.wav
       - mallets/G_bells_Cnote.wav
       - mallets/G_kalimba_Gnote.wav
-      - mallets/G_glock_Enote.wav
-      - mallets/G_glock_Enote.wav
+      # - mallets/G_glock_Enote.wav
+      # - mallets/G_glock_Enote.wav
       - mallets/G_marimba_Gnote.wav
       - mallets/G_marimba_Gnote.wav
       - mallets/G_vibes_Enote.wav
