@@ -17,7 +17,7 @@ class ChorusCircle(game.StatefulGame):
     # How long each subsequent flower sings before the one after it starts.
     REST_OF_PARTS_DELAY = 2000
 
-    def __init__(self, gapBetweenSongs: int = 30, volume: float = 5.0):
+    def __init__(self, gapBetweenSongs: int = 10, volume: float = 5.0):
         # Behavior variables.  Constant for any game instance.
         self.gapBetweenSongs: float = gapBetweenSongs  # Seconds
         self.volume: float = volume

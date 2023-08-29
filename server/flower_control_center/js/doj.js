@@ -122,7 +122,7 @@ const bArray = [
     },
     {
         'name': 'Chorus Circle', 'color': 'darkmagenta', 'column': 2,
-        'commands': [ ['game-control/runGame/ChorusCircle', '30,5.0'] ]
+        'commands': [ ['game-control/runGame/ChorusCircle', '10,5.0'] ]
     },
 
 
