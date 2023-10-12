@@ -21,7 +21,7 @@ import mqtt
 import game_state
 import gsa.games.field_idle
 
-DEPLOYMENT_FILE = "../fake_field/playa_deployment.yaml"
+DEPLOYMENT_FILE = "../fake_field/autumn_lights.yaml"
 
 gameState = game_state.GameState(deployment_file=DEPLOYMENT_FILE)
 # The mqtt client gets a reference to the game state so that:
